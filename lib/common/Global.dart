@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/User.dart';
 
@@ -10,12 +10,11 @@ class Global {
 
   User user;
 
-  static Dio dio = Dio(Options(
-    baseUrl: "http://192.168.1.12:8081/",
-    connectTimeout: 10000,
-    receiveTimeout: 100000,
-    contentType: ContentType.json,
-  ));
+  static const String SCHEME = "HTTP";
+
+  static const String HOST = "192.168.1.12";
+
+  static const int PORT = 8081;
 
   factory Global() => _getInstance();
 
@@ -30,11 +29,22 @@ class Global {
     return _instance;
   }
 
-  Future<Response> dioPost(String url, [Map params]) {
-    if (token != null) {
-      dynamic tok = token.token;
-      dio.options.headers.putIfAbsent("token", tok);
+  Future<String> post(String url, [queryParameters]) async {
+    HttpClient httpClient = new HttpClient();
+    Uri uri = Uri(
+        scheme: SCHEME,
+        host: HOST,
+        port: PORT,
+        path: url,
+        queryParameters: queryParameters);
+    HttpClientRequest request = await httpClient.postUrl(uri);
+
+    if (token != null && token.token != null) {
+      request.headers.add("token", token.token);
     }
-    return dio.post(url, data: params);
+
+    HttpClientResponse response = await request.close();
+    String responseBody = await response.transform(utf8.decoder).join();
+    return responseBody;
   }
 }

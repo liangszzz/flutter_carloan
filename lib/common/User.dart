@@ -1,4 +1,3 @@
-
 class User {
   ///昵称
   String nickName;
@@ -18,9 +17,12 @@ class User {
   ///银行卡号 后四位
   String barkCard;
 
-  ///token
-  String token;
-
-  ///token过期时间
-  String expire;
+  User.fromJson(Map<String, String> map) {
+    nickName = map['nickName'];
+    avatarUrl = map['avatarUrl'];
+    phone = map['phone'];
+    idcard = map['idcard'];
+    bankName = map['bankName'];
+    barkCard = map['barkCard'];
+  }
 }
