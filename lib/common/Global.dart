@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/User.dart';
 
@@ -46,5 +47,18 @@ class Global {
     HttpClientResponse response = await request.close();
     String responseBody = await response.transform(utf8.decoder).join();
     return responseBody;
+  }
+
+  void loadTokenAndUserInfo(DataResponse d) {
+    Map<String, dynamic> map = d.entity as Map;
+    //将用户信息写入global
+    User user = User.fromJson(map);
+    this.user = user;
+    //将token信息写入global
+    if (map['expire'] != null && map['token'] != null) {
+      Token token = Token.parseToken(map['expire'] + map['token']);
+      this.token.writeToken();
+      this.token = token;
+    }
   }
 }

@@ -11,8 +11,11 @@ class Token {
   static Future<Token> loadToken() async {
     FileUtil fileUtil = FileUtil("token");
     var readStr = await fileUtil.read();
-    Token token = parseToken(readStr);
-    return token;
+    if (readStr != null) {
+      return Token(
+          DateTime.parse(readStr.substring(0, 23)), readStr.substring(23));
+    }
+    return null;
   }
 
   void writeToken() async {
@@ -20,19 +23,23 @@ class Token {
     fileUtil.write(this.toString());
   }
 
-  static Token parseToken(String str) {
-    var expire = str.substring(0, 23);
-    var token = str.substring(23);
-    return Token(DateTime.parse(expire), token);
+  Token.parseToken(String str) {
+    if (str != null && str.length > 23) {
+      expire = DateTime.parse(str.substring(0, 23));
+      token = str.substring(23);
+    }
   }
 
   String toString() {
-    return expire.toIso8601String().substring(0, 23) + token;
+    if (expire != null && token != null) {
+      return expire.toIso8601String().substring(0, 23) + token;
+    }
+    return "";
   }
 
   /// true 未过期  false 过期
   bool checkExpire() {
-    if (DateTime.now().isBefore(this.expire)) {
+    if (expire != null && DateTime.now().isBefore(this.expire)) {
       return true;
     }
     return false;

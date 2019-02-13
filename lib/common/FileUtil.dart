@@ -9,15 +9,16 @@ class FileUtil {
 
   Future<String> read() async {
     var appDocDir = (await getApplicationDocumentsDirectory()).path;
-    print(appDocDir);
     File file = new File('$appDocDir/$path');
-    return file.readAsStringSync();
+    if (await file.exists()) {
+      return file.readAsStringSync();
+    }
+    return null;
   }
 
   void write(String str) async {
     var appDocDir = (await getApplicationDocumentsDirectory()).path;
-    print(appDocDir);
     File file = new File('$appDocDir/$path');
-    file.writeAsStringSync(str);
+    file.writeAsStringSync(str, mode: FileMode.write);
   }
 }

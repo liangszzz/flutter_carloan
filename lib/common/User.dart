@@ -17,7 +17,7 @@ class User {
   ///银行卡号 后四位
   String barkCard;
 
-  User.fromJson(Map<String, String> map) {
+  User.fromJson(Map<String, dynamic> map) {
     nickName = map['nickName'];
     avatarUrl = map['avatarUrl'];
     phone = map['phone'];

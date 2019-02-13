@@ -1,25 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/User.dart';
+import 'package:flutter_carloan/order/OrderPage.dart';
 
 class LoginPage extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => LoginPageStateful();
-}
-
-class LoginPageStateful extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return LoginPageState();
+  Widget build(BuildContext context) {
+    return _LoginPageStateful();
   }
 }
 
-class LoginPageState extends State<LoginPageStateful> {
+class _LoginPageStateful extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _LoginPageState();
+  }
+}
+
+class _LoginPageState extends State<_LoginPageStateful> {
   Global global = Global();
 
   ///手机号
@@ -37,11 +39,11 @@ class LoginPageState extends State<LoginPageStateful> {
         elevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: buildBody(),
+      body: _buildBody(),
     );
   }
 
-  Widget buildBody() {
+  Widget _buildBody() {
     return Column(
       children: <Widget>[
         TextField(
@@ -62,14 +64,14 @@ class LoginPageState extends State<LoginPageStateful> {
                 ),
               ),
             ),
-            CodeBotton(
-              onPressed: getSmsCode,
+            _CodeBotton(
+              onPressed: _getSmsCode,
               coldDownSeconds: seconds,
             )
           ],
         ),
         FlatButton(
-          onPressed: login,
+          onPressed: _login,
           child: Text(
             "登陆",
             style: TextStyle(fontSize: 16, color: Colors.green),
@@ -79,27 +81,23 @@ class LoginPageState extends State<LoginPageStateful> {
     );
   }
 
-  Future login() async {
+  Future _login() async {
     if (phone.text.length == 11 && code.text.length == 4) {
       var response = await global.post("login/appRegister",
           {'phone': phone.text, 'invitation_code': code.text});
-      print(response);
+
       DataResponse d = DataResponse.fromJson(json.decode(response));
       if (d.success()) {
-        Map<String, String> map = d.entity as Map;
-        //将用户信息写入global
-        User user = User.fromJson(map);
-        global.user = user;
-        //将token信息写入global
-        Token token = Token.parseToken(map['token'] + map['expire']);
-        token.writeToken();
-        global.token = token;
+        global.loadTokenAndUserInfo(d);
         //跳转
+        Navigator.push(context, new MaterialPageRoute(builder: (context) {
+          return new OrderPage();
+        }));
       }
     }
   }
 
-  void getSmsCode() async {
+  void _getSmsCode() async {
     if (phone.text.length != 11) {
       return;
     }
@@ -111,26 +109,26 @@ class LoginPageState extends State<LoginPageStateful> {
       setState(() {
         seconds = 10;
       });
-      secondUpdate();
+      _secondUpdate();
     }
   }
 
-  void secondUpdate() {
+  void _secondUpdate() {
     timer = Timer(Duration(seconds: 1), () {
       setState(() {
         --seconds;
       });
-      secondUpdate();
+      _secondUpdate();
     });
   }
 }
 
-class CodeBotton extends StatelessWidget {
+class _CodeBotton extends StatelessWidget {
   final VoidCallback onPressed;
 
   final int coldDownSeconds;
 
-  const CodeBotton({Key key, this.onPressed, this.coldDownSeconds})
+  const _CodeBotton({Key key, this.onPressed, this.coldDownSeconds})
       : super(key: key);
 
   @override
