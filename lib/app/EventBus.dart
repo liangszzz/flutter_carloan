@@ -8,6 +8,7 @@ class EventBus {
   //保存单例
   static EventBus _singleton = EventBus._internal();
 
+
   //工厂构造函数
   factory EventBus() => _singleton;
 
