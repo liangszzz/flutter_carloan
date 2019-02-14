@@ -23,9 +23,6 @@ class RadioBox extends StatefulWidget {
 
 class MyAppState extends State<RadioBox> {
 
-  final String RadioType;
-
-  const RadioBox({Key key, this.RadioType}) : super(key: key);
 
   int radioValue = 0;
 

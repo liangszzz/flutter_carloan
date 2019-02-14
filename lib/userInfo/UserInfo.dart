@@ -27,7 +27,7 @@ class UserInfo extends StatelessWidget {
             imgSrc: 'img/arrow_right.png',
             onPressed: () {
               Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
-                return new RadioBox(RadioType:'123');
+                return new RadioBox();
               }));
             },
           ),
