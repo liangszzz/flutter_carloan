@@ -5,23 +5,20 @@ import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/User.dart';
-import 'package:flutter_carloan/order/OrderPage.dart';
 
 class LoginPage extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return _LoginPageStateful();
-  }
+  Widget build(BuildContext context) => LoginPageStateful();
 }
 
-class _LoginPageStateful extends StatefulWidget {
+class LoginPageStateful extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _LoginPageState();
+    return LoginPageState();
   }
 }
 
-class _LoginPageState extends State<_LoginPageStateful> {
+class LoginPageState extends State<LoginPageStateful> {
   Global global = Global();
 
   ///手机号
@@ -39,11 +36,11 @@ class _LoginPageState extends State<_LoginPageStateful> {
         elevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: _buildBody(),
+      body: buildBody(),
     );
   }
 
-  Widget _buildBody() {
+  Widget buildBody() {
     return Column(
       children: <Widget>[
         TextField(
@@ -64,14 +61,14 @@ class _LoginPageState extends State<_LoginPageStateful> {
                 ),
               ),
             ),
-            _CodeBotton(
-              onPressed: _getSmsCode,
+            CodeBotton(
+              onPressed: getSmsCode,
               coldDownSeconds: seconds,
             )
           ],
         ),
         FlatButton(
-          onPressed: _login,
+          onPressed: login,
           child: Text(
             "登陆",
             style: TextStyle(fontSize: 16, color: Colors.green),
@@ -81,23 +78,28 @@ class _LoginPageState extends State<_LoginPageStateful> {
     );
   }
 
-  Future _login() async {
+  Future login() async {
     if (phone.text.length == 11 && code.text.length == 4) {
       var response = await global.post("login/appRegister",
           {'phone': phone.text, 'invitation_code': code.text});
-
+      print(response);
       DataResponse d = DataResponse.fromJson(json.decode(response));
       if (d.success()) {
-        global.loadTokenAndUserInfo(d);
+        Map<String, String> map = d.entity as Map;
+        //将用户信息写入global
+        User user = User.fromJson(map);
+        global.user = user;
+        //将token信息写入global
+        Token token = Token.parseToken(map['token'] + map['expire']);
+        token.writeToken();
+        global.token = token;
         //跳转
-        Navigator.push(context, new MaterialPageRoute(builder: (context) {
-          return new OrderPage();
-        }));
+
       }
     }
   }
 
-  void _getSmsCode() async {
+  void getSmsCode() async {
     if (phone.text.length != 11) {
       return;
     }
@@ -109,26 +111,26 @@ class _LoginPageState extends State<_LoginPageStateful> {
       setState(() {
         seconds = 10;
       });
-      _secondUpdate();
+      secondUpdate();
     }
   }
 
-  void _secondUpdate() {
+  void secondUpdate() {
     timer = Timer(Duration(seconds: 1), () {
       setState(() {
         --seconds;
       });
-      _secondUpdate();
+      secondUpdate();
     });
   }
 }
 
-class _CodeBotton extends StatelessWidget {
+class CodeBotton extends StatelessWidget {
   final VoidCallback onPressed;
 
   final int coldDownSeconds;
 
-  const _CodeBotton({Key key, this.onPressed, this.coldDownSeconds})
+  const CodeBotton({Key key, this.onPressed, this.coldDownSeconds})
       : super(key: key);
 
   @override
