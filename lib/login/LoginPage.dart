@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
+import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/order/OrderPage.dart';
 
 ///登陆页面
 class LoginPage extends StatelessWidget {
@@ -45,7 +47,7 @@ class _LoginPageState extends State<_LoginStateful> {
         body: _loginType ? _buildLoginBySms() : _buildLoginByPwd());
   }
 
-  ///免密登陆
+  ///免密登陆页面
   Widget _buildLoginBySms() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
@@ -70,7 +72,7 @@ class _LoginPageState extends State<_LoginStateful> {
     );
   }
 
-  ///密码登陆
+  ///密码登陆页面
   Widget _buildLoginByPwd() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
@@ -226,6 +228,7 @@ class _LoginPageState extends State<_LoginStateful> {
   ///创建密登陆底部
   Widget _buildBottomByPwd() {
     var forgetBtn = FlatButton(
+      onPressed: _forgetPwd,
       child: Text("忘记密码?", style: TextStyle(color: Colors.blue, fontSize: 14)),
     );
     var btn = FlatButton(
@@ -243,6 +246,7 @@ class _LoginPageState extends State<_LoginStateful> {
     );
   }
 
+  ///发送验证码
   void _getSmsCode() async {
     if (_phone.text.length != 11) {
       return;
@@ -259,6 +263,7 @@ class _LoginPageState extends State<_LoginStateful> {
     }
   }
 
+  ///验证码倒计时
   void _secondUpdate() {
     timer = Timer(Duration(seconds: 1), () {
       setState(() {
@@ -268,13 +273,54 @@ class _LoginPageState extends State<_LoginStateful> {
     });
   }
 
+  ///切换登陆方式
   void _setLoginType() {
     setState(() {
       _loginType = !_loginType;
     });
   }
 
-  void _login() {}
+  ///登陆
+  void _login() async {
+    if (_phone.text.length != 11) {
+      DialogUtils.showAlertDialog(context, "登陆校验", "请填写正确的手机号", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    var url = "";
+    if (_loginType) {
+      //验证码登陆
+      if (_codeOrPwd.text.length !=4) {
+        DialogUtils.showAlertDialog(context, "登陆校验", "请填写正确的验证码", null,
+            titleStyle: TextStyle(color: Colors.red));
+        return;
+      }
+      url = "login/appRegister";
+    } else {
+      //密码登陆
+      if (_codeOrPwd.text.length < 6) {
+        DialogUtils.showAlertDialog(context, "登陆校验", "请填写正确密码", null,
+            titleStyle: TextStyle(color: Colors.red));
+        return;
+      }
+      url = "login/appLoginByPwd";
+    }
+    var response =
+        await global.post(url, {'phone': _phone.text, 'code': _codeOrPwd.text});
+
+    DataResponse d = DataResponse.fromJson(json.decode(response));
+    if (d.success()) {
+      global.loadTokenAndUserInfo(d);
+      //跳转
+      Navigator.push(context, new MaterialPageRoute(builder: (context) {
+        return new OrderPage();
+      }));
+    } else {
+      DialogUtils.showAlertDialog(context, "登陆失败", d.msg, () {
+        _codeOrPwd.clear();
+      }, titleStyle: TextStyle(color: Colors.red));
+    }
+  }
 
   @override
   void dispose() {
@@ -282,5 +328,11 @@ class _LoginPageState extends State<_LoginStateful> {
       timer.cancel();
     }
     super.dispose();
+  }
+  ///忘记密码
+  void _forgetPwd() {
+
+
+
   }
 }

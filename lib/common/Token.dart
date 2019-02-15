@@ -18,7 +18,7 @@ class Token {
     return null;
   }
 
-  void writeToken() async {
+  void writeToken() {
     FileUtil fileUtil = FileUtil("token");
     fileUtil.write(this.toString());
   }
