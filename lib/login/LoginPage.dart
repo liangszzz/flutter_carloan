@@ -22,29 +22,54 @@ class _LoginStateful extends StatefulWidget {
 class _LoginPageState extends State<_LoginStateful> {
   Global global = new Global();
 
-  ///登陆方式 true 免密登陆,false 密码登陆
-  bool _loginType = true;
+  ///登陆方式 0 免密登陆,1 密码登陆 2 密码找回
+  var _loginType = 0;
 
   ///显示密码 true 不显示
   bool _showPwd = true;
   TextEditingController _phone = new TextEditingController();
-  TextEditingController _codeOrPwd = new TextEditingController();
+  TextEditingController _code = new TextEditingController();
+  TextEditingController _pwd = new TextEditingController();
+  TextEditingController _pwdRepeat = new TextEditingController();
   GlobalKey _formKey = new GlobalKey<FormState>();
 
   int second = 0;
   Timer timer;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: _loginType
-              ? Text("免密码登陆", style: TextStyle(fontSize: 14))
-              : Text("密码登陆", style: TextStyle(fontSize: 14)),
-          elevation: 0,
-        ),
-        backgroundColor: Colors.white,
-        body: _loginType ? _buildLoginBySms() : _buildLoginByPwd());
+  Widget build(BuildContext context) => Scaffold(
+      appBar: AppBar(
+        title: _buildTitle(),
+        elevation: 0,
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: _buildBody(),
+      ));
+
+  ///创建页面标题
+  Widget _buildTitle() {
+    const TextStyle textStyle = TextStyle(fontSize: 14);
+    if (_loginType == 0) {
+      return Text("免密码登陆", style: textStyle);
+    } else if (_loginType == 1) {
+      return Text("密码登陆", style: textStyle);
+    } else if (_loginType == 2) {
+      return Text("密码找回", style: textStyle);
+    }
+    return Text("错误");
+  }
+
+  ///创建页面内容
+  Widget _buildBody() {
+    if (_loginType == 0) {
+      return _buildLoginBySms();
+    } else if (_loginType == 1) {
+      return _buildLoginByPwd();
+    } else if (_loginType == 2) {
+      return _buildForgetPwd();
+    }
+    return Text("错误");
   }
 
   ///免密登陆页面
@@ -97,6 +122,33 @@ class _LoginPageState extends State<_LoginStateful> {
     );
   }
 
+  ///忘记密码页面
+  Widget _buildForgetPwd() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      child: Form(
+        key: _formKey,
+        autovalidate: true,
+        child: Column(
+          children: <Widget>[
+            _buildPhone(),
+            _buildSmsCode(),
+            _buildPwd(),
+            _buildPwdRepeat(),
+            SizedBox(
+              height: 20,
+            ),
+            _buildResetPwd(),
+            SizedBox(
+              height: 10,
+            ),
+            _buildBottomByForgetPwd()
+          ],
+        ),
+      ),
+    );
+  }
+
   ///创建手机号
   Widget _buildPhone() {
     return TextFormField(
@@ -124,42 +176,36 @@ class _LoginPageState extends State<_LoginStateful> {
 
   ///创建验证码
   Widget _buildSmsCode() {
-    return Wrap(
-      direction: Axis.horizontal,
-      children: <Widget>[
-        TextFormField(
-          controller: _codeOrPwd,
-          maxLength: 4,
-          maxLengthEnforced: true,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            hintText: "请输入验证码",
-            icon: Icon(
-              Icons.message,
-              color: Colors.grey,
-            ),
-            suffix: CodeButton(
-              onPress: _getSmsCode,
-              second: second,
-            ),
+    return TextFormField(
+        controller: _code,
+        maxLength: 4,
+        maxLengthEnforced: true,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          hintText: "请输入验证码",
+          icon: Icon(
+            Icons.message,
+            color: Colors.grey,
           ),
-          validator: (v) {
-            if (v.isEmpty) {
-              return "请输入验证码";
-            }
-            if (v.length < 4) {
-              return "请输入正确验证码";
-            }
-          },
+          suffix: CodeButton(
+            onPress: _getSmsCode,
+            second: second,
+          ),
         ),
-      ],
-    );
+        validator: (v) {
+          if (v.isEmpty) {
+            return "请输入验证码";
+          }
+          if (v.length < 4) {
+            return "请输入正确验证码";
+          }
+        });
   }
 
   ///创建密码
   Widget _buildPwd() {
     return TextFormField(
-      controller: _codeOrPwd,
+      controller: _pwd,
       maxLength: 50,
       maxLengthEnforced: true,
       keyboardType: TextInputType.text,
@@ -167,6 +213,39 @@ class _LoginPageState extends State<_LoginStateful> {
       decoration: InputDecoration(
           labelText: "密码",
           hintText: "请输入密码",
+          icon: Icon(Icons.lock),
+          suffixIcon: IconButton(
+              icon: Icon(
+                Icons.remove_red_eye,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                setState(() {
+                  _showPwd = !_showPwd;
+                });
+              })),
+      validator: (v) {
+        if (v.isEmpty) {
+          return "请输入密码";
+        }
+        if (v.length < 6) {
+          return "密码必须大于6位";
+        }
+      },
+    );
+  }
+
+  ///创建重复密码
+  Widget _buildPwdRepeat() {
+    return TextFormField(
+      controller: _pwdRepeat,
+      maxLength: 50,
+      maxLengthEnforced: true,
+      keyboardType: TextInputType.text,
+      obscureText: _showPwd,
+      decoration: InputDecoration(
+          labelText: "确认密码",
+          hintText: "请再次输入密码",
           icon: Icon(Icons.lock),
           suffixIcon: IconButton(
               icon: Icon(
@@ -204,6 +283,21 @@ class _LoginPageState extends State<_LoginStateful> {
     );
   }
 
+  ///创建重置密码按钮
+  Widget _buildResetPwd() {
+    var btn = FlatButton(
+        onPressed: _resetPwd,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        color: Colors.green,
+        child: Text(
+          "重置密码",
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ));
+    return Row(
+      children: <Widget>[Expanded(child: btn)],
+    );
+  }
+
   ///创建免密登陆底部
   Widget _buildBottomBySms() {
     var text = Text("未注册手机验证后自动登陆",
@@ -211,7 +305,9 @@ class _LoginPageState extends State<_LoginStateful> {
 
     var btn = FlatButton(
       child: Text("密码登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
-      onPressed: _setLoginType,
+      onPressed: () {
+        _setLoginType(1);
+      },
     );
 
     return Row(
@@ -228,12 +324,16 @@ class _LoginPageState extends State<_LoginStateful> {
   ///创建密登陆底部
   Widget _buildBottomByPwd() {
     var forgetBtn = FlatButton(
-      onPressed: _forgetPwd,
+      onPressed: () {
+        _setLoginType(2);
+      },
       child: Text("忘记密码?", style: TextStyle(color: Colors.blue, fontSize: 14)),
     );
     var btn = FlatButton(
       child: Text("免密登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
-      onPressed: _setLoginType,
+      onPressed: () {
+        _setLoginType(0);
+      },
     );
     return Row(
       children: <Widget>[
@@ -242,6 +342,31 @@ class _LoginPageState extends State<_LoginStateful> {
           child: Container(),
         ),
         btn
+      ],
+    );
+  }
+
+  ///创建忘记密码底部
+  Widget _buildBottomByForgetPwd() {
+    var btn1 = FlatButton(
+      onPressed: () {
+        _setLoginType(0);
+      },
+      child: Text("免密登陆?", style: TextStyle(color: Colors.blue, fontSize: 14)),
+    );
+    var btn2 = FlatButton(
+      child: Text("密码登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      onPressed: () {
+        _setLoginType(1);
+      },
+    );
+    return Row(
+      children: <Widget>[
+        btn1,
+        Expanded(
+          child: Container(),
+        ),
+        btn2
       ],
     );
   }
@@ -274,39 +399,44 @@ class _LoginPageState extends State<_LoginStateful> {
   }
 
   ///切换登陆方式
-  void _setLoginType() {
+  void _setLoginType(int _loginType) {
     setState(() {
-      _loginType = !_loginType;
+      _code.clear();
+      _pwd.clear();
+      _pwdRepeat.clear();
+      this._loginType = _loginType;
     });
   }
 
   ///登陆
   void _login() async {
     if (_phone.text.length != 11) {
-      DialogUtils.showAlertDialog(context, "登陆校验", "请填写正确的手机号", null,
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的手机号", null,
           titleStyle: TextStyle(color: Colors.red));
       return;
     }
     var url = "";
-    if (_loginType) {
+    var data;
+    if (_loginType == 0) {
       //验证码登陆
-      if (_codeOrPwd.text.length !=4) {
-        DialogUtils.showAlertDialog(context, "登陆校验", "请填写正确的验证码", null,
+      if (_code.text.length != 4) {
+        DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的验证码", null,
             titleStyle: TextStyle(color: Colors.red));
         return;
       }
       url = "login/appRegister";
-    } else {
+      data = {'phone': _phone.text, 'code': _code.text};
+    } else if (_loginType == 1) {
       //密码登陆
-      if (_codeOrPwd.text.length < 6) {
-        DialogUtils.showAlertDialog(context, "登陆校验", "请填写正确密码", null,
+      if (_pwd.text.length < 6) {
+        DialogUtils.showAlertDialog(context, "字段校验", "请填写正确密码", null,
             titleStyle: TextStyle(color: Colors.red));
         return;
       }
       url = "login/appLoginByPwd";
+      data = {'phone': _phone.text, 'code': _pwd.text};
     }
-    var response =
-        await global.post(url, {'phone': _phone.text, 'code': _codeOrPwd.text});
+    var response = await global.post(url, data);
 
     DataResponse d = DataResponse.fromJson(json.decode(response));
     if (d.success()) {
@@ -316,9 +446,54 @@ class _LoginPageState extends State<_LoginStateful> {
         return new OrderPage();
       }));
     } else {
-      DialogUtils.showAlertDialog(context, "登陆失败", d.msg, () {
-        _codeOrPwd.clear();
+      DialogUtils.showAlertDialog(context, "提示", d.msg, () {
+        _code.clear();
+        _pwd.clear();
       }, titleStyle: TextStyle(color: Colors.red));
+    }
+  }
+
+  ///重置密码
+  void _resetPwd() async {
+    if (_phone.text.length != 11) {
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的手机号", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    if (_code.text.length != 4) {
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的验证码", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    if (_pwd.text.length < 6) {
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确密码", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    if (_pwd.text != _pwdRepeat.text) {
+      DialogUtils.showAlertDialog(context, "字段校验", "两次密码不一致", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    var url = "login/resetPwd";
+    var data = {"phone": _phone.text, "code": _code.text, "pwd": _pwd.text};
+    var response = await global.post(url, data);
+    DataResponse d = DataResponse.fromJson(json.decode(response));
+    if (d.success()) {
+      DialogUtils.showAlertDialog(context, "提示", "重置密码成功", () {
+        _code.clear();
+        _pwd.clear();
+        _pwdRepeat.clear();
+        setState(() {
+          _loginType = 1;
+        });
+      });
+    } else {
+      DialogUtils.showAlertDialog(context, "提示", d.msg, () {
+        _code.clear();
+        _pwd.clear();
+        _pwdRepeat.clear();
+      });
     }
   }
 
@@ -328,11 +503,5 @@ class _LoginPageState extends State<_LoginStateful> {
       timer.cancel();
     }
     super.dispose();
-  }
-  ///忘记密码
-  void _forgetPwd() {
-
-
-
   }
 }

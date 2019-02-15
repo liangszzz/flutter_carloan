@@ -60,7 +60,7 @@ class Global {
     //将token信息写入global
     if (map['expire'] != null && map['token'] != null) {
       Token token = Token.parseToken(map['expire'] + map['token']);
-      this.token.writeToken();
+      token.writeToken();
       this.token = token;
     }
   }
