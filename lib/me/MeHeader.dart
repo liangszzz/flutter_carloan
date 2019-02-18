@@ -13,10 +13,14 @@ class MeHeader extends StatefulWidget {
 
 class MyHeaderPage extends State<MeHeader> {
   var applyAmount;
-
+  var isReload = false;
   @override
   Widget build(BuildContext context) {
-    _getRecentRecord();
+
+    if(!isReload){
+      _getRecentRecord();
+      isReload = true;
+    }
 
     return GestureDetector(
       child: Container(

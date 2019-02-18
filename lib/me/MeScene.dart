@@ -3,10 +3,10 @@ import 'package:flutter_carloan/carInfo/CarInfo.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/me/Screen.dart';
 import 'package:flutter_carloan/message/MessageItem.dart';
-import 'package:flutter_carloan/userInfo/UserInfo.dart';
+import 'package:flutter_carloan/userInfo/UserInfoPage.dart';
 
-import 'MeHeader.dart';
 import 'MeCell.dart';
+import 'MeHeader.dart';
 
 class MeScene extends StatelessWidget {
   final Global global;
@@ -23,7 +23,7 @@ class MeScene extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                new MaterialPageRoute(builder: (context) => new UserInfo()),
+                new MaterialPageRoute(builder: (context) => new UserInfoPage()),
               );
             },
           ),
@@ -31,9 +31,10 @@ class MeScene extends StatelessWidget {
             title: '我的车辆信息',
             iconName: 'img/me_record.png',
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return CarInfo();
-              }));
+              Navigator.push(
+                context,
+                new MaterialPageRoute(builder: (context) => new UserInfoPage()),
+              );
             },
           ),
           MeCell(
@@ -56,6 +57,16 @@ class MeScene extends StatelessWidget {
           ),
           MeCell(
             title: '更新日志',
+            iconName: 'img/me_coupon.png',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return CarInfo();
+              }));
+            },
+          ),
+
+          MeCell(
+            title: '修改密码',
             iconName: 'img/me_coupon.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
