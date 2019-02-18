@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/carInfo/CarInfo.dart';
 import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/login/UpdatePwdPage.dart';
 import 'package:flutter_carloan/me/Screen.dart';
 import 'package:flutter_carloan/message/MessageItem.dart';
 import 'package:flutter_carloan/userInfo/UserInfoPage.dart';
@@ -70,7 +71,7 @@ class MeScene extends StatelessWidget {
             iconName: 'img/me_coupon.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return CarInfo();
+                return UpdatePwdPage();
               }));
             },
           ),

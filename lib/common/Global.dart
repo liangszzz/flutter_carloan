@@ -16,9 +16,13 @@ class Global {
 
   static const String SCHEME = "HTTP";
 
-  static const String HOST = "192.168.1.13";
+  static const String HOST = "192.168.1.12";
 
   static const int PORT = 8081;
+
+  ///验证码倒计时时间
+  final int SECOND=60;
+
 
   factory Global() => _getInstance();
 

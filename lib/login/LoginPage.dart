@@ -6,7 +6,7 @@ import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/order/OrderPage.dart';
+import 'package:flutter_carloan/me/MeScene.dart';
 
 ///登陆页面
 class LoginPage extends StatelessWidget {
@@ -376,13 +376,21 @@ class _LoginPageState extends State<_LoginStateful> {
     if (_phone.text.length != 11) {
       return;
     }
-    var response = await global.post("login/wxSendSms/" + _phone.text);
+    var url = "";
+    if (_loginType == 0) {
+      //免密登陆
+      url = "login/wxSendSms/" + _phone.text;
+    } else if (_loginType == 2) {
+      //忘记密码
+      url = "login/sendAppSms/" + _phone.text + "/updatePwd";
+    }
+    var response = await global.post(url);
 
     DataResponse d = DataResponse.fromJson(json.decode(response));
 
     if (d.success()) {
       setState(() {
-        second = 10;
+        second = global.SECOND;
       });
       _secondUpdate();
     }
@@ -411,8 +419,8 @@ class _LoginPageState extends State<_LoginStateful> {
   ///登陆
   void _login() async {
     if (_phone.text.length != 11) {
-      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的手机号", null,
-          titleStyle: TextStyle(color: Colors.red));
+      DialogUtils.showAlertDialog(context, "提示", "请填写正确的手机号", null,
+          contentStyle: TextStyle(color: Colors.red));
       return;
     }
     var url = "";
@@ -420,8 +428,8 @@ class _LoginPageState extends State<_LoginStateful> {
     if (_loginType == 0) {
       //验证码登陆
       if (_code.text.length != 4) {
-        DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的验证码", null,
-            titleStyle: TextStyle(color: Colors.red));
+        DialogUtils.showAlertDialog(context, "提示", "请填写正确的验证码", null,
+            contentStyle: TextStyle(color: Colors.red));
         return;
       }
       url = "login/appRegister";
@@ -429,8 +437,8 @@ class _LoginPageState extends State<_LoginStateful> {
     } else if (_loginType == 1) {
       //密码登陆
       if (_pwd.text.length < 6) {
-        DialogUtils.showAlertDialog(context, "字段校验", "请填写正确密码", null,
-            titleStyle: TextStyle(color: Colors.red));
+        DialogUtils.showAlertDialog(context, "提示", "请填写正确密码", null,
+            contentStyle: TextStyle(color: Colors.red));
         return;
       }
       url = "login/appLoginByPwd";
@@ -443,7 +451,7 @@ class _LoginPageState extends State<_LoginStateful> {
       global.loadTokenAndUserInfo(d);
       //跳转
       Navigator.push(context, new MaterialPageRoute(builder: (context) {
-        return new OrderPage();
+        return MeScene();
       }));
     } else {
       DialogUtils.showAlertDialog(context, "提示", d.msg, () {
