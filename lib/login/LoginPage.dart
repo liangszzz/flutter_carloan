@@ -1,159 +1,507 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/app/CodeButton.dart';
+import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/common/Token.dart';
-import 'package:flutter_carloan/common/User.dart';
 import 'package:flutter_carloan/order/OrderPage.dart';
 
+///登陆页面
 class LoginPage extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return _LoginPageStateful();
-  }
+  Widget build(BuildContext context) => _LoginStateful();
 }
 
-class _LoginPageStateful extends StatefulWidget {
+class _LoginStateful extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _LoginPageState();
-  }
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<_LoginPageStateful> {
-  Global global = Global();
+class _LoginPageState extends State<_LoginStateful> {
+  Global global = new Global();
 
-  ///手机号
-  TextEditingController phone = TextEditingController();
-  TextEditingController code = TextEditingController();
-  int seconds = 0;
+  ///登陆方式 0 免密登陆,1 密码登陆 2 密码找回
+  var _loginType = 0;
+
+  ///显示密码 true 不显示
+  bool _showPwd = true;
+  TextEditingController _phone = new TextEditingController();
+  TextEditingController _code = new TextEditingController();
+  TextEditingController _pwd = new TextEditingController();
+  TextEditingController _pwdRepeat = new TextEditingController();
+  GlobalKey _formKey = new GlobalKey<FormState>();
+
+  int second = 0;
   Timer timer;
 
-  ///验证码
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        title: Text("登陆"),
+        title: _buildTitle(),
         elevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: _buildBody(),
+      body: SingleChildScrollView(
+        child: _buildBody(),
+      ));
+
+  ///创建页面标题
+  Widget _buildTitle() {
+    const TextStyle textStyle = TextStyle(fontSize: 14);
+    if (_loginType == 0) {
+      return Text("免密码登陆", style: textStyle);
+    } else if (_loginType == 1) {
+      return Text("密码登陆", style: textStyle);
+    } else if (_loginType == 2) {
+      return Text("密码找回", style: textStyle);
+    }
+    return Text("错误");
+  }
+
+  ///创建页面内容
+  Widget _buildBody() {
+    if (_loginType == 0) {
+      return _buildLoginBySms();
+    } else if (_loginType == 1) {
+      return _buildLoginByPwd();
+    } else if (_loginType == 2) {
+      return _buildForgetPwd();
+    }
+    return Text("错误");
+  }
+
+  ///免密登陆页面
+  Widget _buildLoginBySms() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      child: Form(
+        key: _formKey,
+        autovalidate: true,
+        child: Column(
+          children: <Widget>[
+            _buildPhone(),
+            _buildSmsCode(),
+            SizedBox(
+              height: 20,
+            ),
+            _buildLogin(),
+            SizedBox(
+              height: 10,
+            ),
+            _buildBottomBySms()
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildBody() {
-    return Column(
-      children: <Widget>[
-        TextField(
-            controller: phone,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-                hintText: "请输入手机号",
-                hintStyle: TextStyle(fontSize: 14, color: Colors.grey))),
-        Row(
+  ///密码登陆页面
+  Widget _buildLoginByPwd() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      child: Form(
+        key: _formKey,
+        autovalidate: true,
+        child: Column(
           children: <Widget>[
-            Flexible(
-              child: TextField(
-                controller: code,
-                keyboardType: TextInputType.numberWithOptions(),
-                decoration: InputDecoration(
-                  hintText: "请输入短信验证码",
-                  hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-              ),
+            _buildPhone(),
+            _buildPwd(),
+            SizedBox(
+              height: 20,
             ),
-            _CodeBotton(
-              onPressed: _getSmsCode,
-              coldDownSeconds: seconds,
-            )
+            _buildLogin(),
+            SizedBox(
+              height: 10,
+            ),
+            _buildBottomByPwd()
           ],
         ),
-        FlatButton(
-          onPressed: _login,
-          child: Text(
-            "登陆",
-            style: TextStyle(fontSize: 16, color: Colors.green),
+      ),
+    );
+  }
+
+  ///忘记密码页面
+  Widget _buildForgetPwd() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      child: Form(
+        key: _formKey,
+        autovalidate: true,
+        child: Column(
+          children: <Widget>[
+            _buildPhone(),
+            _buildSmsCode(),
+            _buildPwd(),
+            _buildPwdRepeat(),
+            SizedBox(
+              height: 20,
+            ),
+            _buildResetPwd(),
+            SizedBox(
+              height: 10,
+            ),
+            _buildBottomByForgetPwd()
+          ],
+        ),
+      ),
+    );
+  }
+
+  ///创建手机号
+  Widget _buildPhone() {
+    return TextFormField(
+      controller: _phone,
+      keyboardType: TextInputType.number,
+      maxLength: 11,
+      maxLengthEnforced: true,
+      decoration: InputDecoration(
+          hintText: "请输入手机号",
+          icon: Icon(
+            Icons.phone_iphone,
+            color: Colors.grey,
           ),
-        )
+          border: OutlineInputBorder(borderSide: BorderSide.none)),
+      validator: (v) {
+        if (v.isEmpty) {
+          return "请输入手机号";
+        }
+        if (v.length < 11) {
+          return "请输入正确手机号";
+        }
+      },
+    );
+  }
+
+  ///创建验证码
+  Widget _buildSmsCode() {
+    return TextFormField(
+        controller: _code,
+        maxLength: 4,
+        maxLengthEnforced: true,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          hintText: "请输入验证码",
+          icon: Icon(
+            Icons.message,
+            color: Colors.grey,
+          ),
+          suffix: CodeButton(
+            onPress: _getSmsCode,
+            second: second,
+          ),
+        ),
+        validator: (v) {
+          if (v.isEmpty) {
+            return "请输入验证码";
+          }
+          if (v.length < 4) {
+            return "请输入正确验证码";
+          }
+        });
+  }
+
+  ///创建密码
+  Widget _buildPwd() {
+    return TextFormField(
+      controller: _pwd,
+      maxLength: 50,
+      maxLengthEnforced: true,
+      keyboardType: TextInputType.text,
+      obscureText: _showPwd,
+      decoration: InputDecoration(
+          labelText: "密码",
+          hintText: "请输入密码",
+          icon: Icon(Icons.lock),
+          suffixIcon: IconButton(
+              icon: Icon(
+                Icons.remove_red_eye,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                setState(() {
+                  _showPwd = !_showPwd;
+                });
+              })),
+      validator: (v) {
+        if (v.isEmpty) {
+          return "请输入密码";
+        }
+        if (v.length < 6) {
+          return "密码必须大于6位";
+        }
+      },
+    );
+  }
+
+  ///创建重复密码
+  Widget _buildPwdRepeat() {
+    return TextFormField(
+      controller: _pwdRepeat,
+      maxLength: 50,
+      maxLengthEnforced: true,
+      keyboardType: TextInputType.text,
+      obscureText: _showPwd,
+      decoration: InputDecoration(
+          labelText: "确认密码",
+          hintText: "请再次输入密码",
+          icon: Icon(Icons.lock),
+          suffixIcon: IconButton(
+              icon: Icon(
+                Icons.remove_red_eye,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                setState(() {
+                  _showPwd = !_showPwd;
+                });
+              })),
+      validator: (v) {
+        if (v.isEmpty) {
+          return "请输入密码";
+        }
+        if (v.length < 6) {
+          return "密码必须大于6位";
+        }
+      },
+    );
+  }
+
+  ///创建登陆按钮
+  Widget _buildLogin() {
+    var btn = FlatButton(
+        onPressed: _login,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        color: Colors.green,
+        child: Text(
+          "登陆",
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ));
+    return Row(
+      children: <Widget>[Expanded(child: btn)],
+    );
+  }
+
+  ///创建重置密码按钮
+  Widget _buildResetPwd() {
+    var btn = FlatButton(
+        onPressed: _resetPwd,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        color: Colors.green,
+        child: Text(
+          "重置密码",
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ));
+    return Row(
+      children: <Widget>[Expanded(child: btn)],
+    );
+  }
+
+  ///创建免密登陆底部
+  Widget _buildBottomBySms() {
+    var text = Text("未注册手机验证后自动登陆",
+        style: TextStyle(fontSize: 12, color: Colors.grey));
+
+    var btn = FlatButton(
+      child: Text("密码登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      onPressed: () {
+        _setLoginType(1);
+      },
+    );
+
+    return Row(
+      children: <Widget>[
+        text,
+        Expanded(
+          child: Container(),
+        ),
+        btn
       ],
     );
   }
 
-  Future _login() async {
-    if (phone.text.length == 11 && code.text.length == 4) {
-      var response = await global.post("login/appRegister",
-          {'phone': phone.text, 'invitation_code': code.text});
-
-      DataResponse d = DataResponse.fromJson(json.decode(response));
-      if (d.success()) {
-        global.loadTokenAndUserInfo(d);
-        //跳转
-        Navigator.push(context, new MaterialPageRoute(builder: (context) {
-          return new OrderPage();
-        }));
-      }
-    }
+  ///创建密登陆底部
+  Widget _buildBottomByPwd() {
+    var forgetBtn = FlatButton(
+      onPressed: () {
+        _setLoginType(2);
+      },
+      child: Text("忘记密码?", style: TextStyle(color: Colors.blue, fontSize: 14)),
+    );
+    var btn = FlatButton(
+      child: Text("免密登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      onPressed: () {
+        _setLoginType(0);
+      },
+    );
+    return Row(
+      children: <Widget>[
+        forgetBtn,
+        Expanded(
+          child: Container(),
+        ),
+        btn
+      ],
+    );
   }
 
+  ///创建忘记密码底部
+  Widget _buildBottomByForgetPwd() {
+    var btn1 = FlatButton(
+      onPressed: () {
+        _setLoginType(0);
+      },
+      child: Text("免密登陆?", style: TextStyle(color: Colors.blue, fontSize: 14)),
+    );
+    var btn2 = FlatButton(
+      child: Text("密码登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      onPressed: () {
+        _setLoginType(1);
+      },
+    );
+    return Row(
+      children: <Widget>[
+        btn1,
+        Expanded(
+          child: Container(),
+        ),
+        btn2
+      ],
+    );
+  }
+
+  ///发送验证码
   void _getSmsCode() async {
-    if (phone.text.length != 11) {
+    if (_phone.text.length != 11) {
       return;
     }
-    var response = await global.post("login/wxSendSms/" + phone.text);
+    var response = await global.post("login/wxSendSms/" + _phone.text);
 
     DataResponse d = DataResponse.fromJson(json.decode(response));
 
     if (d.success()) {
       setState(() {
-        seconds = 10;
+        second = 10;
       });
       _secondUpdate();
     }
   }
 
+  ///验证码倒计时
   void _secondUpdate() {
     timer = Timer(Duration(seconds: 1), () {
       setState(() {
-        --seconds;
+        --second;
       });
       _secondUpdate();
     });
   }
-}
 
-class _CodeBotton extends StatelessWidget {
-  final VoidCallback onPressed;
+  ///切换登陆方式
+  void _setLoginType(int _loginType) {
+    setState(() {
+      _code.clear();
+      _pwd.clear();
+      _pwdRepeat.clear();
+      this._loginType = _loginType;
+    });
+  }
 
-  final int coldDownSeconds;
+  ///登陆
+  void _login() async {
+    if (_phone.text.length != 11) {
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的手机号", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    var url = "";
+    var data;
+    if (_loginType == 0) {
+      //验证码登陆
+      if (_code.text.length != 4) {
+        DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的验证码", null,
+            titleStyle: TextStyle(color: Colors.red));
+        return;
+      }
+      url = "login/appRegister";
+      data = {'phone': _phone.text, 'code': _code.text};
+    } else if (_loginType == 1) {
+      //密码登陆
+      if (_pwd.text.length < 6) {
+        DialogUtils.showAlertDialog(context, "字段校验", "请填写正确密码", null,
+            titleStyle: TextStyle(color: Colors.red));
+        return;
+      }
+      url = "login/appLoginByPwd";
+      data = {'phone': _phone.text, 'code': _pwd.text};
+    }
+    var response = await global.post(url, data);
 
-  const _CodeBotton({Key key, this.onPressed, this.coldDownSeconds})
-      : super(key: key);
+    DataResponse d = DataResponse.fromJson(json.decode(response));
+    if (d.success()) {
+      global.loadTokenAndUserInfo(d);
+      //跳转
+      Navigator.push(context, new MaterialPageRoute(builder: (context) {
+        return new OrderPage();
+      }));
+    } else {
+      DialogUtils.showAlertDialog(context, "提示", d.msg, () {
+        _code.clear();
+        _pwd.clear();
+      }, titleStyle: TextStyle(color: Colors.red));
+    }
+  }
+
+  ///重置密码
+  void _resetPwd() async {
+    if (_phone.text.length != 11) {
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的手机号", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    if (_code.text.length != 4) {
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确的验证码", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    if (_pwd.text.length < 6) {
+      DialogUtils.showAlertDialog(context, "字段校验", "请填写正确密码", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    if (_pwd.text != _pwdRepeat.text) {
+      DialogUtils.showAlertDialog(context, "字段校验", "两次密码不一致", null,
+          titleStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    var url = "login/resetPwd";
+    var data = {"phone": _phone.text, "code": _code.text, "pwd": _pwd.text};
+    var response = await global.post(url, data);
+    DataResponse d = DataResponse.fromJson(json.decode(response));
+    if (d.success()) {
+      DialogUtils.showAlertDialog(context, "提示", "重置密码成功", () {
+        _code.clear();
+        _pwd.clear();
+        _pwdRepeat.clear();
+        setState(() {
+          _loginType = 1;
+        });
+      });
+    } else {
+      DialogUtils.showAlertDialog(context, "提示", d.msg, () {
+        _code.clear();
+        _pwd.clear();
+        _pwdRepeat.clear();
+      });
+    }
+  }
 
   @override
-  Widget build(BuildContext context) {
-    if (coldDownSeconds > 0) {
-      return Container(
-        width: 95,
-        child: Center(
-          child: Text('${coldDownSeconds}',
-              style: TextStyle(fontSize: 14, color: Colors.black)),
-        ),
-      );
+  void dispose() {
+    if (timer != null) {
+      timer.cancel();
     }
-
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 95,
-        child: Text(
-          "获取验证码",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.normal, color: Colors.green),
-        ),
-      ),
-    );
+    super.dispose();
   }
 }

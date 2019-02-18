@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/User.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+SharedPreferences preferences;
 
 ///全局共享信息
 class Global {
@@ -13,7 +16,7 @@ class Global {
 
   static const String SCHEME = "HTTP";
 
-  static const String HOST = "192.168.1.12";
+  static const String HOST = "192.168.1.13";
 
   static const int PORT = 8081;
 
@@ -57,7 +60,7 @@ class Global {
     //将token信息写入global
     if (map['expire'] != null && map['token'] != null) {
       Token token = Token.parseToken(map['expire'] + map['token']);
-      this.token.writeToken();
+      token.writeToken();
       this.token = token;
     }
   }

@@ -1,22 +1,23 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/common/DataResponse.dart';
-import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/common/Token.dart';
+import 'package:flutter_carloan/app/RootScene.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
+import 'package:flutter_carloan/common/Token.dart';
+import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/me/MeScene.dart';
+import 'package:flutter_carloan/userInfo/UserInfo.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  Global global = new Global();
-
   @override
   Widget build(BuildContext context) {
-    _checkToken();
+
     return new MaterialApp(
-      title: "车贷系统",
-      home: LoginPage(),
+      title: "hello word",
+      home: RootScene(),
       theme: new ThemeData(
         primaryColor: Colors.white,
       ),
@@ -24,17 +25,17 @@ class MyApp extends StatelessWidget {
   }
 
   ///判断用户是否已经登录
-  void _checkToken() async {
-    var token = await Token.loadToken();
-    if (token != null && token.checkExpire()) {
-      //获取用户信息
-      _loadTokenAndUserInfo();
-    }
-  }
+  void checkLogin() async {
+    Global global = new Global();
+    Future<Token> token = Token.loadToken();
 
-  void _loadTokenAndUserInfo() async {
-    var response = await global.post("login/appLogin/" + global.token.token);
-    DataResponse d = DataResponse.fromJson(json.decode(response));
-    global.loadTokenAndUserInfo(d);
+    token.then((value) {
+      if (value != null && value.checkExpire()) {
+        global.token = value;
+      }
+    }).catchError((error) {
+      print(error);
+    });
+
   }
 }
