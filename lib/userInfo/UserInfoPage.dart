@@ -712,7 +712,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   Global global = Global();
   _getUserInfo() async {
     var response = await global.post("user/getRecentOrder/320925199011273112");
-    DataResponse d = DataResponse.fromJson(json.decode(response));
+    DataResponse d = DataResponse.fromJson(response);
     if (d.success()) {
       Map<String, Object> map = d.entity as Map;
     }

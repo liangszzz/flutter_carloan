@@ -14,10 +14,9 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return new MaterialApp(
       title: "hello word",
-      home: RootScene(),
+      home: LoginPage(),
       theme: new ThemeData(
         primaryColor: Colors.white,
       ),
@@ -36,6 +35,5 @@ class MyApp extends StatelessWidget {
     }).catchError((error) {
       print(error);
     });
-
   }
 }

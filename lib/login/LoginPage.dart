@@ -389,7 +389,7 @@ class _LoginPageState extends State<_LoginStateful> {
     }
     var response = await global.post(url);
 
-    DataResponse d = DataResponse.fromJson(json.decode(response));
+    DataResponse d = DataResponse.fromJson(response);
 
     if (d.success()) {
       setState(() {
@@ -449,7 +449,7 @@ class _LoginPageState extends State<_LoginStateful> {
     }
     var response = await global.post(url, data);
 
-    DataResponse d = DataResponse.fromJson(json.decode(response));
+    DataResponse d = DataResponse.fromJson(response);
     if (d.success()) {
       global.loadTokenAndUserInfo(d);
       //跳转
@@ -489,7 +489,7 @@ class _LoginPageState extends State<_LoginStateful> {
     var url = "login/resetPwd";
     var data = {"phone": _phone.text, "code": _code.text, "pwd": _pwd.text};
     var response = await global.post(url, data);
-    DataResponse d = DataResponse.fromJson(json.decode(response));
+    DataResponse d = DataResponse.fromJson(response);
     if (d.success()) {
       DialogUtils.showAlertDialog(context, "提示", "重置密码成功", () {
         _code.clear();

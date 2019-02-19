@@ -30,7 +30,7 @@ class MyHeaderPage extends State<MeHeader> {
           children: <Widget>[
             CircleAvatar(
               radius: 40,
-              backgroundImage: AssetImage('img/placeholder_avatar.png'),
+              backgroundImage: NetworkImage(global.user.avatarUrl),
             ),
             SizedBox(width: 25),
             Expanded(
@@ -73,7 +73,7 @@ class MyHeaderPage extends State<MeHeader> {
   Global global = Global();
   _getRecentRecord() async {
     var response = await global.post("user/getRecentOrder/320925199011273112");
-    DataResponse d = DataResponse.fromJson(json.decode(response));
+    DataResponse d = DataResponse.fromJson(response);
     setState(() {
       if (d.success()) {
         Map<String, Object> map = d.entity as Map;

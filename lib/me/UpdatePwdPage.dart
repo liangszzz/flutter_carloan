@@ -235,7 +235,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
         "pwd": _newPwd.text
       };
       var response = await global.post(url, data);
-      DataResponse d = DataResponse.fromJson(json.decode(response));
+      DataResponse d = DataResponse.fromJson(response);
       if (d.success()) {
         DialogUtils.showAlertDialog(context, "提示", "修改密码成功", null);
         Navigator.push(context, new MaterialPageRoute(builder: (context) {
@@ -249,7 +249,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   void _getSmsCode() async {
     var response = await global
         .post("login/sendAppSms/" + global.user.phone + "/updatePwd");
-    DataResponse d = DataResponse.fromJson(json.decode(response));
+    DataResponse d = DataResponse.fromJson(response);
     if (d.success()) {
       setState(() {
         second = global.SECOND;

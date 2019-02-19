@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/carInfo/CarInfo.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/login/UpdatePwdPage.dart';
+import 'package:flutter_carloan/me/UpdatePwdPage.dart';
 import 'package:flutter_carloan/me/Screen.dart';
+import 'package:flutter_carloan/me/UpdateUserInfoPage.dart';
 import 'package:flutter_carloan/message/MessageItem.dart';
 import 'package:flutter_carloan/userInfo/UserInfoPage.dart';
 
@@ -177,7 +178,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
             iconName: 'img/me_vip.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return CarInfo();
+                return UpdateUserInfoPage();
               }));
             },
           ),
