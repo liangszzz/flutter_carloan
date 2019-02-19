@@ -50,14 +50,17 @@ class _LoginPageState extends State<_LoginStateful> {
   ///创建页面标题
   Widget _buildTitle() {
     const TextStyle textStyle = TextStyle(fontSize: 14);
-    if (_loginType == 0) {
-      return Text("免密码登陆", style: textStyle);
-    } else if (_loginType == 1) {
-      return Text("密码登陆", style: textStyle);
-    } else if (_loginType == 2) {
-      return Text("密码找回", style: textStyle);
+
+    switch (_loginType) {
+      case 0:
+        return Text("免密码登陆", style: textStyle);
+      case 1:
+        return Text("密码登陆", style: textStyle);
+      case 2:
+        return Text("密码找回", style: textStyle);
+      default:
+        return Text("错误");
     }
-    return Text("错误");
   }
 
   ///创建页面内容

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/carInfo/CarInfo.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/login/UpdatePwdPage.dart';
@@ -10,11 +13,65 @@ import 'MeCell.dart';
 import 'MeHeader.dart';
 
 class MeScene extends StatelessWidget {
-  final Global global;
+  @override
+  Widget build(BuildContext context) => _MeSceneStateful();
+}
 
-  const MeScene({Key key, this.global}) : super(key: key);
+class _MeSceneStateful extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MeSceneState();
+}
 
-  Widget buildCells(BuildContext context) {
+class _MeSceneState extends State<_MeSceneStateful> {
+  Global global = new Global();
+
+  ///page==0 默认主页,_page==1 修改信息页
+  int _page = 0;
+
+  @override
+  Widget build(BuildContext context) => WillPopScope(
+        child: Scaffold(
+          appBar: PreferredSize(
+            child: Container(color: Colors.white),
+            preferredSize: Size(Screen.width, 0),
+          ),
+          body: Container(
+            color: Colors.white,
+            child: ListView(
+              children: <Widget>[
+                MeHeader(),
+                SizedBox(height: 10),
+                _buildBody(context),
+              ],
+            ),
+          ),
+        ),
+        onWillPop: () {
+          if (_page != 0) {
+            setState(() {
+              _page = 0;
+            });
+          } else {
+            ///提示是否退出
+            DialogUtils.showConfirmDialog(context, "确认要退出吗?", "", () {
+              exit(0);
+            }, null);
+          }
+        },
+      );
+
+  Widget _buildBody(BuildContext context) {
+    switch (_page) {
+      case 0:
+        return _buildCells(context);
+      case 1:
+        return _buildUpdateMe(context);
+      default:
+        return null;
+    }
+  }
+
+  Widget _buildCells(BuildContext context) {
     return Container(
       child: Column(
         children: <Widget>[
@@ -65,14 +122,13 @@ class MeScene extends StatelessWidget {
               }));
             },
           ),
-
           MeCell(
-            title: '修改密码',
+            title: '修改信息',
             iconName: 'img/me_coupon.png',
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return UpdatePwdPage();
-              }));
+              setState(() {
+                _page = 1;
+              });
             },
           ),
           MeCell(
@@ -112,22 +168,29 @@ class MeScene extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        child: Container(color: Colors.white),
-        preferredSize: Size(Screen.width, 0),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: <Widget>[
-            MeHeader(),
-            SizedBox(height: 10),
-            buildCells(context),
-          ],
-        ),
+  Widget _buildUpdateMe(BuildContext context) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          MeCell(
+            title: '更新个人信息',
+            iconName: 'img/me_vip.png',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return CarInfo();
+              }));
+            },
+          ),
+          MeCell(
+            title: '修改密码',
+            iconName: 'img/me_coupon.png',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return UpdatePwdPage();
+              }));
+            },
+          ),
+        ],
       ),
     );
   }
