@@ -1,32 +1,38 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/common/Message.dart';
+import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/message/Message.dart';
 
 class MyMessage extends StatefulWidget {
+
+  final String phone;
+
+  const MyMessage({Key key, this.phone}) : super(key: key);
+
   @override
   _ListViewDemoState createState() => new _ListViewDemoState();
 }
 
 class _ListViewDemoState extends State<MyMessage> {
-  List<Message> list;
+  List lists = new List();
+  bool isReload = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    list = new List<Message>.generate(
-        10,
-        (i) => new Message(
-            "name$i", 'i', "content=$i", "name$i", "i", "content=$i"));
   }
 
   @override
   Widget build(BuildContext context) {
+    _getMessage(widget.phone);
+
     return Scaffold(
         appBar: AppBar(title: Text('我的消息'), elevation: 0.5),
-        body: listViewDefault(list));
+        body: listViewDefault(lists));
   }
 
   ///默认构建
-  Widget listViewDefault(List<Message> list) {
+  Widget listViewDefault(List list) {
     List<Widget> _list = new List();
     for (int i = 0; i < list.length; i++) {
       _list.add(new Container(
@@ -38,7 +44,7 @@ class _ListViewDemoState extends State<MyMessage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             new Text(
-              "您提交的40000元借款申请已经审核通过了，请尽快核实个人信息并提交",
+              list[i].content,
               style: new TextStyle(
                   fontSize: 20.0,
                   color: Colors.black,
@@ -46,7 +52,7 @@ class _ListViewDemoState extends State<MyMessage> {
             ),
             new Align(
               alignment: Alignment.centerRight,
-              child: const Text('2019-02-13 12:00:00'),
+              child: new Text(list[i].createTime),
             )
           ],
         ),
@@ -62,5 +68,34 @@ class _ListViewDemoState extends State<MyMessage> {
         children: divideList, // 添加分割线/
       ),
     );
+  }
+
+  Global global = Global();
+  _getMessage(String phone) async {
+    if (!isReload) {
+      isReload = true;
+      try {
+        List data = new List();
+        await Dio().post("http://192.168.1.13:8081/message/query", data: {
+          "phone": phone,
+          "page": 1,
+          "size": 5
+        }).then((response) {
+          data = response.data['data'];
+        });
+        setState(() {
+          List<Message> list = new List();
+          for (int i = 0; i < data.length; i++) {
+            Message message = new Message();
+            message.content = data[i]['content'];
+            message.createTime = data[i]['create_time'];
+            list.add(message);
+          }
+          lists = list;
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
   }
 }

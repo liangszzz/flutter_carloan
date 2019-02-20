@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/User.dart';
@@ -14,11 +15,12 @@ class Global {
 
   User user;
 
-  static const String SCHEME = "HTTP";
+  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.12:8081/"));
 
-  static const String HOST = "192.168.1.13";
+  HttpClient httpClient = new HttpClient();
 
-  static const int PORT = 8081;
+  ///验证码倒计时时间
+  final int SECOND = 60;
 
   factory Global() => _getInstance();
 
@@ -33,23 +35,25 @@ class Global {
     return _instance;
   }
 
-  Future<String> post(String url, [queryParameters]) async {
-    HttpClient httpClient = new HttpClient();
-    Uri uri = Uri(
-        scheme: SCHEME,
-        host: HOST,
-        port: PORT,
-        path: url,
-        queryParameters: queryParameters);
-    HttpClientRequest request = await httpClient.postUrl(uri);
-
+  Future<Map> post(String url, [queryParameters]) async {
     if (token != null && token.token != null) {
-      request.headers.add("token", token.token);
+      dio.options.headers.putIfAbsent("token", () => token.token);
+    } else {
+      dio.options.headers.remove("token");
     }
+    Response responseBody =
+        await dio.post(url, queryParameters: queryParameters);
+    return responseBody.data;
+  }
 
-    HttpClientResponse response = await request.close();
-    String responseBody = await response.transform(utf8.decoder).join();
-    return responseBody;
+  Future<Map> postFormData(String url, [data]) async {
+    if (token != null && token.token != null) {
+      dio.options.headers.putIfAbsent("token", () => token.token);
+    } else {
+      dio.options.headers.remove("token");
+    }
+    Response responseBody = await dio.post(url, data: data);
+    return responseBody.data;
   }
 
   void loadTokenAndUserInfo(DataResponse d) {
