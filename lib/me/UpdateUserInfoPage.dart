@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/app/DialogUtils.dart';
+import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -17,6 +20,8 @@ class _UpdateUserInfoPageStateful extends StatefulWidget {
 
 class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
   Global global = new Global();
+
+  TextEditingController _nickNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -49,7 +54,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
         ));
 
     var nick = TextFormField(
-      initialValue: global.user.nickName,
+      controller: _nickNameController,
       maxLength: 50,
       maxLengthEnforced: true,
       keyboardType: TextInputType.text,
@@ -58,6 +63,8 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
         hintText: "请输入昵称",
       ),
     );
+
+    _nickNameController.text = global.user.nickName;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
@@ -100,9 +107,34 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
   }
 
   ///上传图片,修改信息
-  void _updateInfo() {
+  void _updateInfo() async {
+    if (_nickNameController.text.isEmpty ||
+        _nickNameController.text.length > 50) {
+      DialogUtils.showAlertDialog(context, "提示", "请填写昵称!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    FormData formData = new FormData.from({
+      "nickName": _nickNameController.text,
+      "phone": global.user.phone
+    });
+    if (_image != null) {
+      formData.add("file", new UploadFileInfo(_image, "1.png"));
+    }
 
-
+    var response =
+        await global.postFormData("appUser/updateUserInfo", formData);
+    DataResponse d = DataResponse.fromJson(response);
+    if (d.success()) {
+      setState(() {
+        global.user.nickName = _nickNameController.text;
+        if(_image!=null && d.entity !=null){
+          global.user.avatarUrl = d.entity;
+        }
+      });
+      DialogUtils.showAlertDialog(context, "提示", "修改成功!!", null);
+      return;
+    }
   }
 
   File _image;

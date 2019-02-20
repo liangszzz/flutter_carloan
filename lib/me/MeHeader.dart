@@ -14,10 +14,10 @@ class MeHeader extends StatefulWidget {
 class MyHeaderPage extends State<MeHeader> {
   var applyAmount;
   var isReload = false;
+
   @override
   Widget build(BuildContext context) {
-
-    if(!isReload){
+    if (!isReload) {
       _getRecentRecord();
       isReload = true;
     }
@@ -38,7 +38,7 @@ class MyHeaderPage extends State<MeHeader> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    '姓名:张三',
+                    '姓名:' + global.user.nickName,
                     style: TextStyle(fontSize: 14),
                   ),
                   Text(
@@ -46,7 +46,7 @@ class MyHeaderPage extends State<MeHeader> {
                     style: TextStyle(fontSize: 14),
                   ),
                   Text(
-                    '授信额度:'+applyAmount.toString()+'元',
+                    '授信额度:' + applyAmount.toString() + '元',
                     style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 10),
@@ -69,8 +69,8 @@ class MyHeaderPage extends State<MeHeader> {
     );
   }
 
-
   Global global = Global();
+
   _getRecentRecord() async {
     var response = await global.post("user/getRecentOrder/320925199011273112");
     DataResponse d = DataResponse.fromJson(response);
@@ -78,7 +78,6 @@ class MyHeaderPage extends State<MeHeader> {
       if (d.success()) {
         Map<String, Object> map = d.entity as Map;
         applyAmount = map['apply_amount'];
-
       }
     });
   }

@@ -37,12 +37,22 @@ class Global {
 
   Future<Map> post(String url, [queryParameters]) async {
     if (token != null && token.token != null) {
-      dynamic tmp = token.token;
-      dio.options.headers.putIfAbsent("token", tmp);
+      dio.options.headers.putIfAbsent("token", () => token.token);
     } else {
       dio.options.headers.remove("token");
     }
-    Response responseBody = await dio.post(url, queryParameters: queryParameters);
+    Response responseBody =
+        await dio.post(url, queryParameters: queryParameters);
+    return responseBody.data;
+  }
+
+  Future<Map> postFormData(String url, [data]) async {
+    if (token != null && token.token != null) {
+      dio.options.headers.putIfAbsent("token", () => token.token);
+    } else {
+      dio.options.headers.remove("token");
+    }
+    Response responseBody = await dio.post(url, data: data);
     return responseBody.data;
   }
 
