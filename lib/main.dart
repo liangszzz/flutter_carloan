@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     _checkDevice();
     _checkLogin();
     return new MaterialApp(
-      title: "hello word",
+      title: "车贷系统",
       home: LoginPage(),
       theme: new ThemeData(
         primaryColor: Colors.white,
