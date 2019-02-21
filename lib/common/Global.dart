@@ -17,6 +17,9 @@ class Global {
 
   Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.12:8081/"));
 
+  /// 0 安卓 1,IOS 2.windows 3.
+  int DEVICE=0;
+
   HttpClient httpClient = new HttpClient();
 
   ///验证码倒计时时间
