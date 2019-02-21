@@ -79,6 +79,7 @@ class _ShowPhotoPageState extends State<ShowPhotoPage> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: _back,
       onScaleStart: _handleOnScaleStart,
       onScaleUpdate: _handleOnScaleUpdate,
       onScaleEnd: _handleOnScaleEnd,
@@ -91,5 +92,9 @@ class _ShowPhotoPageState extends State<ShowPhotoPage> with SingleTickerProvider
         // child: Image.network(widget.url,fit: BoxFit.cover,),
       ),
     );
+  }
+
+  void _back() {
+    Navigator.pop(context);
   }
 }
