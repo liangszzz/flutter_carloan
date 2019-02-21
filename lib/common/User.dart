@@ -1,4 +1,7 @@
 class User {
+  ///真实姓名
+  String userName;
+
   ///昵称
   String nickName;
 
@@ -9,7 +12,7 @@ class User {
   String phone;
 
   ///身份证号
-  String idcard;
+  String idCard;
 
   ///银行名称
   String bankName;
@@ -18,10 +21,11 @@ class User {
   String barkCard;
 
   User.fromJson(Map<String, dynamic> map) {
+    userName = map['userName'];
     nickName = map['nickName'];
     avatarUrl = map['avatarUrl'];
     phone = map['phone'];
-    idcard = map['idcard'];
+    idCard = map['idcard'];
     bankName = map['bankName'];
     barkCard = map['barkCard'];
   }

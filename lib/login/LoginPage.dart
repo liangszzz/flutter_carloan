@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/me/MeScene.dart';
+import 'package:flutter_carloan/sign/SignPage.dart';
 
 ///登陆页面
 class LoginPage extends StatelessWidget {
@@ -158,51 +157,36 @@ class _LoginPageState extends State<_LoginStateful> {
       controller: _phone,
       keyboardType: TextInputType.number,
       maxLength: 11,
-      maxLengthEnforced: true,
       decoration: InputDecoration(
           hintText: "请输入手机号",
           icon: Icon(
             Icons.phone_iphone,
             color: Colors.grey,
           ),
-          border: OutlineInputBorder(borderSide: BorderSide.none)),
-      validator: (v) {
-        if (v.isEmpty) {
-          return "请输入手机号";
-        }
-        if (v.length < 11) {
-          return "请输入正确手机号";
-        }
-      },
+          border: OutlineInputBorder(borderSide: BorderSide.none),
+          counterText: ""),
     );
   }
 
   ///创建验证码
   Widget _buildSmsCode() {
     return TextFormField(
-        controller: _code,
-        maxLength: 4,
-        maxLengthEnforced: true,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
+      controller: _code,
+      maxLength: 4,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
           hintText: "请输入验证码",
           icon: Icon(
             Icons.message,
             color: Colors.grey,
           ),
+          border: OutlineInputBorder(borderSide: BorderSide.none),
           suffix: CodeButton(
             onPress: _getSmsCode,
             second: second,
           ),
-        ),
-        validator: (v) {
-          if (v.isEmpty) {
-            return "请输入验证码";
-          }
-          if (v.length < 4) {
-            return "请输入正确验证码";
-          }
-        });
+          counterText: ""),
+    );
   }
 
   ///创建密码
@@ -210,13 +194,16 @@ class _LoginPageState extends State<_LoginStateful> {
     return TextFormField(
       controller: _pwd,
       maxLength: 50,
-      maxLengthEnforced: true,
       keyboardType: TextInputType.text,
       obscureText: _showPwd,
       decoration: InputDecoration(
           labelText: "密码",
           hintText: "请输入密码",
-          icon: Icon(Icons.lock),
+          icon: Icon(
+            Icons.lock,
+            color: Colors.grey,
+          ),
+          border: OutlineInputBorder(borderSide: BorderSide.none),
           suffixIcon: IconButton(
               icon: Icon(
                 Icons.remove_red_eye,
@@ -226,15 +213,8 @@ class _LoginPageState extends State<_LoginStateful> {
                 setState(() {
                   _showPwd = !_showPwd;
                 });
-              })),
-      validator: (v) {
-        if (v.isEmpty) {
-          return "请输入密码";
-        }
-        if (v.length < 6) {
-          return "密码必须大于6位";
-        }
-      },
+              }),
+          counterText: ""),
     );
   }
 
@@ -243,7 +223,6 @@ class _LoginPageState extends State<_LoginStateful> {
     return TextFormField(
       controller: _pwdRepeat,
       maxLength: 50,
-      maxLengthEnforced: true,
       keyboardType: TextInputType.text,
       obscureText: _showPwd,
       decoration: InputDecoration(
@@ -259,15 +238,8 @@ class _LoginPageState extends State<_LoginStateful> {
                 setState(() {
                   _showPwd = !_showPwd;
                 });
-              })),
-      validator: (v) {
-        if (v.isEmpty) {
-          return "请输入密码";
-        }
-        if (v.length < 6) {
-          return "密码必须大于6位";
-        }
-      },
+              }),
+          counterText: ""),
     );
   }
 
@@ -452,10 +424,7 @@ class _LoginPageState extends State<_LoginStateful> {
     DataResponse d = DataResponse.fromJson(response);
     if (d.success()) {
       global.loadTokenAndUserInfo(d);
-      //跳转
-      Navigator.push(context, new MaterialPageRoute(builder: (context) {
-        return MeScene();
-      }));
+      _toLoginSuccessPage();
     } else {
       DialogUtils.showAlertDialog(context, "提示", d.msg, () {
         _code.clear();
@@ -514,5 +483,13 @@ class _LoginPageState extends State<_LoginStateful> {
       timer.cancel();
     }
     super.dispose();
+  }
+
+  ///去登陆成功页面
+  void _toLoginSuccessPage() {
+    //跳转
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return SignPage(bizOrderNo: "QSM20181213105749", channelType: 2);
+    }));
   }
 }

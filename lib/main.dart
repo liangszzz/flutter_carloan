@@ -1,40 +1,64 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/sign/SignPage.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => _MyAppStateful();
+}
+
+class _MyAppStateful extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<_MyAppStateful> {
   Global global = new Global();
 
+  var _logined = false;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => MaterialApp(
+        title: "车贷系统",
+        home: _toIndexPage(),
+        theme: new ThemeData(
+          primaryColor: Colors.white,
+        ),
+      );
+
+  Widget _toIndexPage() {
     _checkDevice();
     _checkLogin();
-    return new MaterialApp(
-      title: "车贷系统",
-      home: LoginPage(),
-      theme: new ThemeData(
-        primaryColor: Colors.white,
-      ),
-    );
+    if (_logined) {
+      return SignPage(bizOrderNo: "QSM20181213105740", channelType: 2);
+    }
+    return LoginPage();
   }
 
   ///判断用户是否已经登录
   void _checkLogin() async {
-    Future<Token> token = Token.loadToken();
+    Token token = await Token.loadToken();
+    if (token != null && token.checkExpire()) {
+      global.token = token;
+      setState(() {
+        _logined = true;
+      });
+      _loadTokenAndUserInfo();
+    }
+  }
 
-    token.then((value) {
-      if (value != null && value.checkExpire()) {
-        global.token = value;
-      }
-    }).catchError((error) {
-      print(error);
-    });
+  void _loadTokenAndUserInfo() async {
+    if (_logined) return;
+    var response = await global.post("login/appLogin/" + global.token.token);
+    DataResponse d = DataResponse.fromJson(response);
+    if (d.success()) global.loadTokenAndUserInfo(d);
   }
 
   ///检查设备
