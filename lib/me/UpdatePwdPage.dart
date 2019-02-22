@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
@@ -21,15 +19,15 @@ class _UpdatePwdStateful extends StatefulWidget {
 
 class _UpdateState extends State<_UpdatePwdStateful> {
   Global global = new Global();
-  TextEditingController _newPwd = new TextEditingController();
-  TextEditingController _pwdRepeat = new TextEditingController();
-  TextEditingController _code = new TextEditingController();
+  TextEditingController newPwd = new TextEditingController();
+  TextEditingController newPwdRepeat = new TextEditingController();
+  TextEditingController smsCode = new TextEditingController();
 
   ///0 第一页 是新密码页  1 第二页是 接收验证码页
-  int _page = 0;
+  int pageType = 0;
 
-  bool _showPwd = true;
-  String _btnText = "下一步";
+  bool showPwd = true;
+  String btnText = "下一步";
 
   int second = 0;
   Timer timer;
@@ -53,9 +51,9 @@ class _UpdateState extends State<_UpdatePwdStateful> {
 
   ///创建页面
   Widget _buildBody() {
-    if (_page == 0) {
+    if (pageType == 0) {
       return _buildNewPwd();
-    } else if (_page == 1) {
+    } else if (pageType == 1) {
       return _buildSmsCode();
     }
     return null;
@@ -64,11 +62,11 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   ///创建新密码
   Widget _buildNewPwd() {
     var pwd = TextFormField(
-        controller: _newPwd,
+        controller: newPwd,
         maxLength: 50,
         maxLengthEnforced: true,
         keyboardType: TextInputType.text,
-        obscureText: _showPwd,
+        obscureText: showPwd,
         decoration: InputDecoration(
             labelText: "密码",
             hintText: "请输入密码",
@@ -80,7 +78,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
                 ),
                 onPressed: () {
                   setState(() {
-                    _showPwd = !_showPwd;
+                    showPwd = !showPwd;
                   });
                 })),
         validator: (v) {
@@ -93,11 +91,11 @@ class _UpdateState extends State<_UpdatePwdStateful> {
         });
 
     var pwdRepeat = TextFormField(
-      controller: _pwdRepeat,
+      controller: newPwdRepeat,
       maxLength: 50,
       maxLengthEnforced: true,
       keyboardType: TextInputType.text,
-      obscureText: _showPwd,
+      obscureText: showPwd,
       decoration: InputDecoration(
           labelText: "确认密码",
           hintText: "请再次输入密码",
@@ -109,7 +107,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
               ),
               onPressed: () {
                 setState(() {
-                  _showPwd = !_showPwd;
+                  showPwd = !showPwd;
                 });
               })),
       validator: (v) {
@@ -143,7 +141,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   ///创建验证码
   Widget _buildSmsCode() {
     var code = TextFormField(
-        controller: _code,
+        controller: smsCode,
         maxLength: 4,
         maxLengthEnforced: true,
         keyboardType: TextInputType.number,
@@ -195,7 +193,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         color: Colors.green,
         child: Text(
-          _btnText,
+          btnText,
           style: TextStyle(fontSize: 16, color: Colors.white),
         ));
     return Row(
@@ -204,26 +202,26 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   }
 
   void _btnClick() async {
-    if (_page == 0) {
+    if (pageType == 0) {
       //检查密码是否相等
-      if (_newPwd.text.length < 6 || _pwdRepeat.text.length < 6) {
+      if (newPwd.text.length < 6 || newPwdRepeat.text.length < 6) {
         DialogUtils.showAlertDialog(context, "提示", "请填写大于6位的密码", null,
             contentStyle: TextStyle(color: Colors.red));
         return;
       }
-      if (_newPwd.text != _pwdRepeat.text) {
+      if (newPwd.text != newPwdRepeat.text) {
         DialogUtils.showAlertDialog(context, "提示", "两次密码不一致", null,
             contentStyle: TextStyle(color: Colors.red));
         return;
       }
       _getSmsCode();
       setState(() {
-        _page = 1;
-        _btnText = "修改";
+        pageType = 1;
+        btnText = "修改";
       });
-    } else if (_page == 1) {
+    } else if (pageType == 1) {
       //发送信息 修改密码
-      if (_code.text.length != 4) {
+      if (smsCode.text.length != 4) {
         DialogUtils.showAlertDialog(context, "提示", "请输入4位验证码", null,
             contentStyle: TextStyle(color: Colors.red));
         return;
@@ -231,8 +229,8 @@ class _UpdateState extends State<_UpdatePwdStateful> {
       var url = "login/resetPwd";
       var data = {
         "phone": global.user.phone,
-        "code": _code.text,
-        "pwd": _newPwd.text
+        "code": smsCode.text,
+        "pwd": newPwd.text
       };
       var response = await global.post(url, data);
       DataResponse d = DataResponse.fromJson(response);
@@ -247,15 +245,16 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   }
 
   void _getSmsCode() async {
+    setState(() {
+      second = global.SECOND;
+    });
     var response = await global
         .post("login/sendAppSms/" + global.user.phone + "/updatePwd");
     DataResponse d = DataResponse.fromJson(response);
     if (d.success()) {
-      setState(() {
-        second = global.SECOND;
-      });
-      _secondUpdate();
+      print("#发送验证码成功!");
     }
+    _secondUpdate();
   }
 
   void _secondUpdate() {

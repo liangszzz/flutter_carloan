@@ -22,7 +22,15 @@ class _MyAppStateful extends StatefulWidget {
 class _MyAppState extends State<_MyAppStateful> {
   Global global = new Global();
 
-  var _logined = false;
+  bool loginFlag = false;
+
+  @override
+  void initState() {
+    _checkDevice();
+    _checkLogin();
+    sleep(Duration(milliseconds: 300));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -34,10 +42,8 @@ class _MyAppState extends State<_MyAppStateful> {
       );
 
   Widget _toIndexPage() {
-    _checkDevice();
-    _checkLogin();
-    if (_logined) {
-      return SignPage(bizOrderNo: "QSM20181213105740", channelType: 2);
+    if (loginFlag) {
+      return SignPage(bizOrderNo: "NM2018100822301386314973", channelType: 2);
     }
     return LoginPage();
   }
@@ -46,19 +52,20 @@ class _MyAppState extends State<_MyAppStateful> {
   void _checkLogin() async {
     Token token = await Token.loadToken();
     if (token != null && token.checkExpire()) {
-      global.token = token;
-      setState(() {
-        _logined = true;
-      });
-      _loadTokenAndUserInfo();
+      _loadTokenAndUserInfo(token);
     }
   }
 
-  void _loadTokenAndUserInfo() async {
-    if (_logined) return;
-    var response = await global.post("login/appLogin/" + global.token.token);
+  void _loadTokenAndUserInfo(Token token) async {
+    var response = await global.post("login/appLogin/" + token.token);
     DataResponse d = DataResponse.fromJson(response);
-    if (d.success()) global.loadTokenAndUserInfo(d);
+    if (d.success()) {
+      global.loadTokenAndUserInfo(d);
+      global.token = token;
+      setState(() {
+        loginFlag = true;
+      });
+    }
   }
 
   ///检查设备
