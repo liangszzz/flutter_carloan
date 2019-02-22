@@ -35,7 +35,7 @@ class UpdateLogsPageState extends State<UpdateLogsPage> {
   Color _lightBlackColor = Color.fromRGBO(94, 94, 94, 1);
 
   // arial字体
-  String arial = 'Arial';
+  String _arial = 'Arial';
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class UpdateLogsPageState extends State<UpdateLogsPage> {
         title: new Text(
           "更新日志",
           style: new TextStyle(
-            fontFamily: arial,
+            fontFamily: _arial,
             fontSize: 16,
             color: _blackColor,
           ),
@@ -105,7 +105,7 @@ class UpdateLogsPageState extends State<UpdateLogsPage> {
                       style: new TextStyle(
                         fontSize: 14,
                         color: _lightBlackColor,
-                        fontFamily: arial,
+                        fontFamily: _arial,
                       ),
                     ),
                   ),
@@ -117,7 +117,7 @@ class UpdateLogsPageState extends State<UpdateLogsPage> {
                       style: TextStyle(
                         color: _lightBlackColor,
                         fontSize: 10,
-                        fontFamily: arial,
+                        fontFamily: _arial,
                       ),
                     ),
                   ),
