@@ -59,6 +59,9 @@ class _SignPageState extends State<_SignPageStateful> {
   Timer timer;
   int second = 0;
 
+  ///同意用户协议
+  bool checkboxSelected = false;
+
   @override
   void initState() {
     checkSign();
@@ -115,9 +118,11 @@ class _SignPageState extends State<_SignPageStateful> {
             _buildBankList(),
             _buildBankCard(),
             _buildPhone(),
+            _buildBottom(),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
+            _buildBtn(),
           ],
         ),
       ),
@@ -143,10 +148,11 @@ class _SignPageState extends State<_SignPageStateful> {
             _buildBankCard(),
             _buildPhone(),
             _buildCode(),
-            _buildBtn(),
+            _buildBottom(),
             SizedBox(
               height: 10,
             ),
+            _buildBtn(),
           ],
         ),
       ),
@@ -184,8 +190,6 @@ class _SignPageState extends State<_SignPageStateful> {
       style: TextStyle(color: Colors.black87, fontSize: 13),
     );
   }
-
-  var blank = Text("  ");
 
   ///持卡人
   Widget _buildUserName() {
@@ -357,7 +361,25 @@ class _SignPageState extends State<_SignPageStateful> {
     });
   }
 
-  Widget _build
+  ///创建协议页面
+  Widget _buildBottom() {
+    var checkBox = Checkbox(
+        value: checkboxSelected,
+        activeColor: Colors.green,
+        onChanged: (value) {
+          setState(() {
+            checkboxSelected = value;
+          });
+        });
+    var text = Text(
+      "我已阅读并理解",
+      style: TextStyle(color: Colors.black87, fontSize: 13),
+    );
+
+    return Row(
+      children: <Widget>[checkBox, text],
+    );
+  }
 
   ///创建按钮
   Widget _buildBtn() {
@@ -377,6 +399,50 @@ class _SignPageState extends State<_SignPageStateful> {
 
   ///签约
   void _doSign() async {
+    if (userName.text.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "请填写持卡人姓名!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
+    if (idCard.text.isEmpty || idCard.text.length != 18) {
+      DialogUtils.showAlertDialog(context, "提示", "请填写身份证号!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
+    if (bankCard.text.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "请填写银行卡号!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
+    if(!signed){
+      if (phone.text.isEmpty || phone.text.length != 11) {
+        DialogUtils.showAlertDialog(context, "提示", "请填写手机号!", null,
+            contentStyle: TextStyle(color: Colors.red));
+        return;
+      }
+    }
+
+    if (code.text.isEmpty || code.text.length != 4) {
+      DialogUtils.showAlertDialog(context, "提示", "请填写验证码!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
+    if (!checkboxSelected) {
+      DialogUtils.showAlertDialog(context, "提示", "请同意自动还款协议!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    code.clear();
+
+    if(signed){
+      _toNextPage();
+      return;
+    }
+
     var response = await global.postFormData("sign/doSign", {
       "smsId": smsId,
       "smsCode": code.text,
@@ -385,14 +451,22 @@ class _SignPageState extends State<_SignPageStateful> {
       "payerBankCardNo": bankCard.text,
       "bankMobile": phone.text
     });
+
     var d = DataResponse.fromJson(response);
     if (d.success()) {
       ///签约成功
-      DialogUtils.showAlertDialog(context, "提示", "签约成功!!", null);
-      ///跳转
+      DialogUtils.showAlertDialog(context, "提示", "签约成功!!", (){
+        _toNextPage();
+      });
+
     } else {
       DialogUtils.showAlertDialog(context, "提示", d.msg, null,
           contentStyle: TextStyle(color: Colors.red));
     }
+  }
+
+  ///去下一个页面
+  void _toNextPage(){
+
   }
 }
