@@ -1,16 +1,27 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_carloan/app/DialogUtils.dart';
+import 'package:flutter_carloan/carInfo/CarInfoPage.dart';
+import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/common/SysDict.dart';
 import 'package:flutter_carloan/userInfo/ClContactInfo.dart';
 import 'package:flutter_carloan/userInfo/ClUserInfo.dart';
 import 'package:flutter_carloan/userInfo/ShowPhoto.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserInfoPage extends StatefulWidget {
   final String bizOrderNo;
   final int channelType;
 
-  const UserInfoPage({Key key, this.bizOrderNo, this.channelType})
+  /// 0:app进单 1：订单页查看详情 2：我的页面
+  final int fromPage;
+
+  const UserInfoPage(
+      {Key key, this.bizOrderNo, this.channelType, this.fromPage})
       : super(key: key);
 
   @override
@@ -22,68 +33,79 @@ class UserInfoPage extends StatefulWidget {
 class _UserInfoPageState extends State<UserInfoPage> {
   bool isReload = false;
 
-  String userName;
-  String idCard;
-  String idCardAddress;
-  String residentialAddress;
-  String phoneNo;
+  String biz_order_no = "";
+
+  String userName = "";
+  String idCard = "";
+  String idCardAddress = "";
+  String residentialAddress = "";
+  String phoneNo = "";
 
   ///婚姻状况
   List maritalList = new List();
   int maritalValue;
-  var mariLabel;
+  var mariLabel = "";
 
   ///健康状况
   int healthValue;
-  var healthLabel;
+  var healthLabel = "";
   List healthList = new List();
 
   ///身份类型
   int identityTypeValue;
-  var identityTypeLabel;
+  var identityTypeLabel = "";
   List identityTypeList = new List();
 
   ///最高学历
   int degreeValue;
-  var degreeLabel;
+  var degreeLabel = "";
   List degreeList = new List();
 
   ///客户职业信息
   int customerInfoValue;
-  var customerInfoLabel;
+  var customerInfoLabel = "";
   List customerInfoList = new List();
 
   ///开户行
-  String bankName;
+  String bankName = "";
   List bankNameList = new List();
   int bankNameValue = 0;
 
   ///银行卡类型
   int bankCardValue;
-  var bankCardLabel;
+  var bankCardLabel = "";
   List bankCardList = new List();
 
   ///联系人关系
-  String contactPhone;
-  String contactName;
+  String contactPhone = "";
+  String contactName = "";
   int relationShipValue;
-  var relationShipLabel;
+  var relationShipLabel = "";
   List relationShipList = new List();
 
-  String companyName;
-  String companyPhone;
-  String wxNumber;
-  double personalIncome;
-  String reservePhoneNo;
-  String bankAccount;
+  String companyName = "";
+  String companyPhone = "";
+  String wxNumber = "";
+  String personalIncome = "";
+  String reservePhoneNo = "";
+  String bankAccount = "";
 
-  String _time;
+  String _time = "2019-02-22";
 
   List<String> idCardImageList = new List();
 
+  String openId = "";
+
+  String defaultImageUrl = "http://106.14.239.49/group1/M00/04/4D/ag7vMVxuXfyAVvLmAAADgDq1o2k710.png";
+
+  int formType = 0;
+
+  ///控制输入框是否允许输入
+  bool canWrite = false;
+
   @override
   Widget build(BuildContext context) {
-    _getUserInfo(widget.bizOrderNo, widget.channelType);
+    _getUserInfo(widget.bizOrderNo, widget.channelType, widget.fromPage);
 
     ///婚姻状况
     if (maritalList.length > 0) {
@@ -172,7 +194,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
       ///真实姓名
       new Container(
-        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: 48.0,
         child: new Row(
           children: <Widget>[
@@ -183,12 +205,23 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
               ),
             ),
-            new Padding(
-              padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
-              child: new Text(
-                '$userName',
+            new Expanded(
+              child: TextField(
+                enabled: canWrite,
                 style:
-                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: "$userName",
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                keyboardType: TextInputType.text,
+                maxLines: 1,
+                onSubmitted: (text) {
+                  userName = text;
+                },
               ),
             ),
           ],
@@ -203,28 +236,39 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
       ///身份证号
       new Container(
-          margin: new EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-          height: 48.0,
-          child: new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new Text(
-                  '身份证号',
-                  style:
-                      TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
-                ),
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+        height: 48.0,
+        child: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                '身份证号',
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
               ),
-              new Padding(
-                padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
-                child: new Text(
-                  '$idCard',
-                  style:
-                  TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+            ),
+            new Expanded(
+              child: TextField(
+                enabled: canWrite,
+                style:
+                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: "$idCard",
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
                 ),
+                keyboardType: TextInputType.text,
+                maxLines: 1,
+                onSubmitted: (text) {
+                  idCard = text;
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
 
       new Container(
         margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
@@ -247,7 +291,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ),
             new Expanded(
               child: TextField(
-                style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$idCardAddress",
@@ -287,7 +332,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ),
             new Expanded(
               child: TextField(
-                style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$residentialAddress",
@@ -327,7 +373,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ),
             new Expanded(
               child: TextField(
-                style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$phoneNo",
@@ -472,7 +519,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ),
             new Expanded(
               child: TextField(
-                style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$companyName",
@@ -548,7 +596,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
               new Expanded(
                 child: TextField(
-                  style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     hintText: "$companyPhone",
@@ -556,7 +605,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
                   ),
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.phone,
                   maxLines: 1,
                   onSubmitted: (text) {
                     companyPhone = text;
@@ -696,7 +745,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
               new Expanded(
                 child: TextField(
-                  style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     hintText: "$bankAccount",
@@ -739,7 +789,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
               new Expanded(
                 child: TextField(
-                  style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     hintText: "$reservePhoneNo",
@@ -785,7 +836,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
               new Expanded(
                 child: TextField(
-                  style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     hintText: "$personalIncome",
@@ -796,7 +848,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   keyboardType: TextInputType.number,
                   maxLines: 1,
                   onSubmitted: (text) {
-                    personalIncome = double.parse(text);
+                    personalIncome = text;
                   },
                 ),
               ),
@@ -828,7 +880,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
               new Expanded(
                 child: TextField(
-                  style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     hintText: "$wxNumber",
@@ -919,7 +972,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
               new Expanded(
                 child: TextField(
-                  style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     hintText: "$contactName",
@@ -930,7 +984,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   keyboardType: TextInputType.text,
                   maxLines: 1,
                   onSubmitted: (text) {
-                    contactName = text;
+                    if (text.isNotEmpty) {
+                      contactName = text;
+                    }
                   },
                 ),
               ),
@@ -962,7 +1018,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
               new Expanded(
                 child: TextField(
-                  style: TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
                     hintText: "$contactPhone",
@@ -1036,7 +1093,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
       ///身份证正反面
       new Container(
-        height: 120.0,
+        height: 140.0,
         color: const Color(0xffebebeb),
         child: new Row(
           children: <Widget>[
@@ -1054,13 +1111,24 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   children: idCardImageList.map((f) {
                     return new GestureDetector(
                       onTap: () {
-                        var index;
-                        if(idCardImageList.contains(f)){
-                          index = idCardImageList.indexOf(f);
+                        var index = idCardImageList.indexOf(f);
+                        if (defaultImageUrl == f){
+                          ImagePicker.pickImage(source: ImageSource.gallery).then((onValue){
+                            _uploadImage(onValue, index);
+                          });
+                        }else{
+                          showPhoto(context, f, index);
                         }
-                        showPhoto(context,f,index);
                       },
-                      child: Image.network(f,fit: BoxFit.cover,),
+                      child: new Container(
+                        decoration: new BoxDecoration(
+                          border: new Border.all(width: 1.0, color: Colors.black38),
+                          image: new DecorationImage(
+                            image: new NetworkImage(f),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
                     );
                   }).toList(),
                 ),
@@ -1077,7 +1145,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         child: new Row(
           children: <Widget>[
             new Expanded(
-              child: new Text('',
+              child: new Text("",
                   style: TextStyle(fontSize: 12.0, color: Colors.black)),
             ),
           ],
@@ -1093,7 +1161,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               child: new FlatButton(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 onPressed: () {
-                  print("点击按钮");
+                  _saveUserInfo();
                 },
                 shape: RoundedRectangleBorder(
                     side: BorderSide(
@@ -1130,156 +1198,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ));
   }
 
-
-  Global global = Global();
-  _getUserInfo(String bizOrderNo, int channelType) async {
-    if (!isReload) {
-      isReload = true;
-      try {
-        Map<String, Object> dataMap = new Map();
-        List maritalStatusList = new List();
-        List healthStatusList = new List();
-        List identityTypeStatusList = new List();
-        List degreeStatusList = new List();
-        List customerInfoStatusList = new List();
-        List bankCardStatusList = new List();
-        List relationShipStatusList = new List();
-        List bankStatusList = new List();
-        List contactInfoList = new List();
-        List idCradUrlList = new List();
-        ClUserInfo clUserInfo;
-        ClContactInfo clContactInfo;
-        var response = await global.postFormData("user/query",
-            {"biz_order_no": bizOrderNo, "channel_type": channelType});
-
-        dataMap = response['dataMap'];
-        clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
-        contactInfoList = dataMap["clContactInfoList"];
-
-        ///此处联系人只取一个展示
-        clContactInfo = ClContactInfo.fromJson(contactInfoList[0]);
-        maritalStatusList = dataMap["marital_status"];
-        healthStatusList = dataMap["health"];
-        identityTypeStatusList = dataMap["identity_type"];
-        degreeStatusList = dataMap["degree"];
-        customerInfoStatusList = dataMap["customerInfo"];
-        bankCardStatusList = dataMap["bankCards"];
-        relationShipStatusList = dataMap["relationShip"];
-        bankStatusList = dataMap["bank_list"];
-        idCradUrlList = dataMap["clAttachmentInfoList"];
-
-        setState(() {
-          userName = clUserInfo.user_name;
-          idCard = clUserInfo.idcard;
-          idCardAddress = clUserInfo.idcard_address;
-          residentialAddress = clUserInfo.residential_address;
-          phoneNo = clUserInfo.phone_no;
-          companyName = clUserInfo.company_name;
-          companyPhone = clUserInfo.company_phone_no;
-          wxNumber = clUserInfo.wechat;
-          personalIncome = clUserInfo.personal_income;
-          bankAccount = clUserInfo.bank_account;
-          reservePhoneNo = clUserInfo.reserve_phone_no;
-          bankName = clUserInfo.bank_name;
-          _time = clUserInfo.certificate_expiry_date;
-
-          contactName = clContactInfo.contactName;
-          contactPhone = clContactInfo.contactPhone;
-          relationShipValue = int.parse(clContactInfo.contactRelationship);
-
-          maritalValue = int.parse(clUserInfo.marital_status);
-          healthValue = int.parse(clUserInfo.health_status);
-          identityTypeValue = int.parse(clUserInfo.identity_type);
-          degreeValue = int.parse(clUserInfo.degree);
-          customerInfoValue = int.parse(clUserInfo.customer_professional_info);
-          bankCardValue = int.parse(clUserInfo.bank_card_type);
-
-          bankNameList = bankStatusList;
-
-          ///婚姻状况
-          List<SysDict> maritalLists = new List();
-          for (int i = 0; i < maritalStatusList.length; i++) {
-            SysDict sysDict = new SysDict();
-            sysDict.value = maritalStatusList[i]["value"];
-            sysDict.label = maritalStatusList[i]["label"];
-            maritalLists.add(sysDict);
-          }
-          maritalList = maritalLists;
-
-          ///健康状况
-          List<SysDict> healthLists = new List();
-          for (int i = 0; i < healthStatusList.length; i++) {
-            SysDict sysDict = new SysDict();
-            sysDict.value = healthStatusList[i]["value"];
-            sysDict.label = healthStatusList[i]["label"];
-            healthLists.add(sysDict);
-          }
-          healthList = healthLists;
-
-          ///身份类型
-          List<SysDict> identityTypes = new List();
-          for (int i = 0; i < identityTypeStatusList.length; i++) {
-            SysDict sysDict = new SysDict();
-            sysDict.value = identityTypeStatusList[i]["value"];
-            sysDict.label = identityTypeStatusList[i]["label"];
-            identityTypes.add(sysDict);
-          }
-          identityTypeList = identityTypes;
-
-          ///最高学历
-          List<SysDict> degreeLists = new List();
-          for (int i = 0; i < degreeStatusList.length; i++) {
-            SysDict sysDict = new SysDict();
-            sysDict.value = degreeStatusList[i]["value"];
-            sysDict.label = degreeStatusList[i]["label"];
-            degreeLists.add(sysDict);
-          }
-          degreeList = degreeLists;
-
-          ///银行卡类型
-          List<SysDict> bankCards = new List();
-          for (int i = 0; i < bankCardStatusList.length; i++) {
-            SysDict sysDict = new SysDict();
-            sysDict.value = bankCardStatusList[i]["value"];
-            sysDict.label = bankCardStatusList[i]["label"];
-            bankCards.add(sysDict);
-          }
-          bankCardList = bankCards;
-
-          ///客户职业信息
-          List<SysDict> customerInfos = new List();
-          for (int i = 0; i < customerInfoStatusList.length; i++) {
-            SysDict sysDict = new SysDict();
-            sysDict.value = customerInfoStatusList[i]["value"];
-            sysDict.label = customerInfoStatusList[i]["label"];
-            customerInfos.add(sysDict);
-          }
-          customerInfoList = customerInfos;
-
-          ///联系人关系
-          List<SysDict> relationShips = new List();
-          for (int i = 0; i < relationShipStatusList.length; i++) {
-            SysDict sysDict = new SysDict();
-            sysDict.value = relationShipStatusList[i]["value"];
-            sysDict.label = relationShipStatusList[i]["label"];
-            relationShips.add(sysDict);
-          }
-          relationShipList = relationShips;
-
-          ///身份证
-          if (idCradUrlList.length > 0) {
-            for (int i = 0; i < idCradUrlList.length; i++) {
-              String filePath = idCradUrlList[i]["file_path"];
-              idCardImageList.add(filePath);
-            }
-          }
-        });
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
   /// 展示选择婚姻状况的弹窗
   _showCheckMarDialog() {
     showDialog<Null>(
@@ -1304,7 +1222,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   void _showCheckHealDialog() {
     showDialog<Null>(
         context: context, //BuildContext对象
-        barrierDismissible: false,
+        barrierDismissible: true,
         builder: (BuildContext context) {
           return new Dialog(
             child: new Container(
@@ -1508,20 +1426,376 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///图片预览
   void showPhoto(BuildContext context, f, index) {
-    Navigator.push(context, MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-                title: Text('图片预览')
-            ),
-            body: SizedBox.expand(
-              child: Hero(
-                tag: index,
-                child: new ShowPhotoPage(url:f),
-              ),
-            ),
-          );
+    Navigator.push(context,
+        MaterialPageRoute<void>(builder: (BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: Text('图片预览')),
+        body: SizedBox.expand(
+          child: Hero(
+            tag: index,
+            child: new ShowPhotoPage(url: f),
+          ),
+        ),
+      );
+    }));
+  }
+
+  Global global = Global();
+
+  ///已存在订单时获取信息
+  _getUserInfo(String bizOrderNo, int channelType, int fromPage) async {
+    if (!isReload) {
+      isReload = true;
+      try {
+        Map<String, Object> dataMap = new Map();
+        List maritalStatusList = new List();
+        List healthStatusList = new List();
+        List identityTypeStatusList = new List();
+        List degreeStatusList = new List();
+        List customerInfoStatusList = new List();
+        List bankCardStatusList = new List();
+        List relationShipStatusList = new List();
+        List bankStatusList = new List();
+        List contactInfoList = new List();
+        List idCraUrlList = new List();
+        ClUserInfo clUserInfo;
+        ClContactInfo clContactInfo;
+
+        if (fromPage == 2) {  ///我的页面进入查看个人资料
+          var response = await global.postFormData("user/query",
+              {"biz_order_no": bizOrderNo, "channel_type": channelType});
+          dataMap = response['dataMap'];
+          degreeStatusList = dataMap["degree"];
+          clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
+          contactInfoList = dataMap["clContactInfoList"];
+          clContactInfo = ClContactInfo.fromJson(contactInfoList[0]); ///此处联系人只取一个展示
+          idCraUrlList = dataMap["clAttachmentInfoList"];
+        } else {
+          canWrite = true;
+          ///此处openId使用 token
+          openId = "token:13770207216";
+          var response = await global.postFormData(
+              "borrow/toBorrow/" + openId + "/" + global.DEVICE.toString());
+          dataMap = response['dataMap'];
+          bizOrderNo = dataMap['biz_order_no'];
+          if (bizOrderNo != "" && bizOrderNo != null) { ///第一次进单
+            biz_order_no = bizOrderNo;
+          } else { ///非第一次进单
+            clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
+            biz_order_no = clUserInfo.biz_order_no;
+            clContactInfo = ClContactInfo.fromJson(dataMap["clContactInfo"]);
+            idCraUrlList = dataMap["attachmentInfoList"];
+
+          }
+          degreeStatusList = dataMap["degreeS"];
         }
-    ));
+
+        ///此处为公用的选择框数据
+        maritalStatusList = dataMap["marital_status"];
+        healthStatusList = dataMap["health"];
+        identityTypeStatusList = dataMap["identity_type"];
+        customerInfoStatusList = dataMap["customerInfo"];
+        bankCardStatusList = dataMap["bankCards"];
+        relationShipStatusList = dataMap["relationShip"];
+        bankStatusList = dataMap["bank_list"];
+
+        setState(() {
+
+          if(clUserInfo != null){
+            userName = clUserInfo.user_name;
+            idCard = clUserInfo.idcard;
+            idCardAddress = clUserInfo.idcard_address;
+            residentialAddress = clUserInfo.residential_address;
+            phoneNo = clUserInfo.phone_no;
+            companyName = clUserInfo.company_name;
+            companyPhone = clUserInfo.company_phone_no;
+            wxNumber = clUserInfo.wechat;
+            personalIncome = clUserInfo.personal_income.toString();
+            bankAccount = clUserInfo.bank_account;
+            reservePhoneNo = clUserInfo.reserve_phone_no;
+            bankName = clUserInfo.bank_name;
+            _time = clUserInfo.certificate_expiry_date;
+
+            maritalValue = int.parse(clUserInfo.marital_status);
+            healthValue = int.parse(clUserInfo.health_status);
+            identityTypeValue = int.parse(clUserInfo.identity_type);
+            degreeValue = int.parse(clUserInfo.degree);
+            customerInfoValue = int.parse(clUserInfo.customer_professional_info);
+            bankCardValue = int.parse(clUserInfo.bank_card_type);
+          }
+
+          if(clContactInfo != null){
+            contactName = clContactInfo.contactName;
+            contactPhone = clContactInfo.contactPhone;
+            relationShipValue = int.parse(clContactInfo.contactRelationship);
+          }
+
+          bankNameList = bankStatusList;
+
+          ///婚姻状况
+          List<SysDict> maritalLists = new List();
+          for (int i = 0; i < maritalStatusList.length; i++) {
+            SysDict sysDict = new SysDict();
+            sysDict.value = maritalStatusList[i]["value"];
+            sysDict.label = maritalStatusList[i]["label"];
+            maritalLists.add(sysDict);
+          }
+          maritalList = maritalLists;
+
+          ///健康状况
+          List<SysDict> healthLists = new List();
+          for (int i = 0; i < healthStatusList.length; i++) {
+            SysDict sysDict = new SysDict();
+            sysDict.value = healthStatusList[i]["value"];
+            sysDict.label = healthStatusList[i]["label"];
+            healthLists.add(sysDict);
+          }
+          healthList = healthLists;
+
+          ///身份类型
+          List<SysDict> identityTypes = new List();
+          for (int i = 0; i < identityTypeStatusList.length; i++) {
+            SysDict sysDict = new SysDict();
+            sysDict.value = identityTypeStatusList[i]["value"];
+            sysDict.label = identityTypeStatusList[i]["label"];
+            identityTypes.add(sysDict);
+          }
+          identityTypeList = identityTypes;
+
+          ///最高学历
+          List<SysDict> degreeLists = new List();
+          for (int i = 0; i < degreeStatusList.length; i++) {
+            SysDict sysDict = new SysDict();
+            sysDict.value = degreeStatusList[i]["value"];
+            sysDict.label = degreeStatusList[i]["label"];
+            degreeLists.add(sysDict);
+          }
+          degreeList = degreeLists;
+
+          ///银行卡类型
+          List<SysDict> bankCards = new List();
+          for (int i = 0; i < bankCardStatusList.length; i++) {
+            SysDict sysDict = new SysDict();
+            sysDict.value = bankCardStatusList[i]["value"];
+            sysDict.label = bankCardStatusList[i]["label"];
+            bankCards.add(sysDict);
+          }
+          bankCardList = bankCards;
+
+          ///客户职业信息
+          List<SysDict> customerInfos = new List();
+          for (int i = 0; i < customerInfoStatusList.length; i++) {
+            SysDict sysDict = new SysDict();
+            sysDict.value = customerInfoStatusList[i]["value"];
+            sysDict.label = customerInfoStatusList[i]["label"];
+            customerInfos.add(sysDict);
+          }
+          customerInfoList = customerInfos;
+
+          ///联系人关系
+          List<SysDict> relationShips = new List();
+          for (int i = 0; i < relationShipStatusList.length; i++) {
+            SysDict sysDict = new SysDict();
+            sysDict.value = relationShipStatusList[i]["value"];
+            sysDict.label = relationShipStatusList[i]["label"];
+            relationShips.add(sysDict);
+          }
+          relationShipList = relationShips;
+
+          ///身份证
+          if (idCraUrlList.length > 0) {
+            for (int i = 0; i < idCraUrlList.length; i++) {
+              String filePath = idCraUrlList[i]["file_path"];
+              idCardImageList.add(filePath);
+            }
+          }else{
+            for (int i = 0; i < 2; i++) {
+              idCardImageList.add(defaultImageUrl);
+            }
+          }
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  ///信息保存
+  Future _saveUserInfo() async {
+    if (userName.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "真实姓名不能为空", null);
+      return;
+    }
+
+    if (idCard.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "身份证不能为空", null);
+      return;
+    }
+
+    if (idCardAddress.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "身份证地址不能为空", null);
+      return;
+    }
+
+    if (residentialAddress.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "现居住地址不能为空", null);
+      return;
+    }
+
+    if (phoneNo.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "手机号码不能为空", null);
+      return;
+    }
+
+    if (healthLabel.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "健康状况不能为空", null);
+      return;
+    }
+
+    if(identityTypeLabel.isEmpty){
+      DialogUtils.showAlertDialog(context, "提示", "身份类型不能为空", null);
+      return;
+    }
+
+    if(degreeLabel.isEmpty){
+      DialogUtils.showAlertDialog(context, "提示", "最高学历不能为空", null);
+      return;
+    }
+
+    if (companyName.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "公司名不能为空", null);
+      return;
+    }
+
+    if(customerInfoLabel.isEmpty){
+      DialogUtils.showAlertDialog(context, "提示", "客户职业信息不能为空", null);
+      return;
+    }
+
+    if (companyPhone.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "公司号码不能为空", null);
+      return;
+    }
+
+    if(bankCardLabel.isEmpty){
+      DialogUtils.showAlertDialog(context, "提示", "银行卡类型不能为空", null);
+      return;
+    }
+
+    if (bankAccount.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "银行卡号不能为空", null);
+      return;
+    }
+
+    if (reservePhoneNo.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "预留手机号不能为空", null);
+      return;
+    }
+
+    if (personalIncome.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "个人收入不能为空", null);
+      return;
+    }
+
+    if (wxNumber.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "微信号码不能为空", null);
+      return;
+    }
+
+    if (mariLabel.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "婚姻状况不能为空", null);
+      return;
+    }
+
+    if (contactName.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "联系人姓名不能为空", null);
+      return;
+    }
+
+    if (contactPhone.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "联系人手机号码不能为空", null);
+      return;
+    }
+
+    if (relationShipLabel.isEmpty) {
+      DialogUtils.showAlertDialog(context, "提示", "联系人关系不能为空", null);
+      return;
+    }
+
+    if(idCardImageList.contains(defaultImageUrl)){
+      DialogUtils.showAlertDialog(context, "提示", "请上传身份证正反面", null);
+      return;
+    }
+
+    String url = "user/save";
+    if(widget.fromPage == 0){
+      url = "borrow/saveUserInfo";
+    }
+
+    try{
+      var response = await global.postFormData(url, {"data":{
+        "openid" : "token:13770207216",
+        "biz_order_no": biz_order_no,
+        "user_name": userName,
+        "idcard" : idCard,
+        "idcard_address" :idCardAddress,
+        "residential_address" : residentialAddress,
+        "phone_no": phoneNo,
+        "health_status" : healthValue,
+        "identity_type" : identityTypeValue,
+        "degree" :degreeValue,
+        "company_name" : companyName,
+        "customer_professional_info" :customerInfoValue,
+        "company_phone_no" : companyPhone,
+        "certificate_expiry_date" : _time,
+        "bank_name" : bankNameValue,
+        "bank_card_type": bankCardValue,
+        "bank_account" : bankAccount,
+        "reserve_phone_no" : reservePhoneNo,
+        "personal_income" : personalIncome,
+        "wechat" : wxNumber,
+        "marital_status": maritalValue,
+        "contact_name" : contactName,
+        "contact_phone" : contactPhone,
+        "contact_relationship" : relationShipValue
+      },
+      });
+
+      if(response["code"] == 0){
+        ///如果是从我的页面进入就弹出修改成功的提示框
+        if(widget.fromPage == 2){
+          DialogUtils.showAlertDialog(context, "提示", "修改成功", null);
+        }else {
+          ///跳转到车辆信息页面
+          Navigator.push(context, new MaterialPageRoute(builder: (context) {
+            return CarInfoPage(bizOrderNo: biz_order_no, channelType: widget.channelType, fromPage: widget.fromPage,);
+          }));
+        }
+      }
+    }catch(e){
+      print(e);
+      DialogUtils.showAlertDialog(context, "提示", "保存失败", null);
+    }
+  }
+
+  ///图片上传公用方法
+  void _uploadImage(File imageFile, int index) async {
+    String fileType = "1";
+    FormData formData = new FormData.from({
+      "biz_order_no": biz_order_no,
+      "file_type": fileType,
+      "formType" : formType,
+    });
+    if (imageFile != null) {
+      formData.add("file", new UploadFileInfo(imageFile, "身份证正反面.png"));
+    }
+    var response =
+        await global.postFormData("attachmentInfo/uploadFile", formData);
+    DataResponse dataResponse = DataResponse.fromJson(response);
+    Map<String, Object> map = dataResponse.entity as Map;
+    String filePath = map['file_path'];
+    setState(() {
+      idCardImageList[index] = filePath;
+    });
   }
 }
