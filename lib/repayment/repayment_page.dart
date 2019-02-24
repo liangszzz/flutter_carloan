@@ -4,6 +4,20 @@ import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/repayment/bill.dart';
 
 class RepaymentPage extends StatefulWidget {
+  RepaymentPage({
+    this.bizOrderNo,
+    this.isConfirm,
+    this.applyAmount,
+    this.terms,
+    this.method,
+  });
+
+  final String bizOrderNo;
+  final bool isConfirm;
+  final double applyAmount;
+  final int terms;
+  final int method;
+
   @override
   State<StatefulWidget> createState() {
     return RepaymentPageState();
@@ -11,13 +25,24 @@ class RepaymentPage extends StatefulWidget {
 }
 
 class RepaymentPageState extends State<RepaymentPage> {
+  RepaymentPageState({
+    this.bizOrderNo,
+    this.isConfirmPage,
+    this.applyAmount,
+    this.terms,
+    this.method,
+  });
+
   Global global = new Global();
+  final String bizOrderNo;
 
   // 是确认界面？（默认是）
   bool isConfirmPage = true;
 
   // 申请金额
-  double _applyAmount = 10000;
+  double applyAmount = 10000;
+  int terms;
+  int method;
 
   bool _applyDataChanged = false;
 
@@ -255,7 +280,6 @@ class RepaymentPageState extends State<RepaymentPage> {
   Widget _getTermWidget() {
     if (isConfirmPage) {
       List<DropdownMenuItem> terms = new List();
-
       DropdownMenuItem item1 = new DropdownMenuItem(value: 1, child: Text("1"));
       DropdownMenuItem item2 = new DropdownMenuItem(value: 3, child: Text("3"));
       DropdownMenuItem item3 = new DropdownMenuItem(value: 6, child: Text("6"));
@@ -267,6 +291,7 @@ class RepaymentPageState extends State<RepaymentPage> {
       terms.add(item3);
       terms.add(item4);
       terms.add(item5);
+
       return DropdownButton(
           items: terms,
           value: itemValue,
@@ -644,7 +669,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                 textAlign: TextAlign.center,
                 style: _blue18,
                 decoration: InputDecoration(
-                  hintText: _applyAmount.toString(),
+                  hintText: applyAmount.toString(),
                   hintStyle: _blue18,
                   suffixStyle: TextStyle(
                     color: blackFontColor,
@@ -673,10 +698,10 @@ class RepaymentPageState extends State<RepaymentPage> {
                           );
                         });
                   } else {
-                    if (_applyAmount != apply) {
+                    if (applyAmount != apply) {
                       setState(() {
                         _applyDataChanged = true;
-                        _applyAmount = apply;
+                        applyAmount = apply;
                       });
                     }
                   }
@@ -697,7 +722,7 @@ class RepaymentPageState extends State<RepaymentPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            _applyAmount.toString(),
+            applyAmount.toString(),
             style: _blue18,
           ),
           Text(
@@ -711,24 +736,44 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 从后台获取订单详细信息
   void _getRepaymentMsg() async {
-    List data = new List();
-    Map requestData = {"bizOrderNo": "QSM20181213143724"};
+//    List data = new List();
+//    Map requestData = {"bizOrderNo": "QSM20181213143724"};
+//
+//    Map response = await global.postFormData(_requestPath, requestData);
+//    data = response['entity'];
+//
+//    _bills = new List();
+//    _applyAmount = 0;
+//
+//    for (int i = 0; i < data.length; i++) {
+//      Bill bill = new Bill();
+//      bill.currentTerm = data[i]['currentRepaymentTerm'];
+//      bill.shouldPayDate = data[i]['shouldPayDate'];
+//      bill.amount = data[i]['shouldPayTotal'];
+//      bill.status = data[i]['billStatus'];
+//      _applyAmount += data[i]['shouldPayPrincipal'];
+//      _bills.add(bill);
+//    }
 
-    Map response = await global.postFormData(_requestPath, requestData);
-    data = response['entity'];
+    Bill b1 = new Bill();
+    b1.currentTerm = 1;
+    b1.shouldPayDate = [2019, 1, 24];
+    b1.amount = 1000;
+    b1.status = 1;
 
-    _bills = new List();
-    _applyAmount = 0;
+    Bill b2 = new Bill();
+    b2.currentTerm = 2;
+    b2.shouldPayDate = [2019, 2, 24];
+    b2.amount = 1000;
+    b2.status = 1;
 
-    for (int i = 0; i < data.length; i++) {
-      Bill bill = new Bill();
-      bill.currentTerm = data[i]['currentRepaymentTerm'];
-      bill.shouldPayDate = data[i]['shouldPayDate'];
-      bill.amount = data[i]['shouldPayTotal'];
-      bill.status = data[i]['billStatus'];
-      _applyAmount += data[i]['shouldPayPrincipal'];
-      _bills.add(bill);
-    }
+    Bill b3 = new Bill();
+    b3.currentTerm = 3;
+    b3.shouldPayDate = [2019, 3, 24];
+    b3.amount = 1000;
+    b3.status = 1;
+
+    _bills = [b1, b2, b3];
     setState(() {
       hasInit = true;
     });
