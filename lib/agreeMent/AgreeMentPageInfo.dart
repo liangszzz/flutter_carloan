@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_html_textview/flutter_html_textview.dart';
@@ -9,7 +10,27 @@ class AgreementInfoPage extends StatefulWidget {
   ///1 表示正式表 2 表示微信表
   final int channelType;
 
-  const AgreementInfoPage({Key key, this.title, this.channelType, this.bizOrderNo}) : super(key: key);
+  ///以下针对借款合同页面 需要参数
+  ///申请金额
+  final String applyAmount;
+
+  ///期数
+  final String terms;
+
+  ///还款方式
+  final String method;
+
+  const AgreementInfoPage(
+      {Key key,
+      this.title,
+      this.bizOrderNo,
+      this.channelType,
+      this.applyAmount,
+      this.terms,
+      this.method})
+      : super(key: key);
+
+  ///查询表 1：微信表 其余：正式表
 
   @override
   _AgreementInfoState createState() => new _AgreementInfoState();
@@ -50,7 +71,23 @@ class _AgreementInfoState extends State<AgreementInfoPage> {
     if (!isReload) {
       isReload = true;
       String content = "";
-      var response = await global.postFormData("agreement/query/"+widget.bizOrderNo + "/" + widget.channelType.toString());
+      var response;
+      if (widget.applyAmount != null && widget.applyAmount != '') {
+        FormData formData = new FormData.from({
+          "biz_order_no": widget.bizOrderNo,
+          "repaymentTerms": widget.terms,
+          "repayment_method" : widget.method,
+          "page_type" : widget.channelType,
+          "apply_amount" : widget.applyAmount
+        });
+        response = await global.postFormData("agreement/queryAgreement", formData);
+      }else{
+        var queryUrl = "agreement/query/" +
+            widget.bizOrderNo +
+            "/" +
+            widget.channelType.toString();
+        response = await global.postFormData(queryUrl);
+      }
       content = response["msg"];
       setState(() {
         htmlInfo = content;
