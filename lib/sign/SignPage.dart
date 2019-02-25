@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/agreeMent/AgreeMentPageInfo.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
@@ -60,6 +61,8 @@ class _SignPageState extends State<_SignPageStateful> {
   int second = 0;
 
   bool checkboxSelected = false;
+
+  var agreementTitle = "自动还款协议";
 
   @override
   void initState() {
@@ -120,6 +123,8 @@ class _SignPageState extends State<_SignPageStateful> {
             SizedBox(
               height: 20,
             ),
+            _buildBottom(),
+            _buildBtn(),
           ],
         ),
       ),
@@ -145,10 +150,11 @@ class _SignPageState extends State<_SignPageStateful> {
             _buildBankCard(),
             _buildPhone(),
             _buildCode(),
-            _buildBtn(),
             SizedBox(
-              height: 10,
+              height: 20,
             ),
+            _buildBottom(),
+            _buildBtn(),
           ],
         ),
       ),
@@ -363,7 +369,7 @@ class _SignPageState extends State<_SignPageStateful> {
   Widget _buildBottom() {
     var checkBox = Checkbox(
         value: checkboxSelected,
-        activeColor: Colors.green,
+        activeColor: Colors.blue,
         onChanged: (value) {
           setState(() {
             checkboxSelected = value;
@@ -374,8 +380,14 @@ class _SignPageState extends State<_SignPageStateful> {
       style: TextStyle(color: Colors.black87, fontSize: 13),
     );
 
+    var agreement = Text(
+      "《自动还款协议》",
+      style: TextStyle(color: Colors.blue, fontSize: 13),
+    );
+
     return Row(
-      children: <Widget>[checkBox, text],
+      children: <Widget>[checkBox, text, new GestureDetector(child: agreement, onTap: _toAgreement,)],
+      
     );
   }
 
@@ -383,13 +395,26 @@ class _SignPageState extends State<_SignPageStateful> {
   Widget _buildBtn() {
     var _btnText = "下一步";
     var btn = FlatButton(
-        onPressed: _doSign,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Colors.green,
-        child: Text(
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      onPressed: () {
+        _doSign();
+      },
+      shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.white,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(8)),
+      //通过控制 Text 的边距来控制控件的高度
+      child: new Padding(
+        padding: new EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
+        child: new Text(
           _btnText,
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ));
+          style: TextStyle(color: Colors.white, fontSize: 18.0),
+        ),
+      ),
+      color: Colors.blue,
+    );
     return Row(
       children: <Widget>[Expanded(child: btn)],
     );
@@ -415,5 +440,12 @@ class _SignPageState extends State<_SignPageStateful> {
       DialogUtils.showAlertDialog(context, "提示", d.msg, null,
           contentStyle: TextStyle(color: Colors.red));
     }
+  }
+
+  ///跳转自动还款协议页面
+  void _toAgreement() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return AgreementInfoPage(title: agreementTitle, bizOrderNo: widget.bizOrderNo, channelType: widget.channelType);
+    }));
   }
 }
