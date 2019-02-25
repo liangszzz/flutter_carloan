@@ -21,4 +21,12 @@ class FileUtil {
     File file = new File('$appDocDir/$path');
     file.writeAsStringSync(str, mode: FileMode.write);
   }
+
+  void delete() async {
+    var appDocDir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$appDocDir/$path');
+    if(await file.exists()){
+      file.deleteSync();
+    }
+  }
 }
