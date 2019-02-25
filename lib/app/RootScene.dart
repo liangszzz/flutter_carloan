@@ -1,25 +1,26 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/me/MeScene.dart';
+import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+///底部导航栏
 class RootScene extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => RootSceneState();
+  State<StatefulWidget> createState() => _RootSceneState();
 }
 
-class RootSceneState extends State<RootScene> {
-  int _tabIndex = 1;
+class _RootSceneState extends State<RootScene> {
+  int _tabIndex = 0;
   bool isFinishSetup = false;
   List<Image> _tabImages = [
-    Image.asset('img/tab_bookshelf_n.png'),
-    Image.asset('img/tab_me_n.png'),
+    Image.asset('img/record.png'),
+    Image.asset('img/mine_p.png'),
   ];
   List<Image> _tabSelectedImages = [
-    Image.asset('img/tab_bookshelf_p.png'),
-    Image.asset('img/tab_me_p.png'),
+    Image.asset('img/record-active.png'),
+    Image.asset('img/mine-active.png'),
   ];
 
 
@@ -50,7 +51,7 @@ class RootSceneState extends State<RootScene> {
     return Scaffold(
       body: IndexedStack(
         children: <Widget>[
-          LoginPage(),
+          OrderPage(),
           MeScene(),
         ],
         index: _tabIndex,
