@@ -94,7 +94,7 @@ class _faceValidateState extends State<faceValidatePage> {
     if (_image != null) {
       return FileImage(_image);
     } else {
-      return AssetImage("img/add_face.png");
+      return AssetImage("assets/images/add_face.png");
     }
   }
 
