@@ -59,6 +59,8 @@ class _SignPageState extends State<_SignPageStateful> {
   Timer timer;
   int second = 0;
 
+  bool checkboxSelected = false;
+
   @override
   void initState() {
     checkSign();
@@ -407,6 +409,7 @@ class _SignPageState extends State<_SignPageStateful> {
     if (d.success()) {
       ///签约成功
       DialogUtils.showAlertDialog(context, "提示", "签约成功!!", null);
+
       ///跳转
     } else {
       DialogUtils.showAlertDialog(context, "提示", d.msg, null,
