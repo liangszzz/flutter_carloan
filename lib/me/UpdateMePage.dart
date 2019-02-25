@@ -40,7 +40,7 @@ class _UpdateMeState extends State<_UpdateMeStateful> {
         children: <Widget>[
           MeCell(
             title: '更新个人信息',
-            iconName: 'img/me_vip.png',
+            iconName: 'assets/images/me_vip.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return UpdateUserInfoPage();
@@ -49,7 +49,7 @@ class _UpdateMeState extends State<_UpdateMeStateful> {
           ),
           MeCell(
             title: '修改密码',
-            iconName: 'img/me_coupon.png',
+            iconName: 'assets/images/me_coupon.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return UpdatePwdPage();
