@@ -15,12 +15,12 @@ class _RootSceneState extends State<RootScene> {
   int _tabIndex = 0;
   bool isFinishSetup = false;
   List<Image> _tabImages = [
-    Image.asset('img/record.png'),
-    Image.asset('img/mine_p.png'),
+    Image.asset('assets/images/record.png'),
+    Image.asset('assets/images/mine_p.png'),
   ];
   List<Image> _tabSelectedImages = [
-    Image.asset('img/record-active.png'),
-    Image.asset('img/mine-active.png'),
+    Image.asset('assets/images/record-active.png'),
+    Image.asset('assets/images/mine-active.png'),
   ];
 
 

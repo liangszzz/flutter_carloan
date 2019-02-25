@@ -121,7 +121,7 @@ class _AuditLendersState extends State<AuditLendersPage> {
               alignment: Alignment.center,
               child: CircleAvatar(
                 radius: 80,
-                backgroundImage: AssetImage("img/alarmClock.png"),
+                backgroundImage: AssetImage("assets/images/alarmClock.png"),
               ),
             ),
             SizedBox(
