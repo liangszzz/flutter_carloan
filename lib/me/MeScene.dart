@@ -72,7 +72,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
         children: <Widget>[
           MeCell(
             title: '我的基本信息',
-            iconName: 'img/mine.png',
+            iconName: 'assets/images/mine.png',
             onPressed: () {
               Navigator.push(
                 context,
@@ -86,7 +86,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
           ),
           MeCell(
             title: '我的车辆信息',
-            iconName: 'img/car.png',
+            iconName: 'assets/images/car.png',
             onPressed: () {
               Navigator.push(
                 context,
@@ -100,7 +100,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
           ),
           MeCell(
             title: '我的消息',
-            iconName: 'img/message.png',
+            iconName: 'assets/images/message.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return MyMessage(phone: '13770207216');
@@ -109,7 +109,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
           ),
           MeCell(
             title: '我的银行卡',
-            iconName: 'img/bank.png',
+            iconName: 'assets/images/bank.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return;
@@ -118,7 +118,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
           ),
           MeCell(
             title: '更新日志',
-            iconName: 'img/update.png',
+            iconName: 'assets/images/update.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return UpdateLogsPage();
@@ -127,7 +127,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
           ),
           MeCell(
             title: '修改信息',
-            iconName: 'img/setting.png',
+            iconName: 'assets/images/setting.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return UpdateMePage();

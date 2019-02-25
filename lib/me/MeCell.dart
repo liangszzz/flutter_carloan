@@ -25,7 +25,7 @@ class MeCell extends StatelessWidget {
                   SizedBox(width: 20),
                   Text(title, style: TextStyle(fontSize: 18)),
                   Expanded(child: Container()),
-                  Image.asset('img/arrow_right.png'),
+                  Image.asset('assets/images/arrow_right.png'),
                 ],
               ),
             ),
