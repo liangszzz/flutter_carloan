@@ -49,7 +49,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
             color: Colors.white,
             child: ListView(
               children: <Widget>[
-                MeHeader(),
+//                MeHeader(),
                 SizedBox(height: 10),
                 _buildCells(context),
               ],

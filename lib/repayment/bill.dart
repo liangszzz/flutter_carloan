@@ -3,7 +3,7 @@ class Bill {
 
   List shouldPayDate;
 
-  double amount;
+  num amount;
 
   int status;
 }

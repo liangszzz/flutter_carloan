@@ -15,7 +15,7 @@ class Global {
 
   User user;
 
-  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.12:8081/"));
+  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.3:8081/"));
 
   /// 0 安卓 1,IOS 2.windows 3.
   int DEVICE=0;
