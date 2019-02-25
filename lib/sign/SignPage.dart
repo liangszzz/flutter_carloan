@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/agreeMent/AgreeMentPageInfo.dart';
+import 'package:flutter_carloan/agreement/AgreementPageInfo.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
@@ -387,7 +387,6 @@ class _SignPageState extends State<_SignPageStateful> {
 
     return Row(
       children: <Widget>[checkBox, text, new GestureDetector(child: agreement, onTap: _toAgreement,)],
-      
     );
   }
 
