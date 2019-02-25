@@ -47,8 +47,11 @@ class _faceValidateState extends State<faceValidatePage> {
       child: GestureDetector(
         onTap: _selectImage,
       ),
-      decoration:
-          BoxDecoration(image: DecorationImage(image: _getImageProvider())),
+      decoration: new BoxDecoration(
+          image: DecorationImage(image: _getImageProvider(), fit: BoxFit.cover),
+          border: new Border.all(width: 1.0, color: Colors.black38),
+      )
+
     );
 
     var btn = FlatButton(
@@ -91,7 +94,7 @@ class _faceValidateState extends State<faceValidatePage> {
     if (_image != null) {
       return FileImage(_image);
     } else {
-      return AssetImage("img/default_head.jpg");
+      return AssetImage("img/add_face.png");
     }
   }
 
