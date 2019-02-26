@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:flutter_carloan/repayment/bill.dart';
 
 class RepaymentPage extends StatefulWidget {
@@ -161,7 +162,7 @@ class RepaymentPageState extends State<RepaymentPage> {
   /// 订单基础信息行
   Widget buildLoanRowWidget() {
     String interestRateShowMsg = '';
-    if(interestRate != null) {
+    if (interestRate != null) {
       interestRateShowMsg = (interestRate * 100).toString() + '%';
     }
     return Container(
@@ -895,8 +896,6 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 确认借款方法
   void _confirmLoan() async {
-    print('*******************');
-    print('is confirming......');
     Map request = {
       'bizOrderNo': bizOrderNo,
       'applyAmount': applyAmount,
@@ -906,7 +905,16 @@ class RepaymentPageState extends State<RepaymentPage> {
     };
     try {
       Map response = await global.postFormData(_confirmPath, request);
-      if (response['code'] == 1) {
+      if (response['code'] == 0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderPage(
+                  idCard: global.user.idCard,
+                ),
+          ),
+        );
+      } else {
         _showSaveFailDialog();
       }
     } catch (e) {
