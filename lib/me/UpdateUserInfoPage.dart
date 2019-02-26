@@ -39,11 +39,20 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
     return Text("修改个人信息", style: TextStyle(fontSize: 14));
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _nickNameController.text = global.user.nickName;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nickNameController.dispose();
+  }
+
   Widget _buildBody() {
-
-    _nickNameController.text=global.user.nickName;
-
-    var headImg=Container(
+    var headImg = Container(
       child: GestureDetector(
         onTap: _selectImage,
         child: CircleAvatar(
@@ -52,7 +61,6 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
         ),
       ),
     );
-
 
     var nick = TextFormField(
       controller: _nickNameController,
