@@ -12,6 +12,7 @@ class RootScene extends StatefulWidget {
 }
 
 class _RootSceneState extends State<RootScene> {
+  Global global = new Global();
   int _tabIndex = 0;
   bool isFinishSetup = false;
   List<Image> _tabImages = [
@@ -52,7 +53,7 @@ class _RootSceneState extends State<RootScene> {
       body: IndexedStack(
         children: <Widget>[
           OrderPage(
-            idCard: '341203197307200711',
+            idCard: global.user.idCard,
           ),
           MeScene(),
         ],

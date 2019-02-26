@@ -5,9 +5,9 @@ import 'package:flutter_carloan/repayment/bill.dart';
 
 class RepaymentPage extends StatefulWidget {
   RepaymentPage({
-    this.bizOrderNo,
-    this.isConfirm,
-    this.channelType,
+    @required this.bizOrderNo,
+    @required this.isConfirm,
+    @required this.channelType,
   });
 
   final String bizOrderNo;
@@ -26,74 +26,92 @@ class RepaymentPage extends StatefulWidget {
 
 class RepaymentPageState extends State<RepaymentPage> {
   RepaymentPageState({
-    this.bizOrderNo,
-    this.isConfirmPage,
-    this.channelType,
+    @required this.bizOrderNo,
+    @required this.isConfirmPage,
+    @required this.channelType,
   });
 
   Global global = new Global();
+
+  // 外单号
   final String bizOrderNo;
+
+  // 是否是确认界面
+  final bool isConfirmPage;
+
+  // 订单渠道（1.新渠道、移动端，2.旧渠道）
   final num channelType;
 
-  // 是确认界面？（默认是）
-  bool isConfirmPage = true;
-
-  // 申请金额
+  // 申请金额，如果是旧渠道则是显示transfer amount
   double applyAmount;
+
+  // 利息利率
   double interestRate;
+
+  // 总期数
   int terms;
+
+  // 还款方式
   int method;
 
+  // 申请信息是否改变（确认借款界面需要，用来判断是更新预览还是确认借款）
   bool _applyDataChanged = false;
 
+  // 订单详情URL
   String _requestPath = 'bill/billDetailMobile';
+
+  // 申请借款初始化账单
   String _initBillPath = 'bill/initBills';
+
+  // 申请信息改变，更新并预计算
   String _updateAndComputingPath = 'bill/afterChangeInitBills';
+
+  // 确认借款
   String _confirmPath = 'bill/confirmOrderMsg';
 
   // 最大申请金额
-  int maxApplyAmount = 100000;
-
-  // 灰色背景
-  Color _greyBackground = Color.fromRGBO(234, 234, 234, 1);
-
-  // 灰色文字
-  Color _greyFontColor = Color.fromRGBO(136, 136, 136, 1);
-
-  // 黑色字体
-  Color blackFontColor = Color.fromRGBO(16, 16, 16, 1);
-
-  // 蓝色字体
-  Color _blueColor = Color.fromRGBO(3, 169, 244, 1);
-  Color _redColor = Color.fromRGBO(229, 28, 35, 1);
-  Color _whiteColor = Color.fromRGBO(255, 255, 255, 1);
-  Color _greenColor = Color.fromRGBO(70, 142, 82, 1);
-
-  // 字体
-  String _arial = 'Arial';
-
-  TextStyle _blue18 = TextStyle(
-    color: Color.fromRGBO(3, 169, 244, 1),
-    fontFamily: 'Arial',
-    fontSize: 18,
-  );
-  TextStyle _black14 = TextStyle(
-    color: Color.fromRGBO(16, 16, 16, 1),
-    fontFamily: 'Arial',
-    fontSize: 14,
-  );
-  TextStyle _grey14 = TextStyle(
-    color: Color.fromRGBO(136, 136, 136, 1),
-    fontFamily: 'Arial',
-    fontSize: 14,
-  );
+  int _maxApplyAmount = 100000;
 
   // 是否已经初始化
   bool _hasInit = false;
 
+  // 是否已经接受产品说明和合同
+  bool _accept = false;
+
   // 显示用的账单列表
   List<Bill> _bills = new List();
-  bool _accept = false;
+
+  // 字体、颜色
+  static String _arial = 'Arial';
+  static Color _lightGreyColor = Color.fromRGBO(234, 234, 234, 1);
+  static Color _greyColor = Color.fromRGBO(136, 136, 136, 1);
+  static Color _blackColor = Color.fromRGBO(16, 16, 16, 1);
+  static Color _blueColor = Color.fromRGBO(3, 169, 244, 1);
+  static Color _redColor = Color.fromRGBO(229, 28, 35, 1);
+  static Color _whiteColor = Color.fromRGBO(255, 255, 255, 1);
+  static Color _greenColor = Color.fromRGBO(70, 142, 82, 1);
+
+  // 常用文本格式
+  TextStyle _blue18 = TextStyle(
+    color: _blueColor,
+    fontFamily: _arial,
+    fontSize: 18,
+  );
+  TextStyle _black14 = TextStyle(
+    color: _blackColor,
+    fontFamily: _arial,
+    fontSize: 14,
+  );
+  TextStyle _black16 = TextStyle(
+    color: _blackColor,
+    fontFamily: _arial,
+    fontSize: 16,
+  );
+  TextStyle _grey14 = TextStyle(
+    color: _greyColor,
+    fontFamily: _arial,
+    fontSize: 14,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -101,18 +119,22 @@ class RepaymentPageState extends State<RepaymentPage> {
       _getRepaymentMsg();
     }
     return Scaffold(
-        appBar: new AppBar(
-          centerTitle: true,
-          title: new Text("订单详情"),
+      appBar: new AppBar(
+        centerTitle: true,
+        title: new Text(
+          "订单详情",
+          style: _black16,
         ),
-        body: Container(
-          color: _greyBackground,
-          child: Column(
-            children: <Widget>[
-              buildRepaymentDetailListView(),
-            ],
-          ),
-        ));
+      ),
+      body: Container(
+        color: _lightGreyColor,
+        child: Column(
+          children: <Widget>[
+            buildRepaymentDetailListView(),
+          ],
+        ),
+      ),
+    );
   }
 
   /// 贷款服务提供方组件
@@ -127,7 +149,7 @@ class RepaymentPageState extends State<RepaymentPage> {
           Text(
             "由大兴安岭农商银行提供贷款服务",
             style: TextStyle(
-              color: _greyFontColor,
+              color: _greyColor,
               fontSize: 12,
             ),
           )
@@ -153,7 +175,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                     child: Text(
                       "申请金额（元）",
                       style: TextStyle(
-                        color: blackFontColor,
+                        color: _blackColor,
                         fontSize: 14,
                       ),
                     ),
@@ -386,7 +408,7 @@ class RepaymentPageState extends State<RepaymentPage> {
             style: TextStyle(
               fontFamily: _arial,
               fontSize: 12,
-              color: _greyFontColor,
+              color: _greyColor,
             ),
           ),
         ],
@@ -418,7 +440,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                     style: TextStyle(
                       fontSize: 12,
                       fontFamily: _arial,
-                      color: _greyFontColor,
+                      color: _greyColor,
                     ),
                   ),
                   Container(
@@ -503,14 +525,23 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 合同、产品说明和确认按钮
   Widget _getExplainAndConfirmButton() {
-    return Column(
-      children: <Widget>[
-        _getExplain(),
-        _buildRepaymentConfirmButton(),
-      ],
-    );
+    if (isConfirmPage) {
+      return Column(
+        children: <Widget>[
+          _getExplain(),
+          _buildRepaymentConfirmButton(),
+        ],
+      );
+    } else {
+      return Column(
+        children: <Widget>[
+          _buildRepaymentConfirmButton(),
+        ],
+      );
+    }
   }
 
+  /// 合同与说明书行
   Widget _getExplain() {
     return Row(
       children: <Widget>[
@@ -528,7 +559,7 @@ class RepaymentPageState extends State<RepaymentPage> {
             style: TextStyle(
               fontFamily: _arial,
               fontSize: 12,
-              color: _greyFontColor,
+              color: _greyColor,
             ),
           ),
           onTap: () {
@@ -555,7 +586,7 @@ class RepaymentPageState extends State<RepaymentPage> {
           style: TextStyle(
             fontFamily: _arial,
             fontSize: 12,
-            color: _greyFontColor,
+            color: _greyColor,
           ),
         ),
         GestureDetector(
@@ -682,6 +713,11 @@ class RepaymentPageState extends State<RepaymentPage> {
       return DropdownButton(
         items: terms,
         value: method,
+        style: TextStyle(
+          fontFamily: _arial,
+          fontSize: 14,
+          color: _greyColor,
+        ),
         onChanged: (value) {
           if (method != value) {
             setState(() {
@@ -724,7 +760,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                   hintText: applyAmount.toString(),
                   hintStyle: _blue18,
                   suffixStyle: TextStyle(
-                    color: blackFontColor,
+                    color: _blackColor,
                   ),
                   disabledBorder: InputBorder.none,
                   enabledBorder: InputBorder.none,
@@ -741,7 +777,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                     return;
                   }
                   double apply = double.parse(text);
-                  if (apply > maxApplyAmount) {
+                  if (apply > _maxApplyAmount) {
                     showDialog(
                         context: context,
                         builder: (context) {
@@ -853,6 +889,7 @@ class RepaymentPageState extends State<RepaymentPage> {
     });
   }
 
+  /// 确认借款方法
   void _confirmLoan() async {
     print('*******************');
     print('is confirming......');
@@ -873,6 +910,7 @@ class RepaymentPageState extends State<RepaymentPage> {
     }
   }
 
+  /// 保存失败弹框
   void _showSaveFailDialog() {
     showDialog(
       context: context,
