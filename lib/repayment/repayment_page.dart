@@ -87,6 +87,7 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   // 显示用的账单列表
   List<Bill> _bills = new List();
+  bool _accept = false;
 
   @override
   Widget build(BuildContext context) {
@@ -338,9 +339,9 @@ class RepaymentPageState extends State<RepaymentPage> {
                   ],
                 ),
               );
-            } else {
-              return buildRepaymentConfirmButton();
             }
+
+            return _getExplainAndConfirmButton();
           },
         ),
       ),
@@ -494,8 +495,76 @@ class RepaymentPageState extends State<RepaymentPage> {
     }
   }
 
+  /// 合同、产品说明和确认按钮
+  Widget _getExplainAndConfirmButton() {
+    return Column(
+      children: <Widget>[
+        _getExplain(),
+        _buildRepaymentConfirmButton(),
+      ],
+    );
+  }
+
+  Widget _getExplain() {
+    return Row(
+      children: <Widget>[
+        Checkbox(
+          value: _accept,
+          onChanged: (value) {
+            setState(() {
+              _accept = !_accept;
+              print('状态改为：' + _accept.toString());
+            });
+          },
+        ),
+        Text(
+          '我已阅读和理解',
+          style: TextStyle(
+            fontFamily: _arial,
+            fontSize: 12,
+            color: _greyFontColor,
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            '《借款合同》',
+            style: TextStyle(
+              fontFamily: _arial,
+              fontSize: 12,
+              color: _blueColor,
+            ),
+          ),
+          onTap: () {
+            print('点击了借款合同');
+          },
+        ),
+        Text(
+          '、',
+          style: TextStyle(
+            fontFamily: _arial,
+            fontSize: 12,
+            color: _greyFontColor,
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            '《产品说明书》',
+            style: TextStyle(
+              fontFamily: _arial,
+              fontSize: 12,
+              color: _blueColor,
+            ),
+          ),
+          onTap: () {
+            print('点击了产品说明是书');
+          },
+        ),
+      ],
+    );
+  }
+
   /// 底部确认按钮
-  Widget buildRepaymentConfirmButton() {
+  Widget _buildRepaymentConfirmButton() {
     // 是否是确认界面
     if (isConfirmPage) {
       // 确认界面申请数据是否改变
@@ -697,6 +766,10 @@ class RepaymentPageState extends State<RepaymentPage> {
 
       Map response = await global.postFormData(_initBillPath, requestData);
       data = response['entity']['bills'];
+      applyAmount = response['entity']['applyAmount'];
+      interestRate = response['entity']['rate'];
+      terms = response['entity']['terms'];
+      method = int.parse(response['entity']['method']);
       for (int i = 0; i < data.length; i++) {
         Bill bill = new Bill();
         bill.currentTerm = data[i]['currentTerm'];
