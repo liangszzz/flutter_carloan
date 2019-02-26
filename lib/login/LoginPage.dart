@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
+import 'package:flutter_carloan/app/RootScene.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/order/OrderPage.dart';
@@ -443,7 +444,7 @@ class _LoginPageState extends State<LoginPage> {
   void _toLoginSuccessPage() {
     //跳转
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return SignPage(bizOrderNo: "QSM20181213105749", channelType: 2);
+      return RootScene();
     }));
   }
 }
