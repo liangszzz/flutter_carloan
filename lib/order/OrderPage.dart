@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/auditLenders/AuditLendersPage.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/order/order.dart';
 import 'package:flutter_carloan/repayment/repayment_page.dart';
+import 'package:flutter_carloan/userInfo/UserInfoPage.dart';
 
 class OrderPage extends StatefulWidget {
   OrderPage({
@@ -41,6 +43,9 @@ class OrderPageState extends State<OrderPage> {
   bool recentOrder = true;
   bool hasLoaded = false;
   final String idCard;
+
+  ///app进单
+  int fromPage = 0;
 
   void _changeTitleColor() {
     Color temp = _recent;
@@ -164,7 +169,7 @@ class OrderPageState extends State<OrderPage> {
               ),
             ),
             onPressed: () {
-              print("正在申请*********");
+              _toBorrow();
             },
           ),
         ),
@@ -236,30 +241,30 @@ class OrderPageState extends State<OrderPage> {
     double applyAmount = order.loanAmount;
 //    int terms = order.term
     return GestureDetector(
-      onTap: (){
-        if(status == 64 || status == 68 || status == 72) {
+      onTap: () {
+        if (status == 64 || status == 68 || status == 72) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => RepaymentPage(
-                bizOrderNo: bizOrderNo,
-                isConfirm: false,
-              ),
+                    bizOrderNo: bizOrderNo,
+                    isConfirm: false,
+                  ),
             ),
           );
         }
-        if(status == 19 && !hasConfirmed) {
+        if (status == 19 && !hasConfirmed) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => RepaymentPage(
-                bizOrderNo: bizOrderNo,
-                isConfirm: true,
-              ),
+                    bizOrderNo: bizOrderNo,
+                    isConfirm: true,
+                    channelType: order.channelType,
+                  ),
             ),
           );
         }
-
       },
       child: Column(
         children: <Widget>[
@@ -294,13 +299,13 @@ class OrderPageState extends State<OrderPage> {
     if (status == 19 && !order.hasConfirm) {
       msg = '未确认';
     }
-    if(status == 20) {
+    if (status == 20) {
       msg = '审核中';
     }
-    if(status == 21 || status == 22 || status == 61) {
+    if (status == 21 || status == 22 || status == 61) {
       msg = '审核拒绝';
     }
-    if(status == 62) {
+    if (status == 62) {
       msg = '放款失败';
     }
 //    switch(status) {
@@ -410,13 +415,15 @@ class OrderPageState extends State<OrderPage> {
         order.bankName = orderList[i]['bankName'];
         order.bankNoTail = orderList[i]['bankNoTail'];
         order.orderStatus = int.parse(orderList[i]['orderStatus']);
+        order.channelType = orderList[i]['channelType'];
         date = orderList[i]['loadDate'];
         if (date != null) {
           order.loanDate = date[1].toString() + '月' + date[2].toString() + '日';
         }
         date = orderList[i]['latestRepayDate'];
         if (date != null) {
-          order.latestRepayDate = date[1].toString() + '月' + date[2].toString() + '日';
+          order.latestRepayDate =
+              date[1].toString() + '月' + date[2].toString() + '日';
         }
         if (orderList[i]['wxAppConfirm'] == 1) {
           order.hasConfirm = true;
@@ -437,5 +444,57 @@ class OrderPageState extends State<OrderPage> {
     setState(() {
       hasLoaded = false;
     });
+  }
+
+  ///我要借款按钮,只获取最近一单的数据
+  void _toBorrow() {
+    if (orders.length > 0) {
+      ///有订单就查看详情
+      Order order = orders[0];
+      String bizOrderNo = order.bizOrderNo;
+      int orderStatus = order.orderStatus;
+      bool hasConfirm = order.hasConfirm;
+      int channelType = order.channelType;
+      if (orderStatus == 19 || orderStatus == 20) {
+        ///只有订单状态是19或20才能点击此按钮
+        if (hasConfirm) {
+          ///如果已经确认订单，跳转最终确认页
+          Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => new AuditLendersPage(
+                    bizOrderNo: bizOrderNo, channelType: channelType),
+              ));
+        }else{
+          ///如果未确认，跳转详情页
+          Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => new UserInfoPage(
+                    bizOrderNo: bizOrderNo, channelType: channelType, fromPage: 1,),
+              ));
+        }
+      } else if (orderStatus == 60 || orderStatus == 62 || orderStatus == 64) { ///60，62，64状态点击无效
+        return;
+      } else { ///其余状态跳转进单页面
+        ///跳转进单页面
+        Navigator.push(
+            context,
+            new MaterialPageRoute(
+              builder: (context) => new UserInfoPage(
+                    fromPage: fromPage, channelType: 1,
+                  ),
+            ));
+      }
+    } else {
+      ///跳转进单页面
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+            builder: (context) => new UserInfoPage(
+                  fromPage: fromPage, channelType: 1,
+                ),
+          ));
+    }
   }
 }

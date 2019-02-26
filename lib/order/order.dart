@@ -9,4 +9,5 @@ class Order {
   int orderStatus;
   String loanDate;
   bool hasConfirm;
+  num channelType;
 }
