@@ -96,12 +96,32 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   String openId = "";
 
-  String defaultImageUrl = "http://106.14.239.49/group1/M00/04/4D/ag7vMVxuXfyAVvLmAAADgDq1o2k710.png";
+  String defaultImageUrl =
+      "http://106.14.239.49/group1/M00/04/4D/ag7vMVxuXfyAVvLmAAADgDq1o2k710.png";
 
   int formType = 0;
 
   ///控制输入框是否允许输入
   bool canWrite = false;
+
+  String buttonName = "下一步";
+
+  ///借款用途
+  List<String> borrowUse = [
+    '请选择',
+    '消费',
+    '汽车',
+    '医美',
+    '旅游',
+    '教育',
+    '3C',
+    '家装',
+    '租房',
+    '租赁',
+    '农业'
+  ];
+  String borrowUseLabel = "请选择";
+  int borrowUseValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +229,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               child: TextField(
                 enabled: canWrite,
                 style:
-                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$userName",
@@ -251,7 +271,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               child: TextField(
                 enabled: canWrite,
                 style:
-                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$idCard",
@@ -936,6 +956,34 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
+      ///借款用途
+      new GestureDetector(
+        onTap: _showBorrowUseDialog,
+        child: new Container(
+          margin: new EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+          height: 48.0,
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new Text(
+                  '借款用途',
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+                ),
+              ),
+              new Padding(
+                padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                child: new Text(
+                  borrowUse[borrowUseValue],
+                  style:
+                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+
       new Container(
         margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
         height: 1.0,
@@ -1110,26 +1158,27 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   childAspectRatio: 1.5,
                   children: idCardImageList.map((f) {
                     return new GestureDetector(
-                      onTap: () {
-                        var index = idCardImageList.indexOf(f);
-                        if (defaultImageUrl == f){
-                          ImagePicker.pickImage(source: ImageSource.gallery).then((onValue){
-                            _uploadImage(onValue, index);
-                          });
-                        }else{
-                          showPhoto(context, f, index);
-                        }
-                      },
-                      child: new Container(
-                        decoration: new BoxDecoration(
-                          border: new Border.all(width: 1.0, color: Colors.black38),
-                          image: new DecorationImage(
-                            image: new NetworkImage(f),
-                            fit: BoxFit.cover,
+                        onTap: () {
+                          var index = idCardImageList.indexOf(f);
+                          if (defaultImageUrl == f) {
+                            ImagePicker.pickImage(source: ImageSource.gallery)
+                                .then((onValue) {
+                              _uploadImage(onValue, index);
+                            });
+                          } else {
+                            showPhoto(context, f, index);
+                          }
+                        },
+                        child: new Container(
+                          decoration: new BoxDecoration(
+                            border: new Border.all(
+                                width: 1.0, color: Colors.black38),
+                            image: new DecorationImage(
+                              image: new NetworkImage(f),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                      )
-                    );
+                        ));
                   }).toList(),
                 ),
               ),
@@ -1173,7 +1222,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 child: new Padding(
                   padding: new EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
                   child: new Text(
-                    "修改",
+                    buttonName,
                     style: TextStyle(color: Colors.white, fontSize: 18.0),
                   ),
                 ),
@@ -1328,6 +1377,24 @@ class _UserInfoPageState extends State<UserInfoPage> {
         });
   }
 
+  void _showBorrowUseDialog() {
+    showDialog<Null>(
+        context: context, //BuildContext对象
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return new Dialog(
+            child: new Container(
+              width: 300.0,
+              height: 230.0,
+              color: Colors.white,
+              child: new ListView(
+                  children:
+                      listViewDefault(borrowUse, "borrow_use", borrowUseValue)),
+            ),
+          );
+        });
+  }
+
   ///时间选择
   _showDataPicker() async {
     Locale myLocale = Localizations.localeOf(context);
@@ -1366,6 +1433,17 @@ class _UserInfoPageState extends State<UserInfoPage> {
     List<Widget> data = new List();
     if (type == "bank_name_flag") {
       for (int i = 0; i < sysDictList.length; i++) {
+        data.add(
+          new RadioListTile<int>(
+            title: new Text(sysDictList[i]),
+            value: i,
+            groupValue: dataValue,
+            onChanged: (int e) => updateDefaultDialogValue(e, type),
+          ),
+        );
+      }
+    } else if (type == "borrow_use") {
+      for (int i = 1; i < sysDictList.length; i++) {
         data.add(
           new RadioListTile<int>(
             title: new Text(sysDictList[i]),
@@ -1420,6 +1498,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
         case 'contact_relationship_flag':
           this.relationShipValue = e;
           break;
+        case 'borrow_use':
+          this.borrowUseValue = e;
+          break;
       }
     });
   }
@@ -1460,32 +1541,44 @@ class _UserInfoPageState extends State<UserInfoPage> {
         List idCraUrlList = new List();
         ClUserInfo clUserInfo;
         ClContactInfo clContactInfo;
+        var borrow_usage;
 
-        if (fromPage == 2) {  ///我的页面进入查看个人资料
+        if (fromPage == 2 || fromPage == 1) {
+          ///我的页面进入查看个人资料
+          biz_order_no = bizOrderNo;
           var response = await global.postFormData("user/query",
               {"biz_order_no": bizOrderNo, "channel_type": channelType});
           dataMap = response['dataMap'];
           degreeStatusList = dataMap["degree"];
           clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
           contactInfoList = dataMap["clContactInfoList"];
-          clContactInfo = ClContactInfo.fromJson(contactInfoList[0]); ///此处联系人只取一个展示
+          clContactInfo = ClContactInfo.fromJson(contactInfoList[0]);
+
+          ///此处联系人只取一个展示
           idCraUrlList = dataMap["clAttachmentInfoList"];
+          if (fromPage == 2) {
+            buttonName = "修改";
+          }
         } else {
           canWrite = true;
+
           ///此处openId使用 token
           openId = "token:13770207216";
           var response = await global.postFormData(
               "borrow/toBorrow/" + openId + "/" + global.DEVICE.toString());
           dataMap = response['dataMap'];
           bizOrderNo = dataMap['biz_order_no'];
-          if (bizOrderNo != "" && bizOrderNo != null) { ///第一次进单
+          if (bizOrderNo != "" && bizOrderNo != null) {
+            ///第一次进单
             biz_order_no = bizOrderNo;
-          } else { ///非第一次进单
+          } else {
+            ///非第一次进单
             clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
             biz_order_no = clUserInfo.biz_order_no;
             clContactInfo = ClContactInfo.fromJson(dataMap["clContactInfo"]);
             idCraUrlList = dataMap["attachmentInfoList"];
-
+            Map riskData = dataMap['clBaseInfo'] as Map;
+            borrow_usage = riskData['borrow_usage'].toString();
           }
           degreeStatusList = dataMap["degreeS"];
         }
@@ -1500,8 +1593,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         bankStatusList = dataMap["bank_list"];
 
         setState(() {
-
-          if(clUserInfo != null){
+          if (clUserInfo != null) {
             userName = clUserInfo.user_name;
             idCard = clUserInfo.idcard;
             idCardAddress = clUserInfo.idcard_address;
@@ -1520,11 +1612,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
             healthValue = int.parse(clUserInfo.health_status);
             identityTypeValue = int.parse(clUserInfo.identity_type);
             degreeValue = int.parse(clUserInfo.degree);
-            customerInfoValue = int.parse(clUserInfo.customer_professional_info);
+            customerInfoValue =
+                int.parse(clUserInfo.customer_professional_info);
             bankCardValue = int.parse(clUserInfo.bank_card_type);
+            borrowUseValue = int.parse(borrow_usage);
+            borrowUseLabel = borrowUse[int.parse(borrow_usage)];
           }
 
-          if(clContactInfo != null){
+          if (clContactInfo != null) {
             contactName = clContactInfo.contactName;
             contactPhone = clContactInfo.contactPhone;
             relationShipValue = int.parse(clContactInfo.contactRelationship);
@@ -1608,7 +1703,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               String filePath = idCraUrlList[i]["file_path"];
               idCardImageList.add(filePath);
             }
-          }else{
+          } else {
             for (int i = 0; i < 2; i++) {
               idCardImageList.add(defaultImageUrl);
             }
@@ -1652,12 +1747,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
-    if(identityTypeLabel.isEmpty){
+    if (identityTypeLabel.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "身份类型不能为空", null);
       return;
     }
 
-    if(degreeLabel.isEmpty){
+    if (degreeLabel.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "最高学历不能为空", null);
       return;
     }
@@ -1667,7 +1762,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
-    if(customerInfoLabel.isEmpty){
+    if (customerInfoLabel.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "客户职业信息不能为空", null);
       return;
     }
@@ -1677,7 +1772,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
-    if(bankCardLabel.isEmpty){
+    if (bankCardLabel.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "银行卡类型不能为空", null);
       return;
     }
@@ -1722,57 +1817,69 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
-    if(idCardImageList.contains(defaultImageUrl)){
+    if (idCardImageList.contains(defaultImageUrl)) {
       DialogUtils.showAlertDialog(context, "提示", "请上传身份证正反面", null);
       return;
     }
 
+    if (borrowUseValue <= 0) {
+      DialogUtils.showAlertDialog(context, "提示", "请选择贷款用途", null);
+      return;
+    }
+
     String url = "user/save";
-    if(widget.fromPage == 0){
+    if (widget.fromPage == 0) {
       url = "borrow/saveUserInfo";
     }
 
-    try{
-      var response = await global.postFormData(url, {"data":{
-        "openid" : "token:13770207216",
-        "biz_order_no": biz_order_no,
-        "user_name": userName,
-        "idcard" : idCard,
-        "idcard_address" :idCardAddress,
-        "residential_address" : residentialAddress,
-        "phone_no": phoneNo,
-        "health_status" : healthValue,
-        "identity_type" : identityTypeValue,
-        "degree" :degreeValue,
-        "company_name" : companyName,
-        "customer_professional_info" :customerInfoValue,
-        "company_phone_no" : companyPhone,
-        "certificate_expiry_date" : _time,
-        "bank_name" : bankNameValue,
-        "bank_card_type": bankCardValue,
-        "bank_account" : bankAccount,
-        "reserve_phone_no" : reservePhoneNo,
-        "personal_income" : personalIncome,
-        "wechat" : wxNumber,
-        "marital_status": maritalValue,
-        "contact_name" : contactName,
-        "contact_phone" : contactPhone,
-        "contact_relationship" : relationShipValue
-      },
+    try {
+      var response = await global.postFormData(url, {
+        "data": {
+          "openid": "token:13770207216",
+          "channel_type": widget.channelType,
+          "biz_order_no": biz_order_no,
+          "user_name": userName,
+          "idcard": idCard,
+          "idcard_address": idCardAddress,
+          "residential_address": residentialAddress,
+          "phone_no": phoneNo,
+          "health_status": healthValue,
+          "identity_type": identityTypeValue,
+          "degree": degreeValue,
+          "company_name": companyName,
+          "customer_professional_info": customerInfoValue,
+          "company_phone_no": companyPhone,
+          "certificate_expiry_date": _time,
+          "bank_name": bankNameValue,
+          "bank_card_type": bankCardValue,
+          "bank_account": bankAccount,
+          "reserve_phone_no": reservePhoneNo,
+          "personal_income": personalIncome,
+          "wechat": wxNumber,
+          "marital_status": maritalValue,
+          "contact_name": contactName,
+          "contact_phone": contactPhone,
+          "contact_relationship": relationShipValue,
+          "borrow_usage" : borrowUseValue
+        },
       });
 
-      if(response["code"] == 0){
+      if (response["code"] == 0) {
         ///如果是从我的页面进入就弹出修改成功的提示框
-        if(widget.fromPage == 2){
+        if (widget.fromPage == 2) {
           DialogUtils.showAlertDialog(context, "提示", "修改成功", null);
-        }else {
+        } else {
           ///跳转到车辆信息页面
           Navigator.push(context, new MaterialPageRoute(builder: (context) {
-            return CarInfoPage(bizOrderNo: biz_order_no, channelType: widget.channelType, fromPage: widget.fromPage,);
+            return CarInfoPage(
+              bizOrderNo: biz_order_no,
+              channelType: widget.channelType,
+              fromPage: widget.fromPage,
+            );
           }));
         }
       }
-    }catch(e){
+    } catch (e) {
       print(e);
       DialogUtils.showAlertDialog(context, "提示", "保存失败", null);
     }
@@ -1784,7 +1891,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     FormData formData = new FormData.from({
       "biz_order_no": biz_order_no,
       "file_type": fileType,
-      "formType" : formType,
+      "formType": formType,
     });
     if (imageFile != null) {
       formData.add("file", new UploadFileInfo(imageFile, "身份证正反面.png"));
