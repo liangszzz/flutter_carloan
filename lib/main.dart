@@ -5,58 +5,56 @@ import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/sign/SignPage.dart';
-
-import 'package:flutter_carloan/repayment/repayment_page.dart';
-import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:flutter_carloan/me/MeScene.dart';
-import 'package:flutter_carloan/app/RootScene.dart';
+import 'package:flutter_carloan/sign/SignPage.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => _MyAppStateful();
-}
-
-class _MyAppStateful extends StatefulWidget {
+class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<_MyAppStateful> {
-  Global global = new Global();
+class _MyAppState extends State<MyApp> {
+  Global global = Global();
 
   bool loginFlag = false;
 
   @override
   void initState() {
-    _checkDevice();
     _checkLogin();
     sleep(Duration(milliseconds: 300));
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: "车贷系统",
-//        home: RepaymentPage(
-//          bizOrderNo: 'QSM-TEST123456789',
-//        bizOrderNo: '31037863-031532073916',
-//          isConfirm: false,
-//        ),
-//  home: OrderPage(
-//    idCard: '341203197307200711',
-//  ),
-  home: RootScene(),
-        theme: new ThemeData(
-          primaryColor: Colors.white,
-        ),
-      );
+  Widget build(BuildContext context) => _buildBody();
+
+  Widget _buildBody() {
+    if (Platform.isAndroid) {
+      global.DEVICE = 0;
+    } else if (Platform.isIOS) {
+      global.DEVICE = 1;
+    } else if (Platform.isWindows) {
+      global.DEVICE = 2;
+    }
+    return MaterialApp(
+      title: "车贷系统",
+      home: _toIndexPage(),
+      theme: new ThemeData(
+        primaryColor: Colors.white,
+      ),
+    );
+  }
 
   Widget _toIndexPage() {
     if (loginFlag) {
-      return SignPage(bizOrderNo: "NM2018100822301386314973", channelType: 2);
+      return MeScene();
+//      return SignPage(bizOrderNo: "NM2018100822301386314973", channelType: 2);
+/*      return AuditLendersPage(
+        bizOrderNo: "NM2018100822301386314973",
+        channelType: 2,
+      );*/
     }
     return LoginPage();
   }
@@ -78,17 +76,6 @@ class _MyAppState extends State<_MyAppStateful> {
       setState(() {
         loginFlag = true;
       });
-    }
-  }
-
-  ///检查设备
-  void _checkDevice() {
-    if (Platform.isAndroid) {
-      global.DEVICE = 0;
-    } else if (Platform.isIOS) {
-      global.DEVICE = 1;
-    } else if (Platform.isWindows) {
-      global.DEVICE = 2;
     }
   }
 }

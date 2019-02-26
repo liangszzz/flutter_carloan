@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
@@ -53,16 +54,6 @@ class _faceValidateState extends State<faceValidatePage> {
       )
 
     );
-
-    var btn = FlatButton(
-        onPressed: _doCheck,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Colors.green,
-        child: Text(
-          "下一步",
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ));
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
       child: Column(
@@ -75,7 +66,7 @@ class _faceValidateState extends State<faceValidatePage> {
           SizedBox(
             height: 20,
           ),
-          btn
+          CommonButton(text: "下一步",onClick: _doCheck,),
         ],
       ),
     );

@@ -1,28 +1,37 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-class CodeButton extends StatelessWidget {
-  ///点击回调
-  final VoidCallback onPress;
+class CodeButton extends StatefulWidget {
+  final second = 60;
 
-  ///倒计时
-  final int second;
+  final VoidCallback callback;
 
-  const CodeButton({Key key, this.onPress, this.second}) : super(key: key);
+  const CodeButton({Key key, this.callback}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _CodeButtonState();
+}
+
+class _CodeButtonState extends State<CodeButton> {
+  Timer timer;
+
+  int _second = 0;
 
   @override
   Widget build(BuildContext context) {
-    if (second > 0) {
+    if (_second > 0) {
       return Container(
         width: 95,
         alignment: Alignment.center,
         child: Text(
-          '${second}',
+          "${_second}",
           style: TextStyle(fontSize: 14, color: Colors.black),
         ),
       );
     }
     return GestureDetector(
-      onTap: onPress,
+      onTap: _onPress,
       child: Container(
         child: Text(
           "获取验证码",
@@ -31,5 +40,30 @@ class CodeButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onPress() {
+    setState(() {
+      _second = this.widget.second;
+    });
+    _secondUpdate();
+    this.widget.callback();
+  }
+
+  void _secondUpdate() {
+    timer = Timer(Duration(seconds: 1), () {
+      setState(() {
+        --_second;
+      });
+      _secondUpdate();
+    });
+  }
+
+  @override
+  void dispose() {
+    if (timer != null) {
+      timer.cancel();
+    }
+    super.dispose();
   }
 }

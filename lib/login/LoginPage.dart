@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
+import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
@@ -9,18 +10,13 @@ import 'package:flutter_carloan/me/MeScene.dart';
 import 'package:flutter_carloan/sign/SignPage.dart';
 
 ///登陆页面
-class LoginPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => _LoginStateful();
-}
-
-class _LoginStateful extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<_LoginStateful> {
-  Global global = new Global();
+class _LoginPageState extends State<LoginPage> {
+  Global global = Global();
 
   ///登陆方式 0 免密登陆,1 密码登陆 2 密码找回
   var _loginType = 0;
@@ -34,7 +30,6 @@ class _LoginPageState extends State<_LoginStateful> {
   GlobalKey _formKey = new GlobalKey<FormState>();
 
   int second = 0;
-  Timer timer;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -183,8 +178,7 @@ class _LoginPageState extends State<_LoginStateful> {
           ),
           border: OutlineInputBorder(borderSide: BorderSide.none),
           suffix: CodeButton(
-            onPress: _getSmsCode,
-            second: second,
+            callback: _getSmsCode,
           ),
           counterText: ""),
     );
@@ -246,32 +240,12 @@ class _LoginPageState extends State<_LoginStateful> {
 
   ///创建登陆按钮
   Widget _buildLogin() {
-    var btn = FlatButton(
-        onPressed: _login,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Colors.green,
-        child: Text(
-          "登陆",
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ));
-    return Row(
-      children: <Widget>[Expanded(child: btn)],
-    );
+    return CommonButton(text: "登陆", onClick: _login);
   }
 
   ///创建重置密码按钮
   Widget _buildResetPwd() {
-    var btn = FlatButton(
-        onPressed: _resetPwd,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Colors.green,
-        child: Text(
-          "重置密码",
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ));
-    return Row(
-      children: <Widget>[Expanded(child: btn)],
-    );
+    return CommonButton(text: "重置密码", onClick: _resetPwd);
   }
 
   ///创建免密登陆底部
@@ -365,21 +339,8 @@ class _LoginPageState extends State<_LoginStateful> {
     DataResponse d = DataResponse.fromJson(response);
 
     if (d.success()) {
-      setState(() {
-        second = global.SECOND;
-      });
-      _secondUpdate();
+      print("验证码发送成功!");
     }
-  }
-
-  ///验证码倒计时
-  void _secondUpdate() {
-    timer = Timer(Duration(seconds: 1), () {
-      setState(() {
-        --second;
-      });
-      _secondUpdate();
-    });
   }
 
   ///切换登陆方式
@@ -476,14 +437,6 @@ class _LoginPageState extends State<_LoginStateful> {
         _pwdRepeat.clear();
       });
     }
-  }
-
-  @override
-  void dispose() {
-    if (timer != null) {
-      timer.cancel();
-    }
-    super.dispose();
   }
 
   ///去登陆成功页面

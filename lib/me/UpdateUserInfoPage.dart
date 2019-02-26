@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
@@ -39,19 +40,19 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
   }
 
   Widget _buildBody() {
-    var img = CircleAvatar(
-      radius: 40,
-      backgroundImage: getImageProvider(),
+
+    _nickNameController.text=global.user.nickName;
+
+    var headImg=Container(
+      child: GestureDetector(
+        onTap: _selectImage,
+        child: CircleAvatar(
+          radius: 80,
+          backgroundImage: _getImageProvider(),
+        ),
+      ),
     );
 
-    var btnSelect = FlatButton(
-        onPressed: _selectImage,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Colors.green,
-        child: Text(
-          "编辑",
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ));
 
     var nick = TextFormField(
       controller: _nickNameController,
@@ -63,9 +64,6 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
         hintText: "请输入昵称",
       ),
     );
-
-    _nickNameController.text = global.user.nickName;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
       child: Column(
@@ -73,11 +71,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
           SizedBox(
             height: 20,
           ),
-          img,
-          SizedBox(
-            height: 20,
-          ),
-          btnSelect,
+          headImg,
           SizedBox(
             height: 20,
           ),
@@ -93,17 +87,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
 
   ///创建修改按钮
   Widget _buildBtn() {
-    var btn = FlatButton(
-        onPressed: _updateInfo,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Colors.green,
-        child: Text(
-          "确认",
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ));
-    return Row(
-      children: <Widget>[Expanded(child: btn)],
-    );
+    return CommonButton(text: "确认", onClick: _updateInfo);
   }
 
   ///上传图片,修改信息
@@ -114,10 +98,8 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
-    FormData formData = new FormData.from({
-      "nickName": _nickNameController.text,
-      "phone": global.user.phone
-    });
+    FormData formData = new FormData.from(
+        {"nickName": _nickNameController.text, "phone": global.user.phone});
     if (_image != null) {
       formData.add("file", new UploadFileInfo(_image, "1.png"));
     }
@@ -128,7 +110,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
     if (d.success()) {
       setState(() {
         global.user.nickName = _nickNameController.text;
-        if(_image!=null && d.entity !=null){
+        if (_image != null && d.entity != null) {
           global.user.avatarUrl = d.entity;
         }
       });
@@ -146,7 +128,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
     });
   }
 
-  ImageProvider getImageProvider() {
+  ImageProvider _getImageProvider() {
     if (_image != null) {
       return FileImage(_image);
     } else {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
+import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
@@ -30,7 +31,6 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   String btnText = "下一步";
 
   int second = 0;
-  Timer timer;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -152,8 +152,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
             color: Colors.grey,
           ),
           suffix: CodeButton(
-            onPress: _getSmsCode,
-            second: second,
+            callback: _getSmsCode,
           ),
         ),
         validator: (v) {
@@ -188,17 +187,18 @@ class _UpdateState extends State<_UpdatePwdStateful> {
 
   ///创建按钮
   Widget _buildBtn() {
-    var btn = FlatButton(
-        onPressed: _btnClick,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Colors.green,
-        child: Text(
-          btnText,
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ));
-    return Row(
-      children: <Widget>[Expanded(child: btn)],
-    );
+//    var btn = FlatButton(
+//        onPressed: _btnClick,
+//        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//        color: Colors.green,
+//        child: Text(
+//          btnText,
+//          style: TextStyle(fontSize: 16, color: Colors.white),
+//        ));
+//    return Row(
+//      children: <Widget>[Expanded(child: btn)],
+//    );
+    return CommonButton(text: btnText, onClick: _btnClick);
   }
 
   void _btnClick() async {
@@ -214,7 +214,6 @@ class _UpdateState extends State<_UpdatePwdStateful> {
             contentStyle: TextStyle(color: Colors.red));
         return;
       }
-      _getSmsCode();
       setState(() {
         pageType = 1;
         btnText = "修改";
@@ -245,32 +244,11 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   }
 
   void _getSmsCode() async {
-    setState(() {
-      second = global.SECOND;
-    });
     var response = await global
         .post("login/sendAppSms/" + global.user.phone + "/updatePwd");
     DataResponse d = DataResponse.fromJson(response);
     if (d.success()) {
       print("#发送验证码成功!");
     }
-    _secondUpdate();
-  }
-
-  void _secondUpdate() {
-    timer = Timer(Duration(seconds: 1), () {
-      setState(() {
-        --second;
-      });
-      _secondUpdate();
-    });
-  }
-
-  @override
-  void dispose() {
-    if (timer != null) {
-      timer.cancel();
-    }
-    super.dispose();
   }
 }

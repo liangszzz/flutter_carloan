@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/agreement/AgreementPageInfo.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
+import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
@@ -57,7 +58,6 @@ class _SignPageState extends State<_SignPageStateful> {
   var code = new TextEditingController();
   var smsId;
 
-  Timer timer;
   int second = 0;
 
   bool checkboxSelected = false;
@@ -68,14 +68,6 @@ class _SignPageState extends State<_SignPageStateful> {
   void initState() {
     checkSign();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (timer != null) {
-      timer = null;
-    }
   }
 
   @override
@@ -322,8 +314,8 @@ class _SignPageState extends State<_SignPageStateful> {
           prefixStyle: TextStyle(color: Colors.black),
           border: OutlineInputBorder(borderSide: BorderSide.none),
           suffix: CodeButton(
-            onPress: _getSmsCode,
-            second: second,
+            callback: _getSmsCode,
+//            second: second,
           )),
     );
     return text;
@@ -336,11 +328,6 @@ class _SignPageState extends State<_SignPageStateful> {
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
-
-    setState(() {
-      second = global.SECOND;
-    });
-    _secondUpdate();
     var response = await global.postFormData("sign/signSms", {
       "payerName": userName.text,
       "payerCardNo": idCard.text,
@@ -354,15 +341,6 @@ class _SignPageState extends State<_SignPageStateful> {
       DialogUtils.showAlertDialog(context, "提示", d.msg, null,
           contentStyle: TextStyle(color: Colors.red));
     }
-  }
-
-  void _secondUpdate() {
-    timer = Timer(Duration(seconds: 1), () {
-      setState(() {
-        --second;
-      });
-      _secondUpdate();
-    });
   }
 
   ///创建协议页面
@@ -386,37 +364,45 @@ class _SignPageState extends State<_SignPageStateful> {
     );
 
     return Row(
-      children: <Widget>[checkBox, text, new GestureDetector(child: agreement, onTap: _toAgreement,)],
+      children: <Widget>[
+        checkBox,
+        text,
+        new GestureDetector(
+          child: agreement,
+          onTap: _toAgreement,
+        )
+      ],
     );
   }
 
   ///创建按钮
   Widget _buildBtn() {
-    var _btnText = "下一步";
-    var btn = FlatButton(
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      onPressed: () {
-        _doSign();
-      },
-      shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Colors.white,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(8)),
-      //通过控制 Text 的边距来控制控件的高度
-      child: new Padding(
-        padding: new EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
-        child: new Text(
-          _btnText,
-          style: TextStyle(color: Colors.white, fontSize: 18.0),
-        ),
-      ),
-      color: Colors.blue,
-    );
-    return Row(
-      children: <Widget>[Expanded(child: btn)],
-    );
+//    var _btnText = "下一步";
+//    var btn = FlatButton(
+//      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//      onPressed: () {
+//        _doSign();
+//      },
+//      shape: RoundedRectangleBorder(
+//          side: BorderSide(
+//            color: Colors.white,
+//            width: 1,
+//          ),
+//          borderRadius: BorderRadius.circular(8)),
+//      //通过控制 Text 的边距来控制控件的高度
+//      child: new Padding(
+//        padding: new EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
+//        child: new Text(
+//          _btnText,
+//          style: TextStyle(color: Colors.white, fontSize: 18.0),
+//        ),
+//      ),
+//      color: Colors.blue,
+//    );
+//    return Row(
+//      children: <Widget>[Expanded(child: btn)],
+//    );
+    return CommonButton(text: "下一步", onClick: _doSign);
   }
 
   ///签约
@@ -444,7 +430,10 @@ class _SignPageState extends State<_SignPageStateful> {
   ///跳转自动还款协议页面
   void _toAgreement() {
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return AgreementInfoPage(title: agreementTitle, bizOrderNo: widget.bizOrderNo, channelType: widget.channelType);
+      return AgreementInfoPage(
+          title: agreementTitle,
+          bizOrderNo: widget.bizOrderNo,
+          channelType: widget.channelType);
     }));
   }
 }
