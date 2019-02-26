@@ -7,20 +7,17 @@ class RepaymentPage extends StatefulWidget {
   RepaymentPage({
     this.bizOrderNo,
     this.isConfirm,
-    this.applyAmount,
-    this.terms,
-    this.method,
   });
 
   final String bizOrderNo;
   final bool isConfirm;
-  final double applyAmount;
-  final int terms;
-  final int method;
 
   @override
   State<StatefulWidget> createState() {
-    return RepaymentPageState();
+    return RepaymentPageState(
+      bizOrderNo: bizOrderNo,
+      isConfirmPage: isConfirm,
+    );
   }
 }
 
@@ -28,9 +25,6 @@ class RepaymentPageState extends State<RepaymentPage> {
   RepaymentPageState({
     this.bizOrderNo,
     this.isConfirmPage,
-    this.applyAmount,
-    this.terms,
-    this.method,
   });
 
   Global global = new Global();
@@ -40,26 +34,25 @@ class RepaymentPageState extends State<RepaymentPage> {
   bool isConfirmPage = true;
 
   // 申请金额
-  double applyAmount = 10000;
+  double applyAmount;
+  double interestRate;
   int terms;
   int method;
 
   bool _applyDataChanged = false;
 
-  int itemValue = 1;
+  String _requestPath = 'bill/billDetailMobile';
+  String _initBillPath = 'bill/initBills';
+  String _updateAndComputingPath = 'bill/afterChangeInitBills';
 
-  String _requestPath = "bill/billDetail";
-  String _updateAndComputingPath = "bill/afterChangeInitBills";
-
-  int repayMethodValue = 1;
-
+  // 最大申请金额
   int maxApplyAmount = 100000;
 
   // 灰色背景
-  Color greyBackground = Color.fromRGBO(234, 234, 234, 1);
+  Color _greyBackground = Color.fromRGBO(234, 234, 234, 1);
 
   // 灰色文字
-  Color greyFontColor = Color.fromRGBO(136, 136, 136, 1);
+  Color _greyFontColor = Color.fromRGBO(136, 136, 136, 1);
 
   // 黑色字体
   Color blackFontColor = Color.fromRGBO(16, 16, 16, 1);
@@ -90,34 +83,24 @@ class RepaymentPageState extends State<RepaymentPage> {
   );
 
   // 是否已经初始化
-  bool hasInit = false;
+  bool _hasInit = false;
 
   // 显示用的账单列表
   List<Bill> _bills = new List();
+  bool _accept = false;
 
   @override
   Widget build(BuildContext context) {
-    if (!hasInit) {
+    if (!_hasInit) {
       _getRepaymentMsg();
     }
-    print('*********');
-    DateTime now = DateTime.now();
-    print(DateTime(now.year, now.month, now.day));
-    print(DateTime(2019, 1, 22));
-    print(
-        DateTime(now.year, now.month, now.day).isBefore(DateTime(2019, 2, 22)));
-    print(
-        DateTime(now.year, now.month, now.day).isAfter(DateTime(2019, 2, 22)));
-    print(DateTime(now.year, now.month, now.day)
-        .isAtSameMomentAs(DateTime(2019, 2, 22)));
-
     return Scaffold(
         appBar: new AppBar(
           centerTitle: true,
           title: new Text("订单详情"),
         ),
         body: Container(
-          color: greyBackground,
+          color: _greyBackground,
           child: Column(
             children: <Widget>[
               buildRepaymentDetailListView(),
@@ -126,50 +109,19 @@ class RepaymentPageState extends State<RepaymentPage> {
         ));
   }
 
-  /// 更新并重新计算账单（预计算，还没有保存）
-  void _getUpdateRepaymentMsg() async {
-    List data = new List();
-    Map request = {
-      "bizOrderNo": "QSM20181221092524",
-      "applyAmount": 30000,
-      "terms": 12,
-      "method": 1,
-      "origin": 1,
-    };
-
-    Map response = await global.postFormData(_updateAndComputingPath, request);
-    data = response['entity']['bills'];
-
-    _bills = new List();
-    for (int i = 0; i < data.length; i++) {
-      Bill bill = new Bill();
-      bill.currentTerm = data[i]['currentTerm'];
-//      bill.shouldPayDate = data[i]['shouldPayDate'][0].toString() +
-//          '-' +
-//          data[i]['shouldPayDate'][1].toString() +
-//          '-' +
-//          data[i]['shouldPayDate'][2].toString();
-      bill.amount = data[i]['amount'];
-      _bills.add(bill);
-    }
-    setState(() {
-      _applyDataChanged = false;
-    });
-  }
-
   /// 贷款服务提供方组件
   Widget _buildLoanEmployerWidget() {
     return Container(
-      padding: EdgeInsets.only(top: 7, bottom: 7),
+      padding: EdgeInsets.only(top: 7, bottom: 7, left: 13),
       decoration: new BoxDecoration(
-        color: Colors.white,
+        color: _whiteColor,
       ),
       child: Row(
         children: <Widget>[
           Text(
             "由大兴安岭农商银行提供贷款服务",
             style: TextStyle(
-              color: greyFontColor,
+              color: _greyFontColor,
               fontSize: 12,
             ),
           )
@@ -181,7 +133,7 @@ class RepaymentPageState extends State<RepaymentPage> {
   /// 订单基础信息行
   Widget buildLoanRowWidget() {
     return Container(
-      color: Colors.white,
+      color: _whiteColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -246,7 +198,9 @@ class RepaymentPageState extends State<RepaymentPage> {
             height: 50.0,
           ),
           Container(
-            child: Expanded(child: _buildLoanRowWidgetColumn()),
+            child: Expanded(
+              child: _buildLoanRowWidgetColumn(),
+            ),
           ),
         ],
       ),
@@ -279,34 +233,34 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   Widget _getTermWidget() {
     if (isConfirmPage) {
-      List<DropdownMenuItem> terms = new List();
+      List<DropdownMenuItem> termsList = new List();
       DropdownMenuItem item1 = new DropdownMenuItem(value: 1, child: Text("1"));
       DropdownMenuItem item2 = new DropdownMenuItem(value: 3, child: Text("3"));
       DropdownMenuItem item3 = new DropdownMenuItem(value: 6, child: Text("6"));
       DropdownMenuItem item4 = new DropdownMenuItem(value: 9, child: Text("9"));
       DropdownMenuItem item5 =
           new DropdownMenuItem(value: 12, child: Text("12"));
-      terms.add(item1);
-      terms.add(item2);
-      terms.add(item3);
-      terms.add(item4);
-      terms.add(item5);
+      termsList.add(item1);
+      termsList.add(item2);
+      termsList.add(item3);
+      termsList.add(item4);
+      termsList.add(item5);
 
       return DropdownButton(
-          items: terms,
-          value: itemValue,
+          items: termsList,
+          value: terms,
           style: _blue18,
           onChanged: (value) {
-            if (itemValue != value) {
+            if (terms != value) {
               setState(() {
-                itemValue = value;
+                terms = value;
                 _applyDataChanged = true;
               });
             }
           });
     } else {
       return Text(
-        "3",
+        terms.toString(),
         style: _blue18,
       );
     }
@@ -315,7 +269,7 @@ class RepaymentPageState extends State<RepaymentPage> {
   /// 账单明细标题栏
   Widget _buildRepaymentDetailTitle() {
     return Container(
-      color: Colors.white,
+      color: _whiteColor,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -375,7 +329,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                 padding:
                     EdgeInsets.only(left: 13, right: 16, top: 10, bottom: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: _whiteColor,
                 ),
                 child: Column(
                   children: <Widget>[
@@ -385,9 +339,9 @@ class RepaymentPageState extends State<RepaymentPage> {
                   ],
                 ),
               );
-            } else {
-              return buildRepaymentConfirmButton();
             }
+
+            return _getExplainAndConfirmButton();
           },
         ),
       ),
@@ -426,7 +380,7 @@ class RepaymentPageState extends State<RepaymentPage> {
             style: TextStyle(
               fontFamily: _arial,
               fontSize: 12,
-              color: greyFontColor,
+              color: _greyFontColor,
             ),
           ),
         ],
@@ -458,7 +412,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                     style: TextStyle(
                       fontSize: 12,
                       fontFamily: _arial,
-                      color: greyFontColor,
+                      color: _greyFontColor,
                     ),
                   ),
                   Container(
@@ -484,6 +438,7 @@ class RepaymentPageState extends State<RepaymentPage> {
     );
   }
 
+  /// 每期账单后面的还款按钮
   Widget _getRepayButton(int index) {
     if (isConfirmPage) {
       // 确认界面不需要还款按钮
@@ -540,8 +495,76 @@ class RepaymentPageState extends State<RepaymentPage> {
     }
   }
 
+  /// 合同、产品说明和确认按钮
+  Widget _getExplainAndConfirmButton() {
+    return Column(
+      children: <Widget>[
+        _getExplain(),
+        _buildRepaymentConfirmButton(),
+      ],
+    );
+  }
+
+  Widget _getExplain() {
+    return Row(
+      children: <Widget>[
+        Checkbox(
+          value: _accept,
+          onChanged: (value) {
+            setState(() {
+              _accept = !_accept;
+              print('状态改为：' + _accept.toString());
+            });
+          },
+        ),
+        Text(
+          '我已阅读和理解',
+          style: TextStyle(
+            fontFamily: _arial,
+            fontSize: 12,
+            color: _greyFontColor,
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            '《借款合同》',
+            style: TextStyle(
+              fontFamily: _arial,
+              fontSize: 12,
+              color: _blueColor,
+            ),
+          ),
+          onTap: () {
+            print('点击了借款合同');
+          },
+        ),
+        Text(
+          '、',
+          style: TextStyle(
+            fontFamily: _arial,
+            fontSize: 12,
+            color: _greyFontColor,
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            '《产品说明书》',
+            style: TextStyle(
+              fontFamily: _arial,
+              fontSize: 12,
+              color: _blueColor,
+            ),
+          ),
+          onTap: () {
+            print('点击了产品说明是书');
+          },
+        ),
+      ],
+    );
+  }
+
   /// 底部确认按钮
-  Widget buildRepaymentConfirmButton() {
+  Widget _buildRepaymentConfirmButton() {
     // 是否是确认界面
     if (isConfirmPage) {
       // 确认界面申请数据是否改变
@@ -586,7 +609,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                   ),
                   color: _blueColor,
                   onPressed: () {
-                    print("确认借款按钮被点击了.......");
+                    print('confirm loan.....');
                   },
                 ),
               ),
@@ -612,7 +635,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                 ),
                 color: _blueColor,
                 onPressed: () {
-                  print("确认按钮被点击了.......");
+                  Navigator.pop(context);
                 },
               ),
             ),
@@ -635,19 +658,25 @@ class RepaymentPageState extends State<RepaymentPage> {
 
       return DropdownButton(
         items: terms,
-        value: repayMethodValue,
+        value: method,
         onChanged: (value) {
-          if (repayMethodValue != value) {
+          if (method != value) {
             setState(() {
-              repayMethodValue = value;
+              method = value;
               _applyDataChanged = true;
             });
           }
         },
       );
     } else {
+      String s;
+      if (method == 1) {
+        s = '等额本息';
+      } else {
+        s = '先息后本';
+      }
       return Text(
-        "等额本息",
+        s,
         style: TextStyle(
           fontFamily: _arial,
           fontSize: 14,
@@ -709,12 +738,6 @@ class RepaymentPageState extends State<RepaymentPage> {
               ),
             ),
           ),
-//          Container(
-//            margin: EdgeInsets.only(right: 30),
-//            child: Text(
-//              "元",
-//            ),
-//          ),
         ],
       );
     } else {
@@ -725,10 +748,6 @@ class RepaymentPageState extends State<RepaymentPage> {
             applyAmount.toString(),
             style: _blue18,
           ),
-          Text(
-            "元",
-            style: _grey14,
-          ),
         ],
       );
     }
@@ -736,46 +755,78 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 从后台获取订单详细信息
   void _getRepaymentMsg() async {
-//    List data = new List();
-//    Map requestData = {"bizOrderNo": "QSM20181213143724"};
-//
-//    Map response = await global.postFormData(_requestPath, requestData);
-//    data = response['entity'];
-//
-//    _bills = new List();
-//    _applyAmount = 0;
-//
-//    for (int i = 0; i < data.length; i++) {
-//      Bill bill = new Bill();
-//      bill.currentTerm = data[i]['currentRepaymentTerm'];
-//      bill.shouldPayDate = data[i]['shouldPayDate'];
-//      bill.amount = data[i]['shouldPayTotal'];
-//      bill.status = data[i]['billStatus'];
-//      _applyAmount += data[i]['shouldPayPrincipal'];
-//      _bills.add(bill);
-//    }
+    List data = new List();
+    _bills = new List();
 
-    Bill b1 = new Bill();
-    b1.currentTerm = 1;
-    b1.shouldPayDate = [2019, 1, 24];
-    b1.amount = 1000;
-    b1.status = 1;
+    if (isConfirmPage) {
+      Map requestData = {
+        'bizOrderNo': bizOrderNo,
+        'channelType': 1,
+      };
 
-    Bill b2 = new Bill();
-    b2.currentTerm = 2;
-    b2.shouldPayDate = [2019, 2, 24];
-    b2.amount = 1000;
-    b2.status = 1;
+      Map response = await global.postFormData(_initBillPath, requestData);
+      data = response['entity']['bills'];
+      applyAmount = response['entity']['applyAmount'];
+      interestRate = response['entity']['rate'];
+      terms = response['entity']['terms'];
+      method = int.parse(response['entity']['method']);
+      for (int i = 0; i < data.length; i++) {
+        Bill bill = new Bill();
+        bill.currentTerm = data[i]['currentTerm'];
+        bill.shouldPayDate = data[i]['shouldPayDate'];
+        bill.amount = data[i]['amount'];
+        _bills.add(bill);
+      }
+    } else {
+      Map requestData = {
+        "bizOrderNo": bizOrderNo,
+      };
 
-    Bill b3 = new Bill();
-    b3.currentTerm = 3;
-    b3.shouldPayDate = [2019, 3, 24];
-    b3.amount = 1000;
-    b3.status = 1;
+      Map response = await global.postFormData(_requestPath, requestData);
+      data = response['entity']['bills'];
+      applyAmount = response['entity']['transferAmount'];
+      interestRate = response['entity']['interestRate'];
+      terms = int.parse(response['entity']['terms']);
+      method = int.parse(response['entity']['method']);
+      for (int i = 0; i < data.length; i++) {
+        Bill bill = new Bill();
+        bill.currentTerm = data[i]['currentRepaymentTerm'];
+        bill.shouldPayDate = data[i]['shouldPayDate'];
+        bill.amount = data[i]['shouldPayTotal'];
+        bill.status = data[i]['billStatus'];
+        _bills.add(bill);
+      }
+    }
 
-    _bills = [b1, b2, b3];
     setState(() {
-      hasInit = true;
+      _hasInit = true;
+    });
+  }
+
+  /// 更新并重新计算账单（预计算，还没有保存）
+  void _getUpdateRepaymentMsg() async {
+    List data = new List();
+    Map request = {
+      'bizOrderNo': bizOrderNo,
+      'applyAmount': applyAmount,
+      'terms': terms,
+      'method': method,
+      'channelType': 1,
+    };
+
+    Map response = await global.postFormData(_updateAndComputingPath, request);
+    data = response['entity']['bills'];
+
+    _bills = new List();
+    for (int i = 0; i < data.length; i++) {
+      Bill bill = new Bill();
+      bill.currentTerm = data[i]['currentTerm'];
+      bill.shouldPayDate = data[i]['shouldPayDate'];
+      bill.amount = double.parse(data[i]['amount']);
+      _bills.add(bill);
+    }
+    setState(() {
+      _applyDataChanged = false;
     });
   }
 }

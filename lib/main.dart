@@ -7,6 +7,11 @@ import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/sign/SignPage.dart';
 
+import 'package:flutter_carloan/repayment/repayment_page.dart';
+import 'package:flutter_carloan/order/OrderPage.dart';
+import 'package:flutter_carloan/me/MeScene.dart';
+import 'package:flutter_carloan/app/RootScene.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -35,7 +40,15 @@ class _MyAppState extends State<_MyAppStateful> {
   @override
   Widget build(BuildContext context) => MaterialApp(
         title: "车贷系统",
-        home: _toIndexPage(),
+//        home: RepaymentPage(
+//          bizOrderNo: 'QSM-TEST123456789',
+//        bizOrderNo: '31037863-031532073916',
+//          isConfirm: false,
+//        ),
+//  home: OrderPage(
+//    idCard: '341203197307200711',
+//  ),
+  home: RootScene(),
         theme: new ThemeData(
           primaryColor: Colors.white,
         ),

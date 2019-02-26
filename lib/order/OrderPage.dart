@@ -4,20 +4,30 @@ import 'package:flutter_carloan/order/order.dart';
 import 'package:flutter_carloan/repayment/repayment_page.dart';
 
 class OrderPage extends StatefulWidget {
+  OrderPage({
+    this.idCard,
+  });
+
+  final String idCard;
+
   @override
   State<StatefulWidget> createState() {
-    return OrderPageState();
+    return OrderPageState(idCard: idCard);
   }
 }
 
 class OrderPageState extends State<OrderPage> {
+  OrderPageState({
+    this.idCard,
+  });
+
   static final String _arial = 'Arial';
   static final Color _blackColor = Color.fromRGBO(16, 16, 16, 1);
   static final Color _blueColor = Color.fromRGBO(3, 169, 244, 1);
   static final Color _greyColor = Color.fromRGBO(242, 242, 242, 1);
   static final Color _deepGreyColor = Color.fromRGBO(170, 170, 170, 1);
   static final Color _whiteColor = Color.fromRGBO(255, 255, 255, 1);
-  static final Color _readColor = Color.fromRGBO(229, 28, 35, 1);
+  static final Color _redColor = Color.fromRGBO(229, 28, 35, 1);
 
   Color _recent = _blackColor;
   Color _all = _deepGreyColor;
@@ -30,6 +40,7 @@ class OrderPageState extends State<OrderPage> {
   // 展示最近订单（true：最近订单，false：所有订单）
   bool recentOrder = true;
   bool hasLoaded = false;
+  final String idCard;
 
   void _changeTitleColor() {
     Color temp = _recent;
@@ -56,18 +67,14 @@ class OrderPageState extends State<OrderPage> {
           ),
         ),
       ),
-//      body: new Container(
-//        color: _greyColor,
-//        child: _getMainList(),
-//      ),
-    body: new RefreshIndicator(
-      displacement: 40,
-      onRefresh: _pullDownToFlush,
-      child: new Container(
-        color: _greyColor,
-        child: _getMainList(),
+      body: new RefreshIndicator(
+        displacement: 40,
+        onRefresh: _pullDownToFlush,
+        child: new Container(
+          color: _greyColor,
+          child: _getMainList(),
+        ),
       ),
-    ),
     );
   }
 
@@ -121,6 +128,7 @@ class OrderPageState extends State<OrderPage> {
     );
   }
 
+  /// 申请行
   Widget _getApplyRow() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -164,6 +172,7 @@ class OrderPageState extends State<OrderPage> {
     );
   }
 
+  /// 订单列表标题
   Widget _getTitleRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -217,28 +226,87 @@ class OrderPageState extends State<OrderPage> {
     );
   }
 
+  /// 订单列表
   Widget _getOrderList(int index) {
+    Order order = orders[index];
+    int status = order.orderStatus;
+
+    String bizOrderNo = order.bizOrderNo;
+    bool hasConfirmed = order.hasConfirm;
+    double applyAmount = order.loanAmount;
+//    int terms = order.term
     return GestureDetector(
-      onTap: _tapOrder,
+      onTap: (){
+        if(status == 64 || status == 68 || status == 72) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RepaymentPage(
+                bizOrderNo: bizOrderNo,
+                isConfirm: false,
+              ),
+            ),
+          );
+        }
+        if(status == 19 && !hasConfirmed) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RepaymentPage(
+                bizOrderNo: bizOrderNo,
+                isConfirm: true,
+              ),
+            ),
+          );
+        }
+
+      },
       child: Column(
         children: <Widget>[
           _getRepayDateRow(index),
-          _getApplyAmountRow(index),
+          _getRemainingAmount(index),
           _getBankCardInfoRow(index),
         ],
       ),
     );
   }
 
+  /// 还款日期、天数行
   Widget _getRepayDateRow(int index) {
     String msg = '';
+    String showDate;
     Order order = orders[index];
     int status = order.orderStatus;
+    Color showColor = _blueColor;
     if (status == 64) {
-      if (order.latestRepayDate != null) {
-        msg = order.latestRepayDate + '应还金额';
-      }
+      showDate = order.latestRepayDate + '应还金额';
+      msg = '还剩' + order.latestRepayDays.toString() + '天还款';
+      showColor = _redColor;
+    } else {
+      showDate = order.loanDate + '申请借款';
     }
+    if (status == 68 || status == 72) {
+      msg = '已结清';
+    }
+    if (status == 19 && order.hasConfirm) {
+      msg = '已确认';
+    }
+    if (status == 19 && !order.hasConfirm) {
+      msg = '未确认';
+    }
+    if(status == 20) {
+      msg = '审核中';
+    }
+    if(status == 21 || status == 22 || status == 61) {
+      msg = '审核拒绝';
+    }
+    if(status == 62) {
+      msg = '放款失败';
+    }
+//    switch(status) {
+//      case 20:
+//    }
+
     return Container(
       color: _whiteColor,
       child: Row(
@@ -247,7 +315,7 @@ class OrderPageState extends State<OrderPage> {
           Container(
             child: Expanded(
               child: Text(
-                '1月1日应还金额',
+                showDate,
                 style: TextStyle(
                   fontSize: 14,
                   fontFamily: 'Arial',
@@ -258,9 +326,12 @@ class OrderPageState extends State<OrderPage> {
           ),
           Container(
             child: Text(
-              "还剩0天还款",
+              msg,
               style: TextStyle(
-                  color: _readColor, fontSize: 14, fontFamily: _arial),
+                color: showColor,
+                fontSize: 14,
+                fontFamily: _arial,
+              ),
             ),
           ),
         ],
@@ -268,7 +339,8 @@ class OrderPageState extends State<OrderPage> {
     );
   }
 
-  Widget _getApplyAmountRow(int index) {
+  /// 金额行
+  Widget _getRemainingAmount(int index) {
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 10),
       color: _whiteColor,
@@ -294,6 +366,7 @@ class OrderPageState extends State<OrderPage> {
     );
   }
 
+  /// 签约银行卡组件
   Widget _getBankCardInfoRow(int index) {
     return Container(
       color: _whiteColor,
@@ -301,7 +374,11 @@ class OrderPageState extends State<OrderPage> {
         children: <Widget>[
           Expanded(
             child: Text(
-              "还款日当天从中国银行（尾号8888）自动扣款",
+              '还款日当天从' +
+                  orders[index].bankName +
+                  '（尾号' +
+                  orders[index].bankNoTail +
+                  '）自动扣款',
               style: TextStyle(
                 color: _deepGreyColor,
                 fontSize: 13,
@@ -314,21 +391,12 @@ class OrderPageState extends State<OrderPage> {
     );
   }
 
-  Widget _getFootNavigator() {
-
-  }
-
-  /// 调整到订单详情界面
-  void _tapOrder() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => RepaymentPage()));
-  }
-
   /// 获取订单列表信息
   void _getUserOrders() async {
-    Map requestData = {'idcard': '140301199211123815'};
+    Map requestData = {'idcard': idCard};
     Map responseData = await _global.postFormData(requestPath, requestData);
     Map data = responseData['entity'];
+    orders = new List();
     if (data != null) {
       remainingPrincipalTotal = data['remainingPrincipalTotal'];
       List orderList = data['orders'];
@@ -336,7 +404,6 @@ class OrderPageState extends State<OrderPage> {
       for (int i = 0; i < orderList.length; i++) {
         Order order = new Order();
         order.bizOrderNo = orderList[i]['bizOrderNo'];
-        order.latestRepayDate = orderList[i]['latestRepayDate'];
         order.latestRepayDays = orderList[i]['latestRepayDays'];
         order.latestShouldRepayAmount = orderList[i]['latestShouldRepayAmount'];
         order.loanAmount = orderList[i]['loanAmount'];
@@ -347,6 +414,10 @@ class OrderPageState extends State<OrderPage> {
         if (date != null) {
           order.loanDate = date[1].toString() + '月' + date[2].toString() + '日';
         }
+        date = orderList[i]['latestRepayDate'];
+        if (date != null) {
+          order.latestRepayDate = date[1].toString() + '月' + date[2].toString() + '日';
+        }
         if (orderList[i]['wxAppConfirm'] == 1) {
           order.hasConfirm = true;
         } else {
@@ -356,15 +427,6 @@ class OrderPageState extends State<OrderPage> {
       }
     }
 
-    print('*********************');
-    print('remaining amount:' + remainingPrincipalTotal.toString());
-    for (int i = 0; i < orders.length; i++) {
-      print('bizOrderNo:' + orders[i].bizOrderNo);
-      print('apply amount:' + orders[i].loanAmount.toString());
-      print('order status:' + orders[i].orderStatus.toString());
-      print('has confirmed:' + orders[i].hasConfirm.toString());
-    }
-    print('*********************');
     setState(() {
       hasLoaded = true;
     });
@@ -376,6 +438,4 @@ class OrderPageState extends State<OrderPage> {
       hasLoaded = false;
     });
   }
-
-
 }
