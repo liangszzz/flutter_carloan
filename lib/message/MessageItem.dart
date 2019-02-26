@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/message/Message.dart';
@@ -16,15 +15,34 @@ class MyMessage extends StatefulWidget {
 class _ListViewDemoState extends State<MyMessage> {
   List lists = new List();
   bool isReload = false;
+  bool isReloadMore = false;
+
+  var currentPage = 1;
+  var size = 7;  ///一个页面显示7条数据
+
+  ScrollController _scrollController = new ScrollController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        currentPage = currentPage +1;
+        _getMoreMessage(currentPage, size, widget.phone);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _getMessage(widget.phone);
+    _getMessage(currentPage, size, widget.phone);
 
     return Scaffold(
         appBar: AppBar(title: Text('我的消息'), elevation: 0.5),
@@ -36,17 +54,18 @@ class _ListViewDemoState extends State<MyMessage> {
     List<Widget> _list = new List();
     for (int i = 0; i < list.length; i++) {
       _list.add(new Container(
-        height: 120,
+        height: 90,
         decoration: new BoxDecoration(
-          color: Colors.black12,
+          color: Colors.white10,
         ),
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             new Text(
               list[i].content,
+              textAlign:TextAlign.center,
               style: new TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 16.0,
                   color: Colors.black,
                   fontWeight: FontWeight.normal),
             ),
@@ -66,23 +85,23 @@ class _ListViewDemoState extends State<MyMessage> {
       child: new ListView(
         // 添加ListView控件
         children: divideList, // 添加分割线/
+        controller: _scrollController,
       ),
     );
   }
 
   Global global = Global();
-  _getMessage(String phone) async {
+  _getMessage(int currentPage, int size, String phone) async {
     if (!isReload) {
       isReload = true;
       try {
         List data = new List();
-        await Dio().post("http://192.168.1.13:8081/message/query", data: {
+        var response = await global.postFormData("message/query", {
           "phone": phone,
-          "page": 1,
-          "size": 5
-        }).then((response) {
-          data = response.data['data'];
+          "page": currentPage,
+          "size": size
         });
+         data = response["data"];
         setState(() {
           List<Message> list = new List();
           for (int i = 0; i < data.length; i++) {
@@ -98,4 +117,35 @@ class _ListViewDemoState extends State<MyMessage> {
       }
     }
   }
+
+  ///加载更多
+  _getMoreMessage(int currentPage, int size, String phone) async {
+    if(!isReloadMore){
+      try {
+        List data = new List();
+        var response = await global.postFormData("message/query", {
+          "phone": phone,
+          "page": currentPage,
+          "size": size
+        });
+        data = response["data"];
+        if(data.length == 0){ ///没有数据了
+            isReloadMore = true;
+        }
+        setState(() {
+          List<Message> list = new List();
+          for (int i = 0; i < data.length; i++) {
+            Message message = new Message();
+            message.content = data[i]['content'];
+            message.createTime = data[i]['create_time'];
+            list.add(message);
+          }
+          lists.addAll(list);
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    }
 }
