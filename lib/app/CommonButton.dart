@@ -16,7 +16,7 @@ class CommonButton extends StatelessWidget {
             child: FlatButton(
                 onPressed: onClick,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                color: Colors.green,
+                color: Colors.blue,
                 child: Text(
                   text,
                   style: buttonStyle,
