@@ -7,16 +7,19 @@ class RepaymentPage extends StatefulWidget {
   RepaymentPage({
     this.bizOrderNo,
     this.isConfirm,
+    this.channelType,
   });
 
   final String bizOrderNo;
   final bool isConfirm;
+  final num channelType;
 
   @override
   State<StatefulWidget> createState() {
     return RepaymentPageState(
       bizOrderNo: bizOrderNo,
       isConfirmPage: isConfirm,
+      channelType: channelType,
     );
   }
 }
@@ -25,10 +28,12 @@ class RepaymentPageState extends State<RepaymentPage> {
   RepaymentPageState({
     this.bizOrderNo,
     this.isConfirmPage,
+    this.channelType,
   });
 
   Global global = new Global();
   final String bizOrderNo;
+  final num channelType;
 
   // 是确认界面？（默认是）
   bool isConfirmPage = true;
@@ -514,17 +519,23 @@ class RepaymentPageState extends State<RepaymentPage> {
           onChanged: (value) {
             setState(() {
               _accept = !_accept;
-              print('状态改为：' + _accept.toString());
             });
           },
         ),
-        Text(
-          '我已阅读和理解',
-          style: TextStyle(
-            fontFamily: _arial,
-            fontSize: 12,
-            color: _greyFontColor,
+        GestureDetector(
+          child: Text(
+            '我已阅读和理解',
+            style: TextStyle(
+              fontFamily: _arial,
+              fontSize: 12,
+              color: _greyFontColor,
+            ),
           ),
+          onTap: () {
+            setState(() {
+              _accept = !_accept;
+            });
+          },
         ),
         GestureDetector(
           child: Text(
@@ -610,6 +621,17 @@ class RepaymentPageState extends State<RepaymentPage> {
                   ),
                   color: _blueColor,
                   onPressed: () {
+                    if (!_accept) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: Text('请先阅读《借款合同》和《产品说明》'),
+                          );
+                        },
+                      );
+                      return null;
+                    }
                     _confirmLoan();
                   },
                 ),
@@ -835,13 +857,30 @@ class RepaymentPageState extends State<RepaymentPage> {
     print('*******************');
     print('is confirming......');
     Map request = {
-      'bizOrderNo' : bizOrderNo,
+      'bizOrderNo': bizOrderNo,
       'applyAmount': applyAmount,
-      'terms'      : terms,
-      'method'     : method,
-      'channelType': 1,
+      'terms': terms,
+      'method': method,
+      'channelType': channelType,
     };
-    Map map = await global.post(_confirmPath, request);
-    print('*******************');
+    try {
+      Map response = await global.postFormData(_confirmPath, request);
+      if (response['code'] == 1) {
+        _showSaveFailDialog();
+      }
+    } catch (e) {
+      _showSaveFailDialog();
+    }
+  }
+
+  void _showSaveFailDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text('保存失败，服务器内部异常'),
+        );
+      },
+    );
   }
 }

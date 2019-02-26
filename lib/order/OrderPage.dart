@@ -255,6 +255,7 @@ class OrderPageState extends State<OrderPage> {
               builder: (context) => RepaymentPage(
                 bizOrderNo: bizOrderNo,
                 isConfirm: true,
+                channelType: order.channelType,
               ),
             ),
           );
@@ -410,6 +411,7 @@ class OrderPageState extends State<OrderPage> {
         order.bankName = orderList[i]['bankName'];
         order.bankNoTail = orderList[i]['bankNoTail'];
         order.orderStatus = int.parse(orderList[i]['orderStatus']);
+        order.channelType = orderList[i]['channelType'];
         date = orderList[i]['loadDate'];
         if (date != null) {
           order.loanDate = date[1].toString() + '月' + date[2].toString() + '日';
