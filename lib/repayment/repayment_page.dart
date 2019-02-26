@@ -44,6 +44,7 @@ class RepaymentPageState extends State<RepaymentPage> {
   String _requestPath = 'bill/billDetailMobile';
   String _initBillPath = 'bill/initBills';
   String _updateAndComputingPath = 'bill/afterChangeInitBills';
+  String _confirmPath = 'bill/confirmOrderMsg';
 
   // 最大申请金额
   int maxApplyAmount = 100000;
@@ -609,7 +610,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                   ),
                   color: _blueColor,
                   onPressed: () {
-                    print('confirm loan.....');
+                    _confirmLoan();
                   },
                 ),
               ),
@@ -828,5 +829,19 @@ class RepaymentPageState extends State<RepaymentPage> {
     setState(() {
       _applyDataChanged = false;
     });
+  }
+
+  void _confirmLoan() async {
+    print('*******************');
+    print('is confirming......');
+    Map request = {
+      'bizOrderNo' : bizOrderNo,
+      'applyAmount': applyAmount,
+      'terms'      : terms,
+      'method'     : method,
+      'channelType': 1,
+    };
+    Map map = await global.post(_confirmPath, request);
+    print('*******************');
   }
 }

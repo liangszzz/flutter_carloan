@@ -51,7 +51,9 @@ class _RootSceneState extends State<RootScene> {
     return Scaffold(
       body: IndexedStack(
         children: <Widget>[
-          OrderPage(),
+          OrderPage(
+            idCard: '341203197307200711',
+          ),
           MeScene(),
         ],
         index: _tabIndex,

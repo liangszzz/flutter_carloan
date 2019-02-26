@@ -357,7 +357,7 @@ class OrderPageState extends State<OrderPage> {
             ),
           ),
           Image.asset(
-            "img/right.png",
+            "assets/images/arrow_right.png",
             width: 24,
             height: 24,
           ),
