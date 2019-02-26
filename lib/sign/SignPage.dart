@@ -8,7 +8,7 @@ import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/order/OrderPage.dart';
+import 'package:flutter_carloan/repayment/repayment_page.dart';
 import 'package:flutter_carloan/sign/UserSign.dart';
 
 ///签约代扣
@@ -378,36 +378,17 @@ class _SignPageState extends State<_SignPageStateful> {
 
   ///创建按钮
   Widget _buildBtn() {
-//    var _btnText = "下一步";
-//    var btn = FlatButton(
-//      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//      onPressed: () {
-//        _doSign();
-//      },
-//      shape: RoundedRectangleBorder(
-//          side: BorderSide(
-//            color: Colors.white,
-//            width: 1,
-//          ),
-//          borderRadius: BorderRadius.circular(8)),
-//      //通过控制 Text 的边距来控制控件的高度
-//      child: new Padding(
-//        padding: new EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
-//        child: new Text(
-//          _btnText,
-//          style: TextStyle(color: Colors.white, fontSize: 18.0),
-//        ),
-//      ),
-//      color: Colors.blue,
-//    );
-//    return Row(
-//      children: <Widget>[Expanded(child: btn)],
-//    );
     return CommonButton(text: "下一步", onClick: _doSign);
   }
 
   ///签约
   void _doSign() async {
+    if(signed){
+      Navigator.push(context, new MaterialPageRoute(builder: (context) {
+        return RepaymentPage(bizOrderNo: widget.bizOrderNo, isConfirm: true, channelType: widget.channelType,);
+      }));
+      return;
+    }
     var response = await global.postFormData("sign/doSign", {
       "smsId": smsId,
       "smsCode": code.text,
@@ -425,7 +406,7 @@ class _SignPageState extends State<_SignPageStateful> {
 
       ///跳转
       Navigator.push(context, new MaterialPageRoute(builder: (context) {
-        return OrderPage(idCard: idCard.text);
+        return RepaymentPage(bizOrderNo: widget.bizOrderNo, isConfirm: true, channelType: widget.channelType,);
       }));
     } else {
       DialogUtils.showAlertDialog(context, "提示", d.msg, null,

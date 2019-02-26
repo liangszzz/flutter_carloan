@@ -43,7 +43,7 @@ class RepaymentPageState extends State<RepaymentPage> {
   final num channelType;
 
   // 申请金额，如果是旧渠道则是显示transfer amount
-  double applyAmount;
+  num applyAmount;
 
   // 利息利率
   double interestRate;
@@ -52,7 +52,7 @@ class RepaymentPageState extends State<RepaymentPage> {
   int terms;
 
   // 还款方式
-  int method;
+  num method;
 
   // 申请信息是否改变（确认借款界面需要，用来判断是更新预览还是确认借款）
   bool _applyDataChanged = false;
@@ -160,6 +160,10 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 订单基础信息行
   Widget buildLoanRowWidget() {
+    String interestRateShowMsg = '';
+    if(interestRate != null) {
+      interestRateShowMsg = (interestRate * 100).toString() + '%';
+    }
     return Container(
       color: _whiteColor,
       child: Row(
@@ -210,7 +214,7 @@ class RepaymentPageState extends State<RepaymentPage> {
                       Container(
                         margin: EdgeInsets.only(left: 5),
                         child: Text(
-                          "5.5%",
+                          interestRateShowMsg,
                           style: _blue18,
                         ),
                       ),
@@ -828,7 +832,7 @@ class RepaymentPageState extends State<RepaymentPage> {
       applyAmount = response['entity']['applyAmount'];
       interestRate = response['entity']['rate'];
       terms = response['entity']['terms'];
-      method = int.parse(response['entity']['method']);
+      method = num.parse(response['entity']['method']);
       for (int i = 0; i < data.length; i++) {
         Bill bill = new Bill();
         bill.currentTerm = data[i]['currentTerm'];
@@ -881,7 +885,7 @@ class RepaymentPageState extends State<RepaymentPage> {
       Bill bill = new Bill();
       bill.currentTerm = data[i]['currentTerm'];
       bill.shouldPayDate = data[i]['shouldPayDate'];
-      bill.amount = double.parse(data[i]['amount']);
+      bill.amount = data[i]['amount'];
       _bills.add(bill);
     }
     setState(() {
