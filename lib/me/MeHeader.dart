@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
@@ -12,7 +10,7 @@ class MeHeader extends StatefulWidget {
 }
 
 class MyHeaderPage extends State<MeHeader> {
-  var applyAmount;
+  var applyAmount = "0.0";
   var isReload = false;
 
   @override
@@ -42,7 +40,7 @@ class MyHeaderPage extends State<MeHeader> {
                     style: TextStyle(fontSize: 14),
                   ),
                   Text(
-                    '手机号:18888888888',
+                    '手机号:' + global.user.phone,
                     style: TextStyle(fontSize: 14),
                   ),
                   Text(
@@ -72,7 +70,10 @@ class MyHeaderPage extends State<MeHeader> {
   Global global = Global();
 
   _getRecentRecord() async {
-    var response = await global.post("user/getRecentOrder/320925199011273112");
+    if(global.user.idCard == null || global.user.idCard == ''){
+      return;
+    }
+    var response = await global.post("user/getRecentOrder/"+ global.user.idCard);
     DataResponse d = DataResponse.fromJson(response);
     setState(() {
       if (d.success()) {
