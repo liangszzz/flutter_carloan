@@ -5,7 +5,7 @@ import 'package:flutter_carloan/me/MeScene.dart';
 import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-///底部导航栏
+/// 底部导航栏
 class RootScene extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _RootSceneState();
