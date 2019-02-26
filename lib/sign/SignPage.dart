@@ -8,6 +8,7 @@ import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:flutter_carloan/sign/UserSign.dart';
 
 ///签约代扣
@@ -419,8 +420,13 @@ class _SignPageState extends State<_SignPageStateful> {
     if (d.success()) {
       ///签约成功
       DialogUtils.showAlertDialog(context, "提示", "签约成功!!", null);
+      global.user.bankName = UserSign.bankList[currentSelectBankIndex];
+      global.user.barkCard = bankCard.text.substring(bankCard.text.length - 4);
 
       ///跳转
+      Navigator.push(context, new MaterialPageRoute(builder: (context) {
+        return OrderPage(idCard: idCard.text);
+      }));
     } else {
       DialogUtils.showAlertDialog(context, "提示", d.msg, null,
           contentStyle: TextStyle(color: Colors.red));
