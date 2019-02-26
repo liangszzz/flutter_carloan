@@ -8,6 +8,7 @@ import 'package:flutter_carloan/carInfo/ClCarInfo.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/common/SysDict.dart';
+import 'package:flutter_carloan/faceValidate/faceValidatePage.dart';
 import 'package:flutter_carloan/sign/SignPage.dart';
 import 'package:flutter_carloan/userInfo/ShowPhoto.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,6 +56,8 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   ///0： 保存到微信表 1：保存temp表
   int formType = 0;
+
+  String buttonName = "下一步";
 
   @override
   Widget build(BuildContext context) {
@@ -721,7 +724,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 child: new Padding(
                   padding: new EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
                   child: new Text(
-                    "修改",
+                    buttonName,
                     style: TextStyle(color: Colors.white, fontSize: 18.0),
                   ),
                 ),
@@ -762,6 +765,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
         if (widget.fromPage == 2) {
           ///我的页面进入车辆信息页
           url = "";
+          buttonName = "修改";
         } else if (widget.fromPage == 1) {
           ///订单列表页进入
           url = "";
@@ -771,15 +775,16 @@ class _CarInfoPageState extends State<CarInfoPage> {
         }
         var response = await global.postFormData(url, formData);
         dataMap = response['dataMap'];
-        if (widget.fromPage != 0) {
           clCarInfo = ClCarInfo.fromJson(dataMap['clCarInfo']);
-        }
-
         ///公用查询
         carList = dataMap["carList"];
         registerList = dataMap['registerList'];
         accidentStatusList = dataMap['accidentTypes'];
-        carDriveList = dataMap['cardriveListList'];
+        if(widget.fromPage == 0){
+          carDriveList = dataMap['driveList'];
+        }else{
+          carDriveList = dataMap['cardriveListList'];
+        }
 
         setState(() {
           if (clCarInfo != null) {
@@ -794,7 +799,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
             accidentTypeValue = int.parse(clCarInfo.accident_type);
             majorAccident = int.parse(clCarInfo.major_accident);
             Map riskData = dataMap['clRiskInfo'] as Map;
-            carCost = riskData['car_cost'];
+            carCost = riskData['car_cost'].toString();
           }
 
           ///车辆照片
@@ -974,7 +979,6 @@ class _CarInfoPageState extends State<CarInfoPage> {
     DataResponse dataResponse = DataResponse.fromJson(response);
     Map<String, Object> map = dataResponse.entity as Map;
     String filePath = map['file_path'];
-    print(filePath);
     setState(() {
       if (fileType == 7) {
         carImageList[index] = filePath;
@@ -1073,7 +1077,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
         },
       });
       bool isVerify = false;
-      if (response["msg"] == 1) {
+      if (response["msg"] == "1") {
         isVerify = true;
       }
       if (response["code"] == 0) {
@@ -1085,12 +1089,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
           if (isVerify) {
             ///跳转到签约代扣页面
             Navigator.push(context, new MaterialPageRoute(builder: (context) {
-              return SignPage(bizOrderNo: widget.bizOrderNo);
+              return SignPage(bizOrderNo: widget.bizOrderNo, channelType: widget.channelType,);
             }));
           } else {
             ///跳转到人脸识别页面
             Navigator.push(context, new MaterialPageRoute(builder: (context) {
-              return CarInfoPage(bizOrderNo: widget.bizOrderNo);
+              return faceValidatePage(bizOrderNo: widget.bizOrderNo);
             }));
           }
         }
