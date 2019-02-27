@@ -179,6 +179,15 @@ class _SignPageState extends State<_SignPageStateful> {
     phone.text = userSign.reservePhone;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    userName.dispose();
+    idCard.dispose();
+    bankCard.dispose();
+    phone.dispose();
+  }
+
   Widget _buildText() {
     return Text(
       "添加您的银行卡用于还款",
@@ -190,46 +199,34 @@ class _SignPageState extends State<_SignPageStateful> {
 
   ///持卡人
   Widget _buildUserName() {
-    var text;
-    if (signed) {
-      text = Text(userSign.userName);
-    } else {
-      text = TextFormField(
-          controller: userName,
-          keyboardType: TextInputType.text,
-          maxLength: 20,
-          decoration: InputDecoration(
-            hintText: "请输入持卡人姓名",
-            prefixText: "持卡人:",
-            prefixStyle: TextStyle(color: Colors.black),
-            disabledBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ));
-    }
-    return text;
+    return TextFormField(
+        controller: userName,
+        keyboardType: TextInputType.text,
+        maxLength: 20,
+        decoration: InputDecoration(
+          hintText: "请输入持卡人姓名",
+          prefixText: "持卡人:",
+          prefixStyle: TextStyle(color: Colors.black),
+          disabledBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+        ));
   }
 
   ///身份证号
   Widget _buildIdCard() {
-    var text;
-    if (signed) {
-      text = Text(userSign.idCard);
-    } else {
-      text = TextFormField(
-          controller: idCard,
-          keyboardType: TextInputType.text,
-          maxLength: 18,
-          decoration: InputDecoration(
-            hintText: "请输入持卡人身份证号",
-            prefixText: "身份证号:",
-            prefixStyle: TextStyle(color: Colors.black),
-            disabledBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ));
-    }
-    return text;
+    return TextFormField(
+        controller: idCard,
+        keyboardType: TextInputType.text,
+        maxLength: 18,
+        decoration: InputDecoration(
+          hintText: "请输入持卡人身份证号",
+          prefixText: "身份证号:",
+          prefixStyle: TextStyle(color: Colors.black),
+          disabledBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+        ));
   }
 
   ///签约银行
@@ -383,9 +380,13 @@ class _SignPageState extends State<_SignPageStateful> {
 
   ///签约
   void _doSign() async {
-    if(signed){
+    if (signed) {
       Navigator.push(context, new MaterialPageRoute(builder: (context) {
-        return RepaymentPage(bizOrderNo: widget.bizOrderNo, isConfirm: true, channelType: widget.channelType,);
+        return RepaymentPage(
+          bizOrderNo: widget.bizOrderNo,
+          isConfirm: true,
+          channelType: widget.channelType,
+        );
       }));
       return;
     }
@@ -395,7 +396,8 @@ class _SignPageState extends State<_SignPageStateful> {
       "payerName": userName.text,
       "payerCardNo": idCard.text,
       "payerBankCardNo": bankCard.text,
-      "bankMobile": phone.text
+      "bankMobile": phone.text,
+      "openId": global.token.token
     });
     var d = DataResponse.fromJson(response);
     if (d.success()) {
@@ -406,7 +408,11 @@ class _SignPageState extends State<_SignPageStateful> {
 
       ///跳转
       Navigator.push(context, new MaterialPageRoute(builder: (context) {
-        return RepaymentPage(bizOrderNo: widget.bizOrderNo, isConfirm: true, channelType: widget.channelType,);
+        return RepaymentPage(
+          bizOrderNo: widget.bizOrderNo,
+          isConfirm: true,
+          channelType: widget.channelType,
+        );
       }));
     } else {
       DialogUtils.showAlertDialog(context, "提示", d.msg, null,
