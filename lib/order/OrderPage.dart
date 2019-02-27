@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/auditLenders/AuditLendersPage.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/order/order.dart';
@@ -464,6 +465,13 @@ class OrderPageState extends State<OrderPage> {
 
   ///我要借款按钮,只获取最近一单的数据
   void _toBorrow() {
+    int currentHour = DateTime.now().hour;
+    if(0 < currentHour && currentHour < 6){
+      DialogUtils.showAlertDialog(context, "提示", "当日额度已用完!!!", null);
+      return;
+    }
+
+
     if (orders.length > 0) {
       ///有订单就查看详情
       Order order = orders[0];
