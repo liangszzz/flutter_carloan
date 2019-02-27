@@ -16,12 +16,13 @@ import 'package:image_picker/image_picker.dart';
 class UserInfoPage extends StatefulWidget {
   final String bizOrderNo;
   final int channelType;
+  final int wxAppConfirm;
 
   /// 0:app进单 1：订单页查看详情 2：我的页面
   final int fromPage;
 
   const UserInfoPage(
-      {Key key, this.bizOrderNo, this.channelType, this.fromPage})
+      {Key key, this.bizOrderNo, this.channelType, this.fromPage, this.wxAppConfirm})
       : super(key: key);
 
   @override
@@ -1553,15 +1554,19 @@ class _UserInfoPageState extends State<UserInfoPage> {
           clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
           contactInfoList = dataMap["clContactInfoList"];
           clContactInfo = ClContactInfo.fromJson(contactInfoList[0]);
-
+          Map clBaseInfo = dataMap['clBaseInfo'] as Map;
+          borrow_usage = clBaseInfo['borrow_usage'];
           ///此处联系人只取一个展示
           idCraUrlList = dataMap["clAttachmentInfoList"];
           if (fromPage == 2) {
-            buttonName = "修改";
+            if(widget.wxAppConfirm == 1){
+              buttonName = "返回";
+            }else{
+              buttonName = "修改";
+            }
           }
         } else {
           canWrite = true;
-
           ///此处openId使用 token
           openId = "token:13770207216";
           var response = await global.postFormData(
@@ -1616,7 +1621,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 int.parse(clUserInfo.customer_professional_info);
             bankCardValue = int.parse(clUserInfo.bank_card_type);
             borrowUseValue = int.parse(borrow_usage);
-            borrowUseLabel = borrowUse[int.parse(borrow_usage)];
+            borrowUseLabel = borrowUse[borrowUseValue];
           }
 
           if (clContactInfo != null) {
@@ -1717,6 +1722,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///信息保存
   Future _saveUserInfo() async {
+
+    if(widget.wxAppConfirm == 1){
+      Navigator.of(context).pop();
+      return;
+    }
+
     if (userName.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "真实姓名不能为空", null);
       return;
@@ -1865,6 +1876,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       });
 
       if (response["code"] == 0) {
+        global.user.idCard = idCard;
         ///如果是从我的页面进入就弹出修改成功的提示框
         if (widget.fromPage == 2) {
           DialogUtils.showAlertDialog(context, "提示", "修改成功", null);

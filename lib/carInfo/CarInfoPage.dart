@@ -16,11 +16,17 @@ import 'package:image_picker/image_picker.dart';
 class CarInfoPage extends StatefulWidget {
   final String bizOrderNo;
   final int channelType;
+  final int wxAppConfirm;
 
   /// 0:app进单 1：订单页查看详情 2：我的页面
   final int fromPage;
 
-  const CarInfoPage({Key key, this.bizOrderNo, this.channelType, this.fromPage})
+  const CarInfoPage(
+      {Key key,
+      this.bizOrderNo,
+      this.channelType,
+      this.fromPage,
+      this.wxAppConfirm})
       : super(key: key);
 
   @override
@@ -764,27 +770,38 @@ class _CarInfoPageState extends State<CarInfoPage> {
         FormData formData = new FormData.from({});
         if (widget.fromPage == 2) {
           ///我的页面进入车辆信息页
-          url = "";
-          buttonName = "修改";
+          var response = await global.postFormData("car/query",
+              {"biz_order_no": bizOrderNo, "channel_type": channelType});
+          dataMap = response['dataMap'];
+          clCarInfo = ClCarInfo.fromJson(dataMap['clCarInfo']);
+          carDriveList = dataMap['cardriveListList'];
+          accidentStatusList = dataMap['accidentTypes'];
+          carList = dataMap["carList"];
+          registerList = dataMap['registerList'];
+          if (widget.wxAppConfirm == 1) {
+            buttonName = "返回";
+          } else {
+            buttonName = "修改";
+          }
         } else if (widget.fromPage == 1) {
           ///订单列表页进入
           url = "";
         } else if (widget.fromPage == 0) {
           ///app进单
           url = "borrow/toCarBorrow/" + widget.bizOrderNo;
+          var response = await global.postFormData(url, formData);
+          dataMap = response['dataMap'];
+          accidentStatusList = dataMap['accidentTypes'];
+          if (dataMap["biz_order_no"] != null &&
+              dataMap["biz_order_no"] != '') {
+            ///区分新增还是修改
+            clCarInfo = ClCarInfo.fromJson(dataMap['clCarInfo']);
+            carList = dataMap["carList"];
+            registerList = dataMap['registerList'];
+            carDriveList = dataMap['driveList'];
+          }
         }
-        var response = await global.postFormData(url, formData);
-        dataMap = response['dataMap'];
-          clCarInfo = ClCarInfo.fromJson(dataMap['clCarInfo']);
-        ///公用查询
-        carList = dataMap["carList"];
-        registerList = dataMap['registerList'];
-        accidentStatusList = dataMap['accidentTypes'];
-        if(widget.fromPage == 0){
-          carDriveList = dataMap['driveList'];
-        }else{
-          carDriveList = dataMap['cardriveListList'];
-        }
+
 
         setState(() {
           if (clCarInfo != null) {
@@ -992,6 +1009,10 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   ///车辆信息保存
   Future _saveCarInfo() async {
+    if (widget.wxAppConfirm == 1) {
+      Navigator.of(context).pop();
+      return;
+    }
     if (carNo == '' || carNo == null) {
       DialogUtils.showAlertDialog(context, "提示", "车牌号码不能为空", null);
       return;
@@ -1089,7 +1110,10 @@ class _CarInfoPageState extends State<CarInfoPage> {
           if (isVerify) {
             ///跳转到签约代扣页面
             Navigator.push(context, new MaterialPageRoute(builder: (context) {
-              return SignPage(bizOrderNo: widget.bizOrderNo, channelType: widget.channelType,);
+              return SignPage(
+                bizOrderNo: widget.bizOrderNo,
+                channelType: widget.channelType,
+              );
             }));
           } else {
             ///跳转到人脸识别页面
