@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
 
 class MeHeader extends StatefulWidget {
+  final String applyAmount;
+
+  const MeHeader({Key key, this.applyAmount}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return MyHeaderPage();
@@ -10,15 +13,9 @@ class MeHeader extends StatefulWidget {
 }
 
 class MyHeaderPage extends State<MeHeader> {
-  var applyAmount = "0.0";
-  var isReload = false;
 
   @override
   Widget build(BuildContext context) {
-    if (!isReload) {
-      _getRecentRecord();
-      isReload = true;
-    }
 
     return GestureDetector(
       child: Container(
@@ -44,7 +41,7 @@ class MyHeaderPage extends State<MeHeader> {
                     style: TextStyle(fontSize: 14),
                   ),
                   Text(
-                    '授信额度:' + applyAmount.toString() + '元',
+                    '授信额度:' + widget.applyAmount + '元',
                     style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 10),
@@ -69,17 +66,4 @@ class MyHeaderPage extends State<MeHeader> {
 
   Global global = Global();
 
-  _getRecentRecord() async {
-    if(global.user.idCard == null || global.user.idCard == ''){
-      return;
-    }
-    var response = await global.post("user/getRecentOrder/"+ global.user.idCard);
-    DataResponse d = DataResponse.fromJson(response);
-    setState(() {
-      if (d.success()) {
-        Map<String, Object> map = d.entity as Map;
-        applyAmount = map['apply_amount'];
-      }
-    });
-  }
 }
