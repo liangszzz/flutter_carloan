@@ -10,6 +10,7 @@ import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/me/Screen.dart';
 import 'package:flutter_carloan/me/UpdateMePage.dart';
 import 'package:flutter_carloan/message/MessageItem.dart';
+import 'package:flutter_carloan/my_bank_card/my_bank_card_page.dart';
 import 'package:flutter_carloan/update_log/update_logs_page.dart';
 import 'package:flutter_carloan/userInfo/UserInfoPage.dart';
 
@@ -38,6 +39,12 @@ class _MeSceneState extends State<_MeSceneStateful> {
 
   var channelType;
 
+  var orderStatus;
+
+  var applyAmount;
+
+  var wxAppConfirm;
+
   @override
   Widget build(BuildContext context) => WillPopScope(
         child: Scaffold(
@@ -49,7 +56,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
             color: Colors.white,
             child: ListView(
               children: <Widget>[
-//                MeHeader(),
+                MeHeader(applyAmount: applyAmount.toString()),
                 SizedBox(height: 10),
                 _buildCells(context),
               ],
@@ -74,28 +81,30 @@ class _MeSceneState extends State<_MeSceneStateful> {
             title: '我的基本信息',
             iconName: 'assets/images/mine.png',
             onPressed: () {
-              Navigator.push(
-                context,
-                new MaterialPageRoute(
-                    builder: (context) => new UserInfoPage(
-                        bizOrderNo: bizOrderNo,
-                        channelType: channelType,
-                        fromPage: 0)),
-              );
+                Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => new UserInfoPage(
+                          bizOrderNo: bizOrderNo,
+                          channelType: channelType,
+                          wxAppConfirm: wxAppConfirm,
+                          fromPage: 2)),
+                );
             },
           ),
           MeCell(
             title: '我的车辆信息',
             iconName: 'assets/images/car.png',
             onPressed: () {
-              Navigator.push(
-                context,
-                new MaterialPageRoute(
-                    builder: (context) => new CarInfoPage(
-                        bizOrderNo: bizOrderNo,
-                        channelType: channelType,
-                        fromPage: 2)),
-              );
+                Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => new CarInfoPage(
+                          bizOrderNo: bizOrderNo,
+                          channelType: channelType,
+                          wxAppConfirm : wxAppConfirm,
+                          fromPage: 2)),
+                );
             },
           ),
           MeCell(
@@ -112,7 +121,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
             iconName: 'assets/images/bank.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return;
+                return MyBankCardPage(idCard: global.user.idCard,);
               }));
             },
           ),
@@ -193,16 +202,24 @@ class _MeSceneState extends State<_MeSceneStateful> {
   }
 
   void _getRecentOrder() async {
+    if(global.user.idCard == null || global.user.idCard == ''){
+      return;
+    }
     if (!isReload) {
       isReload = true;
       var response =
-          await global.post("user/getRecentOrder/320925199011273112");
+          await global.post("user/getRecentOrder/"+ global.user.idCard);
       DataResponse d = DataResponse.fromJson(response);
       setState(() {
         if (d.success()) {
           Map<String, Object> map = d.entity as Map;
-          bizOrderNo = map['biz_order_no'];
-          channelType = map['channel_type'];
+          if(map != null){
+            bizOrderNo = map['biz_order_no'];
+            channelType = map['channel_type'];
+            orderStatus = map['order_status'];
+            applyAmount = map['apply_amount'];
+            wxAppConfirm = map['wx_app_confirm'];
+          }
         }
       });
     }
@@ -210,20 +227,30 @@ class _MeSceneState extends State<_MeSceneStateful> {
 
   ///退出登录方法
   void _logOut() {
-    DialogUtils.showConfirmDialog(context, "提示", "是否确认退出登录", _ok, _cancel);
-  }
-
-  ///确认按钮
-  _ok() {
-    FileUtil fileUtil = FileUtil("token");
-    fileUtil.delete();
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return LoginPage();
-    }));
-  }
-
-  ///取消按钮
-  _cancel() {
-    Navigator.pop(context);
+    showDialog<Null>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            title: new Text('是否确认退出登录吗?', style: new TextStyle(fontSize: 17.0)),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('取消'),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text('确定'),
+                onPressed: (){
+                  FileUtil fileUtil = FileUtil("token");
+                  fileUtil.delete();
+                  Navigator.push(context, new MaterialPageRoute(builder: (context) => new LoginPage()));
+                },
+              )
+            ],
+          );
+        }
+    );
   }
 }
