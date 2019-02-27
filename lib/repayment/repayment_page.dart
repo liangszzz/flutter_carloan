@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_carloan/agreement/AgreementPageInfo.dart';
+import 'package:flutter_carloan/auditLenders/AuditLendersPage.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:flutter_carloan/repayment/bill.dart';
 
 class RepaymentPage extends StatefulWidget {
@@ -910,8 +910,8 @@ class RepaymentPageState extends State<RepaymentPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrderPage(
-                  idCard: global.user.idCard,
+            builder: (context) => AuditLendersPage(
+                 bizOrderNo: widget.bizOrderNo, channelType: widget.channelType,
                 ),
           ),
         );
