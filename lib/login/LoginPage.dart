@@ -33,23 +33,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        theme: global.globalTheme,
         home: WillPopScope(
-      onWillPop: () {
-        ///提示是否退出
-        DialogUtils.showConfirmDialog(context, "确认要退出应用吗?", "", () {
-          exit(0);
-        }, null);
-      },
-      child: Scaffold(
-          appBar: AppBar(
-            title: _buildTitle(),
-            elevation: 0,
-          ),
-          backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: _buildBody(),
-          )),
-    ));
+          onWillPop: () {
+            ///提示是否退出
+            DialogUtils.showConfirmDialog(context, "确认要退出应用吗?", "", () {
+              exit(0);
+            }, null);
+          },
+          child: Scaffold(
+              appBar: AppBar(
+                title: _buildTitle(),
+                elevation: 0,
+                centerTitle: true,
+              ),
+              backgroundColor: Colors.white,
+              body: SingleChildScrollView(
+                child: _buildBody(),
+              )),
+        ));
   }
 
   ///创建页面标题
