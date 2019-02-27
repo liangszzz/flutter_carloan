@@ -42,9 +42,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: "车贷系统",
       home: _toIndexPage(),
-      theme: new ThemeData(
-        primaryColor: Colors.white,
-      ),
+      theme: global.globalTheme,
     );
   }
 
