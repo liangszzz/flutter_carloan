@@ -1262,7 +1262,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(
-                      maritalList, "marital_status_flag", maritalValue)),
+                      maritalList, "marital_status_flag", maritalValue,context)),
             ),
             /* children: listViewDefault(),*/
           );
@@ -1282,7 +1282,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(
-                      healthList, "health_status_flag", healthValue)),
+                      healthList, "health_status_flag", healthValue,context)),
             ),
           );
         });
@@ -1301,7 +1301,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(identityTypeList,
-                      "identity_type_flag", identityTypeValue)),
+                      "identity_type_flag", identityTypeValue,context)),
             ),
           );
         });
@@ -1319,7 +1319,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children:
-                      listViewDefault(degreeList, "degree_flag", degreeValue)),
+                      listViewDefault(degreeList, "degree_flag", degreeValue,context)),
             ),
           );
         });
@@ -1337,7 +1337,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(customerInfoList,
-                      "customer_professional_info_flag", customerInfoValue)),
+                      "customer_professional_info_flag", customerInfoValue,context)),
             ),
           );
         });
@@ -1355,7 +1355,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(
-                      bankCardList, "bank_card_type_flag", bankCardValue)),
+                      bankCardList, "bank_card_type_flag", bankCardValue,context)),
             ),
           );
         });
@@ -1373,7 +1373,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(
-                      bankNameList, "bank_name_flag", bankNameValue)),
+                      bankNameList, "bank_name_flag", bankNameValue,context)),
             ),
           );
         });
@@ -1391,7 +1391,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children:
-                      listViewDefault(borrowUse, "borrow_use", borrowUseValue)),
+                      listViewDefault(borrowUse, "borrow_use", borrowUseValue,context)),
             ),
           );
         });
@@ -1424,14 +1424,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(relationShipList,
-                      "contact_relationship_flag", relationShipValue)),
+                      "contact_relationship_flag", relationShipValue,context)),
             ),
           );
         });
   }
 
   ///公共弹窗
-  listViewDefault(List sysDictList, String type, int dataValue) {
+  listViewDefault(List sysDictList, String type, int dataValue,BuildContext context) {
     List<Widget> data = new List();
     if (type == "bank_name_flag") {
       for (int i = 0; i < sysDictList.length; i++) {
@@ -1440,7 +1440,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             title: new Text(sysDictList[i]),
             value: i,
             groupValue: dataValue,
-            onChanged: (int e) => updateDefaultDialogValue(e, type),
+            onChanged: (int e) => updateDefaultDialogValue(e, type,context),
           ),
         );
       }
@@ -1451,7 +1451,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             title: new Text(sysDictList[i]),
             value: i,
             groupValue: dataValue,
-            onChanged: (int e) => updateDefaultDialogValue(e, type),
+            onChanged: (int e) => updateDefaultDialogValue(e, type,context),
           ),
         );
       }
@@ -1462,7 +1462,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             title: new Text(sysDictList[i].label),
             value: int.parse(sysDictList[i].value),
             groupValue: dataValue,
-            onChanged: (int e) => updateDefaultDialogValue(e, type),
+            onChanged: (int e) => updateDefaultDialogValue(e, type,context),
           ),
         );
       }
@@ -1472,8 +1472,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   ///公共弹窗返回值
-  updateDefaultDialogValue(int e, String type) {
-    Navigator.pop(context);
+  updateDefaultDialogValue(int e, String type,BuildContext context) {
     setState(() {
       switch (type) {
         case 'health_status_flag':
@@ -1505,6 +1504,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           break;
       }
     });
+    Navigator.pop(context);
   }
 
   ///图片预览
@@ -1573,7 +1573,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         } else {
           canWrite = true;
           ///此处openId使用 token
-          openId = "token:13770207216";
+          openId = global.token.toString();
           var response = await global.postFormData(
               "borrow/toBorrow/" + openId + "/" + global.DEVICE.toString());
           dataMap = response['dataMap'];
@@ -1851,7 +1851,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     try {
       var response = await global.postFormData(url, {
         "data": {
-          "openid": "token:13770207216",
+          "openid": global.token.toString(),
           "channel_type": widget.channelType,
           "biz_order_no": biz_order_no,
           "user_name": userName,

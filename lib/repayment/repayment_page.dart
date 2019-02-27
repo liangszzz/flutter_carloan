@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_carloan/agreement/AgreementPageInfo.dart';
 import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:flutter_carloan/repayment/bill.dart';
@@ -604,7 +605,7 @@ class RepaymentPageState extends State<RepaymentPage> {
             ),
           ),
           onTap: () {
-            print('点击了产品说明是书');
+            _toAgreement();
           },
         ),
       ],
@@ -932,5 +933,19 @@ class RepaymentPageState extends State<RepaymentPage> {
         );
       },
     );
+  }
+
+  ///跳转协议页面
+  void _toAgreement() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return AgreementInfoPage(
+        title: "借款合同",
+        bizOrderNo: widget.bizOrderNo,
+        channelType: widget.channelType,
+        method: method.toString(),
+        terms: terms.toString(),
+        applyAmount: applyAmount.toString(),
+      );
+    }));
   }
 }
