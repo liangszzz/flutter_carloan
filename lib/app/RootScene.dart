@@ -24,7 +24,6 @@ class _RootSceneState extends State<RootScene> {
     Image.asset('assets/images/mine-active.png'),
   ];
 
-
   @override
   void initState() {
     super.initState();
@@ -49,29 +48,32 @@ class _RootSceneState extends State<RootScene> {
       return Container();
     }
 
-    return Scaffold(
-      body: IndexedStack(
-        children: <Widget>[
-          OrderPage(
-            idCard: global.user.idCard,
-          ),
-          MeScene(),
-        ],
-        index: _tabIndex,
-      ),
-      bottomNavigationBar: CupertinoTabBar(
-        backgroundColor: Colors.white,
-        activeColor: Colors.red,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: getTabIcon(0), title: Text('借款记录')),
-          BottomNavigationBarItem(icon: getTabIcon(1), title: Text('我的')),
-        ],
-        currentIndex: _tabIndex,
-        onTap: (index) {
-          setState(() {
-            _tabIndex = index;
-          });
-        },
+    return MaterialApp(
+      theme: global.globalTheme,
+      home: Scaffold(
+        body: IndexedStack(
+          children: <Widget>[
+            OrderPage(
+              idCard: global.user.idCard,
+            ),
+            MeScene(),
+          ],
+          index: _tabIndex,
+        ),
+        bottomNavigationBar: CupertinoTabBar(
+          backgroundColor: Colors.white,
+          activeColor: Colors.red,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: getTabIcon(0), title: Text('借款记录')),
+            BottomNavigationBarItem(icon: getTabIcon(1), title: Text('我的')),
+          ],
+          currentIndex: _tabIndex,
+          onTap: (index) {
+            setState(() {
+              _tabIndex = index;
+            });
+          },
+        ),
       ),
     );
   }
