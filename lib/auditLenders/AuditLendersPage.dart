@@ -106,6 +106,7 @@ class _AuditLendersState extends State<AuditLendersPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: _buildTitle(),
         elevation: 0,
       ),
