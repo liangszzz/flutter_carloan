@@ -143,6 +143,9 @@ class MyBankCardPageState extends State<MyBankCardPage> {
 
   /// 获取银行卡数据
   void _getMyBankCards() async {
+    if(widget.idCard == '' || widget.idCard == null){
+      return;
+    }
     try {
       Map responseData = await _global.post(_requestPath + idCard);
       List data = responseData['data'];
