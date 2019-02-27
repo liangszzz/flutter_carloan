@@ -769,6 +769,10 @@ class _CarInfoPageState extends State<CarInfoPage> {
         List carDriveList = new List();
         FormData formData = new FormData.from({});
         if (widget.fromPage == 2 || widget.fromPage == 1) {
+          if(widget.bizOrderNo == null){
+            buttonName = "返回";
+            return;
+          }
           ///我的页面进入车辆信息页
           var response = await global.postFormData("car/query",
               {"biz_order_no": bizOrderNo, "channel_type": channelType});
@@ -1006,7 +1010,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   ///车辆信息保存
   Future _saveCarInfo() async {
-    if (widget.wxAppConfirm == 1) {
+    if (widget.wxAppConfirm == 1 || widget.bizOrderNo == null) {
       Navigator.of(context).pop();
       return;
     }

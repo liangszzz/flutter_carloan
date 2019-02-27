@@ -126,7 +126,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    _getUserInfo(widget.bizOrderNo, widget.channelType, widget.fromPage);
+      _getUserInfo(widget.bizOrderNo, widget.channelType, widget.fromPage);
+
 
     ///婚姻状况
     if (maritalList.length > 0) {
@@ -1547,6 +1548,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
         if (fromPage == 2 || fromPage == 1) {
           ///我的页面进入查看个人资料
           biz_order_no = bizOrderNo;
+          if(biz_order_no == '' || biz_order_no == null){
+            buttonName = "返回";
+            return;
+          }
           var response = await global.postFormData("user/query",
               {"biz_order_no": bizOrderNo, "channel_type": channelType});
           dataMap = response['dataMap'];
@@ -1723,7 +1728,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   ///信息保存
   Future _saveUserInfo() async {
 
-    if(widget.wxAppConfirm == 1){
+    if(widget.wxAppConfirm == 1 || biz_order_no == null){
       Navigator.of(context).pop();
       return;
     }
