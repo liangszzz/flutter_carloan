@@ -768,7 +768,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
         List accidentStatusList = new List();
         List carDriveList = new List();
         FormData formData = new FormData.from({});
-        if (widget.fromPage == 2) {
+        if (widget.fromPage == 2 || widget.fromPage == 1) {
           ///我的页面进入车辆信息页
           var response = await global.postFormData("car/query",
               {"biz_order_no": bizOrderNo, "channel_type": channelType});
@@ -783,10 +783,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
           } else {
             buttonName = "修改";
           }
-        } else if (widget.fromPage == 1) {
-          ///订单列表页进入
-          url = "";
-        } else if (widget.fromPage == 0) {
+        } else {
           ///app进单
           url = "borrow/toCarBorrow/" + widget.bizOrderNo;
           var response = await global.postFormData(url, formData);
@@ -1095,6 +1092,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
           "major_accident": majorAccident,
           "accident_type": accidentTypeValue,
           "channel_type": widget.channelType,
+          "car_cost" : carCost
         },
       });
       bool isVerify = false;
