@@ -238,8 +238,6 @@ class OrderPageState extends State<OrderPage> {
 
     String bizOrderNo = order.bizOrderNo;
     bool hasConfirmed = order.hasConfirm;
-    double applyAmount = order.loanAmount;
-//    int terms = order.term
     return GestureDetector(
       onTap: () {
         if (status == 64 || status == 68 || status == 72) {
@@ -262,6 +260,17 @@ class OrderPageState extends State<OrderPage> {
                     isConfirm: true,
                     channelType: order.channelType,
                   ),
+            ),
+          );
+        }
+        if (status == 19 && hasConfirmed) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AuditLendersPage(
+                  bizOrderNo: bizOrderNo,
+                channelType: order.channelType,
+              ),
             ),
           );
         }
