@@ -254,11 +254,11 @@ class OrderPageState extends State<OrderPage> {
         if (status == 19 && !hasConfirmed) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => RepaymentPage(
+            new MaterialPageRoute(
+              builder: (context) => new UserInfoPage(
                     bizOrderNo: bizOrderNo,
-                    isConfirm: true,
                     channelType: order.channelType,
+                    fromPage: 1,
                   ),
             ),
           );
@@ -268,9 +268,9 @@ class OrderPageState extends State<OrderPage> {
             context,
             MaterialPageRoute(
               builder: (context) => AuditLendersPage(
-                  bizOrderNo: bizOrderNo,
-                channelType: order.channelType,
-              ),
+                    bizOrderNo: bizOrderNo,
+                    channelType: order.channelType,
+                  ),
             ),
           );
         }
@@ -355,6 +355,13 @@ class OrderPageState extends State<OrderPage> {
 
   /// 金额行
   Widget _getRemainingAmount(int index) {
+    Order order = orders[index];
+    double showAmount = 0;
+    if (order.orderStatus == 64) {
+      showAmount = order.latestShouldRepayAmount;
+    } else {
+      showAmount = order.loanAmount;
+    }
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 10),
       color: _whiteColor,
@@ -362,7 +369,7 @@ class OrderPageState extends State<OrderPage> {
         children: <Widget>[
           Expanded(
             child: Text(
-              "100000(元)",
+              showAmount.toStringAsPrecision(2),
               style: TextStyle(
                 fontSize: 20,
                 fontFamily: _arial,
@@ -474,24 +481,30 @@ class OrderPageState extends State<OrderPage> {
                 builder: (context) => new AuditLendersPage(
                     bizOrderNo: bizOrderNo, channelType: channelType),
               ));
-        }else{
+        } else {
           ///如果未确认，跳转详情页
           Navigator.push(
               context,
               new MaterialPageRoute(
                 builder: (context) => new UserInfoPage(
-                    bizOrderNo: bizOrderNo, channelType: channelType, fromPage: 1,),
+                      bizOrderNo: bizOrderNo,
+                      channelType: channelType,
+                      fromPage: 1,
+                    ),
               ));
         }
-      } else if (orderStatus == 60 || orderStatus == 62 || orderStatus == 64) { ///60，62，64状态点击无效
+      } else if (orderStatus == 60 || orderStatus == 62 || orderStatus == 64) {
+        ///60，62，64状态点击无效
         return;
-      } else { ///其余状态跳转进单页面
+      } else {
+        ///其余状态跳转进单页面
         ///跳转进单页面
         Navigator.push(
             context,
             new MaterialPageRoute(
               builder: (context) => new UserInfoPage(
-                    fromPage: fromPage, channelType: 1,
+                    fromPage: fromPage,
+                    channelType: 1,
                   ),
             ));
       }
@@ -501,7 +514,8 @@ class OrderPageState extends State<OrderPage> {
           context,
           new MaterialPageRoute(
             builder: (context) => new UserInfoPage(
-                  fromPage: fromPage, channelType: 1,
+                  fromPage: fromPage,
+                  channelType: 1,
                 ),
           ));
     }
