@@ -41,7 +41,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
 
   var orderStatus;
 
-  var applyAmount;
+  var applyAmount = 0.0;
 
   var wxAppConfirm;
 
