@@ -1573,7 +1573,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         } else {
           canWrite = true;
           ///此处openId使用 token
-          openId = "token:13770207216";
+          openId = global.token.toString();
           var response = await global.postFormData(
               "borrow/toBorrow/" + openId + "/" + global.DEVICE.toString());
           dataMap = response['dataMap'];
@@ -1851,7 +1851,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     try {
       var response = await global.postFormData(url, {
         "data": {
-          "openid": "token:13770207216",
+          "openid": global.token.toString(),
           "channel_type": widget.channelType,
           "biz_order_no": biz_order_no,
           "user_name": userName,
