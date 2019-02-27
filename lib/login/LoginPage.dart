@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/CommonButton.dart';
@@ -30,8 +32,15 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: Scaffold(
+    return MaterialApp(
+        home: WillPopScope(
+      onWillPop: () {
+        ///提示是否退出
+        DialogUtils.showConfirmDialog(context, "确认要退出应用吗?", "", () {
+          exit(0);
+        }, null);
+      },
+      child: Scaffold(
           appBar: AppBar(
             title: _buildTitle(),
             elevation: 0,
@@ -40,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
           body: SingleChildScrollView(
             child: _buildBody(),
           )),
-    );
+    ));
   }
 
   ///创建页面标题
