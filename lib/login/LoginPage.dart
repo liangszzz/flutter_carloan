@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/CommonButton.dart';
@@ -6,9 +5,6 @@ import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/app/RootScene.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/order/OrderPage.dart';
-import 'package:flutter_carloan/me/MeScene.dart';
-import 'package:flutter_carloan/sign/SignPage.dart';
 
 ///登陆页面
 class LoginPage extends StatefulWidget {
@@ -33,15 +29,19 @@ class _LoginPageState extends State<LoginPage> {
   int second = 0;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: _buildTitle(),
-        elevation: 0,
-      ),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: _buildBody(),
-      ));
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            title: _buildTitle(),
+            elevation: 0,
+          ),
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: _buildBody(),
+          )),
+    );
+  }
 
   ///创建页面标题
   Widget _buildTitle() {
