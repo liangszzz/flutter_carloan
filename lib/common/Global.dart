@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/User.dart';
@@ -15,10 +16,14 @@ class Global {
 
   User user;
 
-  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.3:8081/"));
+  ThemeData globalTheme = ThemeData(
+    primaryColor: Colors.white,
+  );
+
+  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.13:8081/"));
 
   /// 0 安卓 1,IOS 2.windows 3.
-  int DEVICE=0;
+  int DEVICE = 0;
 
   HttpClient httpClient = new HttpClient();
 
