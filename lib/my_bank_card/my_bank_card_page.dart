@@ -6,11 +6,7 @@ class MyBankCardPage extends StatefulWidget {
   // 其他页面传来的身份证号码
   final String idCard;
 
-  MyBankCardPage({
-    Key key,
-    this.idCard,
-  })  : assert(idCard != null),
-        super(key: key);
+  const MyBankCardPage({Key key, this.idCard}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
