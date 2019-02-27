@@ -25,7 +25,7 @@ class MyHeaderPage extends State<MeHeader> {
           children: <Widget>[
             CircleAvatar(
               radius: 40,
-              backgroundImage: NetworkImage(global.user.avatarUrl),
+              backgroundImage: _getImageProvider(),
             ),
             SizedBox(width: 25),
             Expanded(
@@ -65,5 +65,13 @@ class MyHeaderPage extends State<MeHeader> {
   }
 
   Global global = Global();
+
+  ImageProvider _getImageProvider() {
+    if (global.user.avatarUrl == null || global.user.avatarUrl == '') {
+      return AssetImage('assets/images/header.png');
+    } else {
+      return NetworkImage(global.user.avatarUrl);
+    }
+  }
 
 }

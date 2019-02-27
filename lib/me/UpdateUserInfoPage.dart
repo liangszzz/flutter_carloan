@@ -140,6 +140,9 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
     if (_image != null) {
       return FileImage(_image);
     } else {
+      if(global.user.avatarUrl == null || global.user.avatarUrl == ''){
+        return AssetImage("assets/images/header.png");
+      }
       return NetworkImage(global.user.avatarUrl);
     }
   }
