@@ -885,7 +885,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(accidentTypeList,
-                      "accident_type_flag", accidentTypeValue)),
+                      "accident_type_flag", accidentTypeValue, context)),
             ),
             /* children: listViewDefault(),*/
           );
@@ -910,14 +910,14 @@ class _CarInfoPageState extends State<CarInfoPage> {
                     value: 0,
                     groupValue: majorAccident,
                     onChanged: (int e) =>
-                        updateDefaultDialogValue(e, 'major_accident_flag'),
+                        updateDefaultDialogValue(e, 'major_accident_flag', context),
                   ),
                   new RadioListTile<int>(
                     title: const Text('有'),
                     value: 1,
                     groupValue: majorAccident,
                     onChanged: (int e) =>
-                        updateDefaultDialogValue(e, "major_accident_flag"),
+                        updateDefaultDialogValue(e, "major_accident_flag", context),
                   ),
                 ],
               ),
@@ -927,7 +927,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
   }
 
   ///公共弹窗
-  listViewDefault(List sysDictList, String type, int dataValue) {
+  listViewDefault(List sysDictList, String type, int dataValue, BuildContext context) {
     List<Widget> data = new List();
     for (int i = 0; i < sysDictList.length; i++) {
       data.add(
@@ -935,7 +935,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
           title: new Text(sysDictList[i].label),
           value: int.parse(sysDictList[i].value),
           groupValue: dataValue,
-          onChanged: (int e) => updateDefaultDialogValue(e, type),
+          onChanged: (int e) => updateDefaultDialogValue(e, type, context),
         ),
       );
     }
@@ -944,7 +944,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
   }
 
   ///公共弹窗返回值
-  updateDefaultDialogValue(int e, String type) {
+  updateDefaultDialogValue(int e, String type, BuildContext context) {
     Navigator.pop(context);
     setState(() {
       switch (type) {

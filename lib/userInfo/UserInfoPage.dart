@@ -1573,7 +1573,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         } else {
           canWrite = true;
           ///此处openId使用 token
-          openId = global.token.toString();
+          openId = global.token.token;
           var response = await global.postFormData(
               "borrow/toBorrow/" + openId + "/" + global.DEVICE.toString());
           dataMap = response['dataMap'];
@@ -1851,7 +1851,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     try {
       var response = await global.postFormData(url, {
         "data": {
-          "openid": global.token.toString(),
+          "openid": global.token.token,
           "channel_type": widget.channelType,
           "biz_order_no": biz_order_no,
           "user_name": userName,
@@ -1881,7 +1881,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
       });
 
       if (response["code"] == 0) {
-        global.user.idCard = idCard;
+        setState(() {
+          global.user.idCard = idCard;
+        });
         ///如果是从我的页面进入就弹出修改成功的提示框
         if (widget.fromPage == 2) {
           DialogUtils.showAlertDialog(context, "提示", "修改成功", null);
