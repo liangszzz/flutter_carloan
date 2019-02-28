@@ -32,26 +32,24 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: global.globalTheme,
-        home: WillPopScope(
-          onWillPop: () {
-            ///提示是否退出
-            DialogUtils.showConfirmDialog(context, "确认要退出应用吗?", "", () {
-              exit(0);
-            }, null);
-          },
-          child: Scaffold(
-              appBar: AppBar(
-                title: _buildTitle(),
-                elevation: 0,
-                centerTitle: true,
-              ),
-              backgroundColor: Colors.white,
-              body: SingleChildScrollView(
-                child: _buildBody(),
-              )),
-        ));
+    return WillPopScope(
+      onWillPop: () {
+        ///提示是否退出
+        DialogUtils.showConfirmDialog(context, "确认要退出应用吗?", "", () {
+          exit(0);
+        }, null);
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: _buildTitle(),
+            elevation: 0,
+            centerTitle: true,
+          ),
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: _buildBody(),
+          )),
+    );
   }
 
   ///创建页面标题
@@ -454,8 +452,9 @@ class _LoginPageState extends State<LoginPage> {
   ///去登陆成功页面
   void _toLoginSuccessPage() {
     //跳转
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return RootScene();
-    }));
+    Navigator.pushAndRemoveUntil(
+        context,
+        new MaterialPageRoute(builder: (context) => RootScene()),
+        (route) => route == null);
   }
 }
