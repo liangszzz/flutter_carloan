@@ -28,6 +28,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: _buildTitle(),
+        centerTitle: true,
         elevation: 0,
       ),
       backgroundColor: Colors.white,
@@ -36,7 +37,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
       ));
 
   Widget _buildTitle() {
-    return Text("修改个人信息", style: TextStyle(fontSize: 14));
+    return Text("修改个人信息", style: TextStyle(fontSize: 16));
   }
 
   @override
@@ -56,7 +57,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
       child: GestureDetector(
         onTap: _selectImage,
         child: CircleAvatar(
-          radius: 80,
+          radius: 50,
           backgroundImage: _getImageProvider(),
         ),
       ),

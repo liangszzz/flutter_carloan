@@ -32,35 +32,38 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        ///提示是否退出
-        DialogUtils.showConfirmDialog(context, "确认要退出应用吗?", "", () {
-          exit(0);
-        }, null);
-      },
-      child: Scaffold(
-          appBar: AppBar(
-            title: _buildTitle(),
-            elevation: 0,
-            centerTitle: true,
-          ),
-          backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: _buildBody(),
-          )),
-    );
+    return MaterialApp(
+        theme: global.globalTheme,
+        home: WillPopScope(
+          onWillPop: () {
+            ///提示是否退出
+            DialogUtils.showConfirmDialog(context, "确认要退出应用吗?", "", () {
+              exit(0);
+            }, null);
+          },
+          child: Scaffold(
+              appBar: AppBar(
+                title: _buildTitle(),
+                elevation: 0,
+                centerTitle: true,
+              ),
+              backgroundColor: Colors.white,
+              body: SingleChildScrollView(
+                child: _buildBody(),
+                padding: new EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 30.0),
+              )),
+        ));
   }
 
   ///创建页面标题
   Widget _buildTitle() {
-    const TextStyle textStyle = TextStyle(fontSize: 14);
+    const TextStyle textStyle = TextStyle(fontSize: 16);
 
     switch (_loginType) {
       case 0:
-        return Text("免密码登陆", style: textStyle);
+        return Text("免密码登录", style: textStyle);
       case 1:
-        return Text("密码登陆", style: textStyle);
+        return Text("密码登录", style: textStyle);
       case 2:
         return Text("密码找回", style: textStyle);
       default:
@@ -80,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
     return Text("错误");
   }
 
-  ///免密登陆页面
+  ///免密登录页面
   Widget _buildLoginBySms() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
@@ -105,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  ///密码登陆页面
+  ///密码登录页面
   Widget _buildLoginByPwd() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
@@ -248,9 +251,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  ///创建登陆按钮
+  ///创建登录按钮
   Widget _buildLogin() {
-    return CommonButton(text: "登陆", onClick: _login);
+    return CommonButton(text: "登录", onClick: _login);
   }
 
   ///创建重置密码按钮
@@ -258,13 +261,13 @@ class _LoginPageState extends State<LoginPage> {
     return CommonButton(text: "重置密码", onClick: _resetPwd);
   }
 
-  ///创建免密登陆底部
+  ///创建免密登录底部
   Widget _buildBottomBySms() {
-    var text = Text("未注册手机验证后自动登陆",
+    var text = Text("未注册手机验证后自动登录",
         style: TextStyle(fontSize: 12, color: Colors.grey));
 
     var btn = FlatButton(
-      child: Text("密码登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      child: Text("密码登录", style: TextStyle(color: Colors.blue, fontSize: 14)),
       onPressed: () {
         _setLoginType(1);
       },
@@ -281,7 +284,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  ///创建密登陆底部
+  ///创建密登录底部
   Widget _buildBottomByPwd() {
     var forgetBtn = FlatButton(
       onPressed: () {
@@ -290,7 +293,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Text("忘记密码?", style: TextStyle(color: Colors.blue, fontSize: 14)),
     );
     var btn = FlatButton(
-      child: Text("免密登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      child: Text("免密登录", style: TextStyle(color: Colors.blue, fontSize: 14)),
       onPressed: () {
         _setLoginType(0);
       },
@@ -312,10 +315,10 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         _setLoginType(0);
       },
-      child: Text("免密登陆?", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      child: Text("免密登录?", style: TextStyle(color: Colors.blue, fontSize: 14)),
     );
     var btn2 = FlatButton(
-      child: Text("密码登陆", style: TextStyle(color: Colors.blue, fontSize: 14)),
+      child: Text("密码登录", style: TextStyle(color: Colors.blue, fontSize: 14)),
       onPressed: () {
         _setLoginType(1);
       },
@@ -338,7 +341,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     var url = "";
     if (_loginType == 0) {
-      //免密登陆
+      //免密登录
       url = "login/wxSendSms/" + _phone.text;
     } else if (_loginType == 2) {
       //忘记密码
@@ -353,7 +356,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  ///切换登陆方式
+  ///切换登录方式
   void _setLoginType(int _loginType) {
     setState(() {
       _code.clear();
@@ -363,7 +366,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  ///登陆
+  ///登录
   void _login() async {
     if (_phone.text.length != 11) {
       DialogUtils.showAlertDialog(context, "提示", "请填写正确的手机号", null,
@@ -373,7 +376,7 @@ class _LoginPageState extends State<LoginPage> {
     var url = "";
     var data;
     if (_loginType == 0) {
-      //验证码登陆
+      //验证码登录
       if (_code.text.length != 4) {
         DialogUtils.showAlertDialog(context, "提示", "请填写正确的验证码", null,
             contentStyle: TextStyle(color: Colors.red));
@@ -382,7 +385,7 @@ class _LoginPageState extends State<LoginPage> {
       url = "login/appRegister";
       data = {'phone': _phone.text, 'code': _code.text};
     } else if (_loginType == 1) {
-      //密码登陆
+      //密码登录
       if (_pwd.text.length < 6) {
         DialogUtils.showAlertDialog(context, "提示", "请填写正确密码", null,
             contentStyle: TextStyle(color: Colors.red));
@@ -449,12 +452,11 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  ///去登陆成功页面
+  ///去登录成功页面
   void _toLoginSuccessPage() {
     //跳转
-    Navigator.pushAndRemoveUntil(
-        context,
-        new MaterialPageRoute(builder: (context) => RootScene()),
-        (route) => route == null);
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return RootScene();
+    }));
   }
 }

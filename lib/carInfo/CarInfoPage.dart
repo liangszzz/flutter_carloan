@@ -747,8 +747,9 @@ class _CarInfoPageState extends State<CarInfoPage> {
         appBar: new AppBar(
           title: new Text(
             '车辆信息',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 16),
           ),
+          centerTitle: true,
         ),
         body: new Center(
           child: new ListView(children: list),
@@ -782,10 +783,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
           accidentStatusList = dataMap['accidentTypes'];
           carList = dataMap["carList"];
           registerList = dataMap['registerList'];
-          if (widget.wxAppConfirm == 1) {
-            buttonName = "返回";
-          } else {
-            buttonName = "修改";
+          if(widget.fromPage == 2){
+            if (widget.wxAppConfirm == 1) {
+              buttonName = "返回";
+            } else {
+              buttonName = "修改";
+            }
           }
         } else {
           ///app进单
@@ -976,6 +979,9 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   ///公用图片上传方法
   Future _uploadImage(File imageFile, int index, int fileType) async {
+    if(widget.fromPage != 0){
+      formType = 1;
+    }
     FormData formData = new FormData.from({
       "biz_order_no": widget.bizOrderNo,
       "file_type": fileType,

@@ -100,6 +100,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   String defaultImageUrl =
       "http://106.14.239.49/group1/M00/04/4D/ag7vMVxuXfyAVvLmAAADgDq1o2k710.png";
 
+  ///附件存在哪张表
   int formType = 0;
 
   ///控制输入框是否允许输入
@@ -1241,8 +1242,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
         appBar: new AppBar(
           title: new Text(
             '个人信息',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 16),
           ),
+          centerTitle: true,
         ),
         body: new Center(
           child: new ListView(children: list),
@@ -1906,6 +1908,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///图片上传公用方法
   void _uploadImage(File imageFile, int index) async {
+    if(widget.fromPage != 0){
+      formType = 1;
+    }
     String fileType = "1";
     FormData formData = new FormData.from({
       "biz_order_no": biz_order_no,
