@@ -36,6 +36,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: _buildTitle(),
+        centerTitle: true,
         elevation: 0,
       ),
       backgroundColor: Colors.white,
@@ -45,7 +46,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
 
   ///创建标题
   Widget _buildTitle() {
-    const TextStyle textStyle = TextStyle(fontSize: 14);
+    const TextStyle textStyle = TextStyle(fontSize: 16);
     return Text("修改密码", style: textStyle);
   }
 

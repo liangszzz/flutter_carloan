@@ -22,6 +22,7 @@ class _UpdateMeState extends State<_UpdateMeStateful> {
       appBar: AppBar(
         title: _buildTitle(),
         elevation: 0,
+        centerTitle: true,
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -30,7 +31,7 @@ class _UpdateMeState extends State<_UpdateMeStateful> {
 
   ///创建标题
   Widget _buildTitle() {
-    const TextStyle textStyle = TextStyle(fontSize: 14);
+    const TextStyle textStyle = TextStyle(fontSize: 16);
     return Text("修改信息", style: textStyle);
   }
 
@@ -40,7 +41,7 @@ class _UpdateMeState extends State<_UpdateMeStateful> {
         children: <Widget>[
           MeCell(
             title: '更新个人信息',
-            iconName: 'assets/images/me_vip.png',
+            iconName: 'assets/images/person.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return UpdateUserInfoPage();
@@ -49,7 +50,7 @@ class _UpdateMeState extends State<_UpdateMeStateful> {
           ),
           MeCell(
             title: '修改密码',
-            iconName: 'assets/images/me_coupon.png',
+            iconName: 'assets/images/password.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return UpdatePwdPage();

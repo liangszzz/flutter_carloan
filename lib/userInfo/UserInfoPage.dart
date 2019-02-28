@@ -1242,8 +1242,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
         appBar: new AppBar(
           title: new Text(
             '个人信息',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 16),
           ),
+          centerTitle: true,
         ),
         body: new Center(
           child: new ListView(children: list),

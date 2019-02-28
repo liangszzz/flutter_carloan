@@ -45,7 +45,7 @@ class _ListViewDemoState extends State<MyMessage> {
     _getMessage(currentPage, size, widget.phone);
 
     return Scaffold(
-        appBar: AppBar(title: Text('我的消息'), elevation: 0.5),
+        appBar: AppBar(title: Text('我的消息', style: TextStyle(fontSize: 16),), elevation: 0.5, centerTitle: true,),
         body: listViewDefault(lists));
   }
 
