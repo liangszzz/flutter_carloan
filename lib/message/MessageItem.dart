@@ -3,7 +3,6 @@ import 'package:flutter_carloan/common/Global.dart';
 import 'package:flutter_carloan/message/Message.dart';
 
 class MyMessage extends StatefulWidget {
-
   final String phone;
 
   const MyMessage({Key key, this.phone}) : super(key: key);
@@ -18,7 +17,9 @@ class _ListViewDemoState extends State<MyMessage> {
   bool isReloadMore = false;
 
   var currentPage = 1;
-  var size = 7;  ///一个页面显示7条数据
+  var size = 7;
+
+  ///一个页面显示7条数据
 
   ScrollController _scrollController = new ScrollController();
   @override
@@ -27,8 +28,9 @@ class _ListViewDemoState extends State<MyMessage> {
     super.initState();
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        currentPage = currentPage +1;
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        currentPage = currentPage + 1;
         _getMoreMessage(currentPage, size, widget.phone);
       }
     });
@@ -45,7 +47,14 @@ class _ListViewDemoState extends State<MyMessage> {
     _getMessage(currentPage, size, widget.phone);
 
     return Scaffold(
-        appBar: AppBar(title: Text('我的消息', style: TextStyle(fontSize: 16),), elevation: 0.5, centerTitle: true,),
+        appBar: AppBar(
+          title: Text(
+            '我的消息',
+            style: TextStyle(fontSize: 16),
+          ),
+          elevation: 0.5,
+          centerTitle: true,
+        ),
         body: listViewDefault(lists));
   }
 
@@ -54,25 +63,33 @@ class _ListViewDemoState extends State<MyMessage> {
     List<Widget> _list = new List();
     for (int i = 0; i < list.length; i++) {
       _list.add(new Container(
-        height: 90,
+        padding: EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 20.0),
         decoration: new BoxDecoration(
           color: Colors.white10,
         ),
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Text(
-              list[i].content,
-              textAlign:TextAlign.center,
-              style: new TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal),
+            new Container(
+              height: 60,
+              alignment: Alignment.centerLeft,
+              child: new Text(
+                list[i].content,
+                style: new TextStyle(
+                  fontSize: 14,
+                ),
+              ),
             ),
-            new Align(
-              alignment: Alignment.centerRight,
-              child: new Text(list[i].createTime),
-            )
+            new Container(
+              height: 22,
+              alignment: Alignment.centerLeft,
+              child: new Text(
+                list[i].createTime,
+                style: TextStyle(
+                  fontSize: 10,
+                ),
+              ),
+            ),
           ],
         ),
       ));
@@ -96,12 +113,9 @@ class _ListViewDemoState extends State<MyMessage> {
       isReload = true;
       try {
         List data = new List();
-        var response = await global.postFormData("message/query", {
-          "phone": phone,
-          "page": currentPage,
-          "size": size
-        });
-         data = response["data"];
+        var response = await global.postFormData("message/query",
+            {"phone": phone, "page": currentPage, "size": size});
+        data = response["data"];
         setState(() {
           List<Message> list = new List();
           for (int i = 0; i < data.length; i++) {
@@ -120,17 +134,15 @@ class _ListViewDemoState extends State<MyMessage> {
 
   ///加载更多
   _getMoreMessage(int currentPage, int size, String phone) async {
-    if(!isReloadMore){
+    if (!isReloadMore) {
       try {
         List data = new List();
-        var response = await global.postFormData("message/query", {
-          "phone": phone,
-          "page": currentPage,
-          "size": size
-        });
+        var response = await global.postFormData("message/query",
+            {"phone": phone, "page": currentPage, "size": size});
         data = response["data"];
-        if(data.length == 0){ ///没有数据了
-            isReloadMore = true;
+        if (data.length == 0) {
+          ///没有数据了
+          isReloadMore = true;
         }
         setState(() {
           List<Message> list = new List();
@@ -146,6 +158,5 @@ class _ListViewDemoState extends State<MyMessage> {
         print(e);
       }
     }
-
-    }
+  }
 }

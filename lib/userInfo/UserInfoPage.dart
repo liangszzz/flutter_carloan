@@ -242,7 +242,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   userName = text;
                 },
               ),
@@ -283,8 +283,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   focusedBorder: InputBorder.none,
                 ),
                 keyboardType: TextInputType.text,
+                inputFormatters: [
+                  WhitelistingTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(18),
+                ],
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   idCard = text;
                 },
               ),
@@ -325,7 +329,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   idCardAddress = text;
                 },
               ),
@@ -366,7 +370,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   residentialAddress = text;
                 },
               ),
@@ -407,10 +411,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
+                  WhitelistingTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(11),
                 ],
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   phoneNo = text;
                 },
               ),
@@ -553,7 +558,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   companyName = text;
                 },
               ),
@@ -629,8 +634,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     focusedBorder: InputBorder.none,
                   ),
                   keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(11),
+                  ],
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     companyPhone = text;
                   },
                 ),
@@ -777,9 +786,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
                   ),
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(19),
+                  ],
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     bankAccount = text;
                   },
                 ),
@@ -822,11 +835,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     focusedBorder: InputBorder.none,
                   ),
                   inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(11),
                   ],
                   keyboardType: TextInputType.phone,
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     reservePhoneNo = text;
                   },
                 ),
@@ -869,8 +883,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     focusedBorder: InputBorder.none,
                   ),
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(11),
+                  ],
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     personalIncome = text;
                   },
                 ),
@@ -914,7 +932,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                   keyboardType: TextInputType.text,
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     wxNumber = text;
                   },
                 ),
@@ -1034,10 +1052,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                   keyboardType: TextInputType.text,
                   maxLines: 1,
-                  onSubmitted: (text) {
-                    if (text.isNotEmpty) {
+                  onChanged: (text) {
                       contactName = text;
-                    }
                   },
                 ),
               ),
@@ -1079,11 +1095,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     focusedBorder: InputBorder.none,
                   ),
                   inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(11),
                   ],
                   keyboardType: TextInputType.phone,
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     contactPhone = text;
                   },
                 ),

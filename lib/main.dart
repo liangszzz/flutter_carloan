@@ -6,8 +6,6 @@ import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/common/Token.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/me/MeScene.dart';
-import 'package:flutter_carloan/sign/SignPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,11 +47,6 @@ class _MyAppState extends State<MyApp> {
   Widget _toIndexPage() {
     if (loginFlag) {
       return RootScene();
-//      return SignPage(bizOrderNo: "NM2018100822301386314973", channelType: 2);
-/*      return AuditLendersPage(
-        bizOrderNo: "NM2018100822301386314973",
-        channelType: 2,
-      );*/
     }
     return LoginPage();
   }

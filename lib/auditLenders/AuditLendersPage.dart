@@ -157,7 +157,6 @@ class _AuditLendersState extends State<AuditLendersPage> {
           ],
         ),
       ),
-
       new Container(
         height: 30.0,
         color: const Color(0xffebebeb),
@@ -171,7 +170,6 @@ class _AuditLendersState extends State<AuditLendersPage> {
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: 48.0,
@@ -180,14 +178,12 @@ class _AuditLendersState extends State<AuditLendersPage> {
             new Expanded(
               child: new Text(
                 '订单信息',
-                style:
-                TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: containerHeight,
@@ -196,22 +192,19 @@ class _AuditLendersState extends State<AuditLendersPage> {
             new Expanded(
               child: new Text(
                 '借款金额',
-                style:
-                TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
             new Padding(
               padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
               child: new Text(
                 '$applyAmount元',
-                style: TextStyle(
-                    fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: containerHeight,
@@ -220,22 +213,21 @@ class _AuditLendersState extends State<AuditLendersPage> {
             new Expanded(
               child: new Text(
                 '每期应还',
-                style:
-                TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
             new Padding(
               padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
               child: new Text(
-                repaymentMethodValue == '1' ? "每期应还$shouldPayPer元(共" + repaymentTerms + "期)" : ("末期金额:$shouldPayLast元") ,
-                style: TextStyle(
-                    fontSize: 16.0, color: Colors.black),
+                repaymentMethodValue == '1'
+                    ? "每期应还$shouldPayPer元(共" + repaymentTerms + "期)"
+                    : ("末期金额:$shouldPayLast元"),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: containerHeight,
@@ -244,22 +236,19 @@ class _AuditLendersState extends State<AuditLendersPage> {
             new Expanded(
               child: new Text(
                 '提交日期',
-                style:
-                TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
             new Padding(
               padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
               child: new Text(
                 '$submitDate',
-                style: TextStyle(
-                    fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: containerHeight,
@@ -268,22 +257,19 @@ class _AuditLendersState extends State<AuditLendersPage> {
             new Expanded(
               child: new Text(
                 '预计到期时间',
-                style:
-                TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
             new Padding(
               padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
               child: new Text(
                 '$shouldPayLastDate',
-                style: TextStyle(
-                    fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: containerHeight,
@@ -292,22 +278,19 @@ class _AuditLendersState extends State<AuditLendersPage> {
             new Expanded(
               child: new Text(
                 '还款方式',
-                style:
-                TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
             new Padding(
               padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
               child: new Text(
                 '$repaymentMethod',
-                style: TextStyle(
-                    fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: containerHeight,
@@ -316,22 +299,19 @@ class _AuditLendersState extends State<AuditLendersPage> {
             new Expanded(
               child: new Text(
                 '借款银行卡',
-                style:
-                TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
             new Padding(
               padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
               child: new Text(
                 '$bankInfo',
-                style: TextStyle(
-                    fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: containerHeight,
@@ -341,91 +321,29 @@ class _AuditLendersState extends State<AuditLendersPage> {
               child: new Text(
                 '由大兴安岭农商银行提供贷款服务',
                 style:
-                TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+                    TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
               ),
             ),
           ],
         ),
       ),
-
       new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 45.0, 20.0, 0.0),
         height: containerHeight,
         child: new Row(
           children: <Widget>[
-            new Expanded(
-              child: btn
-            ),
+            new Expanded(child: btn),
           ],
         ),
       ),
-
-
     ];
     return list;
-    /*return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              child: CircleAvatar(
-                radius: 60,
-                backgroundImage: AssetImage("assets/images/alarmClock.png"),
-              ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text("订单信息", style: TextStyle(fontSize: 20)),
-            SizedBox(
-              height: 5,
-            ),
-            Divider(
-              height: 1,
-              color: Colors.black,
-            ),
-            Text("借款金额:$applyAmount元"),
-            SizedBox(
-              height: 5,
-            ),
-            repaymentMethodValue == "1"
-                ? Text("每期应还$shouldPayPer元(共" + repaymentTerms + ")期")
-                : Text("末期金额:$shouldPayLast元"),
-            SizedBox(
-              height: 5,
-            ),
-            Text("提交日期:" + submitDate),
-            SizedBox(
-              height: 5,
-            ),
-            Text("预计到期时间:" + shouldPayLastDate),
-            SizedBox(
-              height: 5,
-            ),
-            Text("还款方式:" + repaymentMethod),
-            SizedBox(
-              height: 5,
-            ),
-            Text("借款银行卡:" + bankInfo),
-            SizedBox(
-              height: 5,
-            ),
-            Text(
-              "由大兴安岭农商银行提供贷款服务",
-              style: TextStyle(color: Colors.green, fontSize: 20),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            btn
-          ],
-        ));*/
   }
 
   void _doCheck() {
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return RootScene();
-    }));
+    Navigator.pushAndRemoveUntil(
+        context,
+        new MaterialPageRoute(builder: (context) => RootScene()),
+        (route) => route == null);
   }
 }
