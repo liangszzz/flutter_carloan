@@ -119,7 +119,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   carNo = text;
                 },
               ),
@@ -155,7 +155,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                   ),
                   keyboardType: TextInputType.text,
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     carBrand = text;
                   },
                 ),
@@ -197,7 +197,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   carModel = text;
                 },
               ),
@@ -237,8 +237,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
                   focusedBorder: InputBorder.none,
                 ),
                 keyboardType: TextInputType.number,
+                inputFormatters: [
+                  WhitelistingTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(8),
+                ],
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   carCost = text;
                 },
               ),
@@ -279,7 +283,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   carColor = text;
                 },
               ),
@@ -320,7 +324,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLines: 1,
-                onSubmitted: (text) {
+                onChanged: (text) {
                   carFrameNo = text;
                 },
               ),
@@ -363,7 +367,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                   ),
                   keyboardType: TextInputType.text,
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     carEngineNo = text;
                   },
                 ),
@@ -401,9 +405,10 @@ class _CarInfoPageState extends State<CarInfoPage> {
                   keyboardType: TextInputType.number,
                   maxLines: 1,
                   inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(2),
                   ],
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     carServiceLife = text;
                   },
                 ),
@@ -439,8 +444,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
                     focusedBorder: InputBorder.none,
                   ),
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                   maxLines: 1,
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     carDrivingMileage = text;
                   },
                 ),
