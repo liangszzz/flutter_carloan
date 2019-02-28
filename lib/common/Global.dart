@@ -76,4 +76,16 @@ class Global {
       this.token = token;
     }
   }
+
+  /// 弹框
+  void showAppDialog(BuildContext context, String msg) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        AlertDialog(
+          content: Text(msg),
+        );
+      },
+    );
+  }
 }
