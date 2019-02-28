@@ -248,6 +248,7 @@ class OrderPageState extends State<OrderPage> {
               builder: (context) => RepaymentPage(
                     bizOrderNo: bizOrderNo,
                     isConfirm: false,
+                    channelType: order.channelType,
                   ),
             ),
           );
@@ -415,11 +416,14 @@ class OrderPageState extends State<OrderPage> {
 
   /// 获取订单列表信息
   void _getUserOrders() async {
-    Map requestData = {'idcard': idCard};
-    Map responseData = await _global.postFormData(requestPath, requestData);
-    Map data = responseData['entity'];
-    orders = new List();
-    if (data != null) {
+    try {
+      Map requestData = {'idcard': idCard};
+      Map responseData = await _global.postFormData(requestPath, requestData);
+      if (responseData['code'] == 1) {
+        return;
+      }
+      Map data = responseData['entity'];
+      orders = new List();
       remainingPrincipalTotal = data['remainingPrincipalTotal'];
       List orderList = data['orders'];
       List date = new List();
@@ -449,11 +453,13 @@ class OrderPageState extends State<OrderPage> {
         }
         orders.add(order);
       }
+      setState(() {
+        hasLoaded = true;
+      });
+    } catch (e) {
+      print('请求全部订单失败');
+      print(e);
     }
-
-    setState(() {
-      hasLoaded = true;
-    });
   }
 
   /// 下拉刷新方法
