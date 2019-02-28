@@ -976,6 +976,9 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   ///公用图片上传方法
   Future _uploadImage(File imageFile, int index, int fileType) async {
+    if(widget.fromPage != 0){
+      formType = 1;
+    }
     FormData formData = new FormData.from({
       "biz_order_no": widget.bizOrderNo,
       "file_type": fileType,

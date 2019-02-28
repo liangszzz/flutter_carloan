@@ -911,7 +911,7 @@ class RepaymentPageState extends State<RepaymentPage> {
           context,
           MaterialPageRoute(
             builder: (context) => AuditLendersPage(
-                 bizOrderNo: widget.bizOrderNo, channelType: widget.channelType,
+                 bizOrderNo: widget.bizOrderNo, channelType: 2,
                 ),
           ),
         );

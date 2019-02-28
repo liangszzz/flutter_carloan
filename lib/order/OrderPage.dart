@@ -316,6 +316,9 @@ class OrderPageState extends State<OrderPage> {
     if (status == 21 || status == 22 || status == 61) {
       msg = '审核拒绝';
     }
+    if(status == 60) {
+      msg = '审核通过';
+    }
     if (status == 62) {
       msg = '放款失败';
     }
@@ -371,7 +374,7 @@ class OrderPageState extends State<OrderPage> {
         children: <Widget>[
           Expanded(
             child: Text(
-              showAmount.toStringAsPrecision(2),
+              showAmount.toString(),
               style: TextStyle(
                 fontSize: 20,
                 fontFamily: _arial,
@@ -476,7 +479,6 @@ class OrderPageState extends State<OrderPage> {
       DialogUtils.showAlertDialog(context, "提示", "当日额度已用完!!!", null);
       return;
     }
-
 
     if (orders.length > 0) {
       ///有订单就查看详情
