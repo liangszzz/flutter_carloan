@@ -394,6 +394,11 @@ class OrderPageState extends State<OrderPage> {
 
   /// 签约银行卡组件
   Widget _getBankCardInfoRow(int index) {
+    String bankName = orders[index].bankName;
+    String bankNoTail = orders[index].bankNoTail;
+    if(bankName ==null || bankNoTail == null) {
+      return Container();
+    }
     return Container(
       color: _whiteColor,
       child: Row(
@@ -433,8 +438,16 @@ class OrderPageState extends State<OrderPage> {
       for (int i = 0; i < orderList.length; i++) {
         Order order = new Order();
         order.bizOrderNo = orderList[i]['bizOrderNo'];
-        order.latestRepayDays = orderList[i]['latestRepayDays'];
-        order.latestShouldRepayAmount = orderList[i]['latestShouldRepayAmount'];
+        if(orderList[i]['latestRepayDays'] != null) {
+          order.latestRepayDays = orderList[i]['latestRepayDays'];
+        } else {
+          order.latestRepayDays = 0;
+        }
+        if(orderList[i]['latestShouldRepayAmount'] != null) {
+          order.latestShouldRepayAmount = orderList[i]['latestShouldRepayAmount'];
+        } else {
+          order.latestRepayDays = 0;
+        }
         order.loanAmount = orderList[i]['loanAmount'];
         order.bankName = orderList[i]['bankName'];
         order.bankNoTail = orderList[i]['bankNoTail'];
@@ -443,11 +456,15 @@ class OrderPageState extends State<OrderPage> {
         date = orderList[i]['loadDate'];
         if (date != null) {
           order.loanDate = date[1].toString() + '月' + date[2].toString() + '日';
+        } else {
+          order.loanDate = '00月00日';
         }
         date = orderList[i]['latestRepayDate'];
         if (date != null) {
           order.latestRepayDate =
               date[1].toString() + '月' + date[2].toString() + '日';
+        } else {
+          order.latestRepayDate = '00月00日';
         }
         if (orderList[i]['wxAppConfirm'] == 1) {
           order.hasConfirm = true;
