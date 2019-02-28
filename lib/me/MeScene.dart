@@ -245,7 +245,10 @@ class _MeSceneState extends State<_MeSceneStateful> {
                 onPressed: (){
                   FileUtil fileUtil = FileUtil("token");
                   fileUtil.delete();
-                  Navigator.push(context, new MaterialPageRoute(builder: (context) => new LoginPage()));
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      new MaterialPageRoute(builder: (context) => LoginPage()),
+                          (route) => route == null);
                 },
               )
             ],
