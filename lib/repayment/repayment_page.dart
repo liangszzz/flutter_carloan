@@ -115,8 +115,45 @@ class RepaymentPageState extends State<RepaymentPage> {
     fontSize: 14,
   );
 
+  static final FocusNode _amountFocusNode = new FocusNode();
+
+
+  TextEditingController _controller = TextEditingController();
+
+  /// 金额输入框失去焦点事件
+  void _bindTextFieldLostFocus() {
+    _amountFocusNode.addListener(() {
+      if(!_amountFocusNode.hasFocus) {
+        if(_controller.text != '') {
+          String text = _controller.text;
+          double apply = double.parse(text);
+          if (apply > _maxApplyAmount) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text("抱歉，您申请的金额超过上限"),
+                  );
+                });
+            _controller.text = applyAmount.toString();
+          } else {
+            if (applyAmount != apply) {
+              setState(() {
+                _applyDataChanged = true;
+                applyAmount = apply;
+              });
+            }
+          }
+        }
+      }
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    _bindTextFieldLostFocus();
     if (!_hasInit) {
       _getRepaymentMsg();
     }
@@ -753,6 +790,7 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 获取申请金额组件，有两种返回情况（1.确认借款时返回输入框 2.查看账单时返回文本）
   Widget _getApplyAmountWidget() {
+
     if (isConfirmPage) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -762,6 +800,8 @@ class RepaymentPageState extends State<RepaymentPage> {
               child: TextField(
                 textAlign: TextAlign.center,
                 style: _blue18,
+                controller: _controller,
+                autofocus: false,
                 decoration: InputDecoration(
                   hintText: applyAmount.toString(),
                   hintStyle: _blue18,
@@ -778,28 +818,29 @@ class RepaymentPageState extends State<RepaymentPage> {
                   WhitelistingTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(6)
                 ],
-                onSubmitted: (text) {
-                  if (text.isEmpty) {
-                    return;
-                  }
-                  double apply = double.parse(text);
-                  if (apply > _maxApplyAmount) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: Text("抱歉，您申请的金额超过上限"),
-                          );
-                        });
-                  } else {
-                    if (applyAmount != apply) {
-                      setState(() {
-                        _applyDataChanged = true;
-                        applyAmount = apply;
-                      });
-                    }
-                  }
-                },
+                focusNode: _amountFocusNode,
+//                onSubmitted: (text) {
+//                  if (text.isEmpty) {
+//                    return;
+//                  }
+//                  double apply = double.parse(text);
+//                  if (apply > _maxApplyAmount) {
+//                    showDialog(
+//                        context: context,
+//                        builder: (context) {
+//                          return AlertDialog(
+//                            content: Text("抱歉，您申请的金额超过上限"),
+//                          );
+//                        });
+//                  } else {
+//                    if (applyAmount != apply) {
+//                      setState(() {
+//                        _applyDataChanged = true;
+//                        applyAmount = apply;
+//                      });
+//                    }
+//                  }
+//                },
               ),
             ),
           ),
@@ -817,6 +858,8 @@ class RepaymentPageState extends State<RepaymentPage> {
       );
     }
   }
+
+
 
   /// 从后台获取订单详细信息
   void _getRepaymentMsg() async {
