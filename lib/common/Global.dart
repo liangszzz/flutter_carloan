@@ -20,7 +20,7 @@ class Global {
     primaryColor: Colors.white,
   );
 
-  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.13:8081/"));
+  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.7:8081/"));
 
   /// 0 安卓 1,IOS 2.windows 3.
   int DEVICE = 0;
@@ -75,17 +75,5 @@ class Global {
       token.writeToken();
       this.token = token;
     }
-  }
-
-  /// 弹框
-  void showAppDialog(BuildContext context, String msg) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        AlertDialog(
-          content: Text(msg),
-        );
-      },
-    );
   }
 }

@@ -39,7 +39,7 @@ class DialogUtils {
       String btnTextTwo = "取消",
       TextStyle btnTextStyle}) {
     showDialog(
-      barrierDismissible: true,
+        barrierDismissible: true,
         context: context,
         builder: (context) {
           return new AlertDialog(
@@ -67,5 +67,17 @@ class DialogUtils {
             ],
           );
         });
+  }
+
+  ///无按钮弹窗
+  static void showNoBtnDialog(BuildContext context, String msg) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        AlertDialog(
+          content: Text(msg),
+        );
+      },
+    );
   }
 }

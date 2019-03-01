@@ -104,6 +104,7 @@ class _faceValidateState extends State<faceValidatePage> {
     });
     DataResponse dataResponse = DataResponse.fromJson(response);
     if (dataResponse.success()) {
+      DialogUtils.showNoBtnDialog(context, "人脸识别成功!");
       ///跳转
       Navigator.push(context, new MaterialPageRoute(builder: (context) {
         return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
