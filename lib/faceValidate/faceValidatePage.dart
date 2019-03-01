@@ -78,7 +78,7 @@ class _faceValidateState extends State<faceValidatePage> {
   File _image;
 
   void _selectImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       _image = image;
     });
@@ -94,14 +94,15 @@ class _faceValidateState extends State<faceValidatePage> {
   }
 
   void _doCheck() async {
-
-    DialogUtils.showLoadingDialog(context, null);
-
     if (_image == null) {
       DialogUtils.showAlertDialog(context, "提示", "请先选择图片", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
+
+    DialogUtils.showLoadingDialog(context, null,
+        duration: Duration(seconds: 1, milliseconds: 300));
+
     var readAsStringSync = _image.readAsBytesSync();
     var base64encode = base64Encode(readAsStringSync);
 

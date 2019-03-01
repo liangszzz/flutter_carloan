@@ -390,7 +390,7 @@ class _SignPageState extends State<_SignPageStateful> {
       }));
       return;
     }
-    if(checkboxSelected){
+    if(!checkboxSelected){
       DialogUtils.showAlertDialog(context, "提示", "  请先阅读同意自动还款协议!", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
