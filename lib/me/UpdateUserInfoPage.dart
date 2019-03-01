@@ -123,7 +123,7 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
           global.user.avatarUrl = d.entity;
         }
       });
-      DialogUtils.showAlertDialog(context, "提示", "修改成功!!", null);
+      DialogUtils.showAlertDialog(context, "提示", "修改成功!", null);
       return;
     }
   }

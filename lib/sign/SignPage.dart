@@ -305,7 +305,7 @@ class _SignPageState extends State<_SignPageStateful> {
     var text = TextFormField(
       controller: code,
       keyboardType: TextInputType.number,
-      maxLength: 4,
+      maxLength: 6,
       decoration: InputDecoration(
           hintText: "请输入验证码",
           prefixText: "验证码:",

@@ -44,16 +44,14 @@ class _faceValidateState extends State<faceValidatePage> {
     var text = Text("请上传本人脸部清晰照片用于人脸识别");
 
     var photo = new Container(
-      height: 250,
-      child: GestureDetector(
-        onTap: _selectImage,
-      ),
-      decoration: new BoxDecoration(
+        height: 250,
+        child: GestureDetector(
+          onTap: _selectImage,
+        ),
+        decoration: new BoxDecoration(
           image: DecorationImage(image: _getImageProvider(), fit: BoxFit.cover),
           border: new Border.all(width: 1.0, color: Colors.black38),
-      )
-
-    );
+        ));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
       child: Column(
@@ -66,7 +64,10 @@ class _faceValidateState extends State<faceValidatePage> {
           SizedBox(
             height: 20,
           ),
-          CommonButton(text: "下一步",onClick: _doCheck,),
+          CommonButton(
+            text: "下一步",
+            onClick: _doCheck,
+          ),
         ],
       ),
     );
@@ -105,6 +106,7 @@ class _faceValidateState extends State<faceValidatePage> {
     DataResponse dataResponse = DataResponse.fromJson(response);
     if (dataResponse.success()) {
       DialogUtils.showNoBtnDialog(context, "人脸识别成功!");
+      sleep(Duration(seconds: 1));
       ///跳转
       Navigator.push(context, new MaterialPageRoute(builder: (context) {
         return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
