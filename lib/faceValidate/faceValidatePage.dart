@@ -82,7 +82,7 @@ class _faceValidateState extends State<faceValidatePage> {
     setState(() {
       _image = image;
     });
-    _doCheck();
+    _doLoading();
   }
 
   ImageProvider _getImageProvider() {
@@ -93,16 +93,16 @@ class _faceValidateState extends State<faceValidatePage> {
     }
   }
 
-  void _doCheck() async {
+  void _doLoading() {
+    DialogUtils.showLoadingDialog(context, null, function: _doCheck);
+  }
+
+  void _doCheck(Function f) async {
     if (_image == null) {
       DialogUtils.showAlertDialog(context, "提示", "请先选择图片", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
-
-    DialogUtils.showLoadingDialog(context, null,
-        duration: Duration(seconds: 1, milliseconds: 300));
-
     var readAsStringSync = _image.readAsBytesSync();
     var base64encode = base64Encode(readAsStringSync);
 
@@ -115,8 +115,10 @@ class _faceValidateState extends State<faceValidatePage> {
       setState(() {
         faveCheck = true;
       });
+      f();
       DialogUtils.showAutoCloseNoBtnDialog(context, "检测通过!", null);
     } else {
+      f();
       DialogUtils.showAlertDialog(context, "提示", "人脸验证失败,请点击照片重新上传!", null,
           contentStyle: TextStyle(color: Colors.red));
     }
