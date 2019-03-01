@@ -86,8 +86,8 @@ class DialogUtils {
 
   ///自动关闭的无按钮弹窗
   static void showAutoCloseNoBtnDialog(
-      BuildContext context, String msg, VoidCallback callback,
-      {Duration duration = const Duration(seconds: 2)}) {
+      BuildContext context, String msg,
+      {VoidCallback callback,Duration duration = const Duration(seconds: 2)}) {
     showDialog(
       context: context,
       builder: (context) => AutoDialogWidget(
@@ -99,8 +99,8 @@ class DialogUtils {
   }
 
   ///自动关闭的Loading弹窗
-  static void showLoadingDialog(BuildContext context, VoidCallback callback,
-      {Duration duration = const Duration(seconds: 2), Function function}) {
+  static void showLoadingDialog(BuildContext context,
+      {VoidCallback callback,Duration duration = const Duration(seconds: 2), Function function}) {
     showDialog(
       context: context,
       builder: (context) => AutoDialogWidget(

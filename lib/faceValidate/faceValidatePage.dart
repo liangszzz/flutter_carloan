@@ -94,7 +94,7 @@ class _faceValidateState extends State<faceValidatePage> {
   }
 
   void _doLoading() {
-    DialogUtils.showLoadingDialog(context, null, function: _doCheck);
+    DialogUtils.showLoadingDialog(context, function: _doCheck);
   }
 
   void _doCheck(Function f) async {
@@ -111,14 +111,13 @@ class _faceValidateState extends State<faceValidatePage> {
       "videoBase64String": base64encode
     });
     DataResponse dataResponse = DataResponse.fromJson(response);
+    f();
     if (dataResponse.success()) {
       setState(() {
         faveCheck = true;
       });
-      f();
-      DialogUtils.showAutoCloseNoBtnDialog(context, "检测通过!", null);
+      DialogUtils.showAutoCloseNoBtnDialog(context, "检测通过!");
     } else {
-      f();
       DialogUtils.showAlertDialog(context, "提示", "人脸验证失败,请点击照片重新上传!", null,
           contentStyle: TextStyle(color: Colors.red));
     }
@@ -126,7 +125,7 @@ class _faceValidateState extends State<faceValidatePage> {
 
   void _toNext() {
     if (faveCheck) {
-      DialogUtils.showAutoCloseNoBtnDialog(context, "人脸识别成功!", () {
+      DialogUtils.showAutoCloseNoBtnDialog(context, "人脸识别成功!", callback: () {
         Navigator.push(context, new MaterialPageRoute(builder: (context) {
           return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
         }));
