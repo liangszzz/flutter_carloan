@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
@@ -21,6 +21,8 @@ class faceValidatePage extends StatefulWidget {
 
 class _faceValidateState extends State<faceValidatePage> {
   Global global = new Global();
+
+  bool faveCheck = false;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -66,7 +68,7 @@ class _faceValidateState extends State<faceValidatePage> {
           ),
           CommonButton(
             text: "下一步",
-            onClick: _doCheck,
+            onClick: _toNext,
           ),
         ],
       ),
@@ -80,6 +82,7 @@ class _faceValidateState extends State<faceValidatePage> {
     setState(() {
       _image = image;
     });
+    _doCheck();
   }
 
   ImageProvider _getImageProvider() {
@@ -91,6 +94,9 @@ class _faceValidateState extends State<faceValidatePage> {
   }
 
   void _doCheck() async {
+
+    DialogUtils.showLoadingDialog(context, null);
+
     if (_image == null) {
       DialogUtils.showAlertDialog(context, "提示", "请先选择图片", null,
           contentStyle: TextStyle(color: Colors.red));
@@ -105,14 +111,25 @@ class _faceValidateState extends State<faceValidatePage> {
     });
     DataResponse dataResponse = DataResponse.fromJson(response);
     if (dataResponse.success()) {
-      DialogUtils.showNoBtnDialog(context, "人脸识别成功!");
-      sleep(Duration(seconds: 1));
-      ///跳转
-      Navigator.push(context, new MaterialPageRoute(builder: (context) {
-        return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
-      }));
+      setState(() {
+        faveCheck = true;
+      });
+      DialogUtils.showAutoCloseNoBtnDialog(context, "检测通过!", null);
     } else {
-      DialogUtils.showAlertDialog(context, "提示", "人脸验证失败，请点击照片重新上传!", null,
+      DialogUtils.showAlertDialog(context, "提示", "人脸验证失败,请点击照片重新上传!", null,
+          contentStyle: TextStyle(color: Colors.red));
+    }
+  }
+
+  void _toNext() {
+    if (faveCheck) {
+      DialogUtils.showAutoCloseNoBtnDialog(context, "人脸识别成功!", () {
+        Navigator.push(context, new MaterialPageRoute(builder: (context) {
+          return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
+        }));
+      });
+    } else {
+      DialogUtils.showAlertDialog(context, "提示", "请先完成人脸识别!", null,
           contentStyle: TextStyle(color: Colors.red));
     }
   }
