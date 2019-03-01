@@ -545,12 +545,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 top: false,
                 bottom: false,
                 child: new GridView.count(
-                  physics: new NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
+                  scrollDirection: Axis.horizontal,
+                  crossAxisCount: 1,
                   mainAxisSpacing: 10.0,
                   crossAxisSpacing: 4.0,
                   padding: const EdgeInsets.all(4.0),
-                  childAspectRatio: 1.5,
+                  childAspectRatio: 0.67,
                   children: carImageList.map((f) {
                     return new GestureDetector(
                         onTap: () {
@@ -606,12 +606,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 top: false,
                 bottom: false,
                 child: new GridView.count(
-                  physics: new NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
+                  scrollDirection: Axis.horizontal,
+                  crossAxisCount: 1,
                   mainAxisSpacing: 10.0,
                   crossAxisSpacing: 4.0,
                   padding: const EdgeInsets.all(4.0),
-                  childAspectRatio: 1.5,
+                  childAspectRatio:0.67,
                   children: registerImageList.map((f) {
                     return new GestureDetector(
                         onTap: () {
@@ -856,11 +856,18 @@ class _CarInfoPageState extends State<CarInfoPage> {
             }
           }
 
+          ///行驶证, 只显示两张，如果库只有一张 就添加
           if (carDriveList != null && carDriveList.length > 0) {
-            ///行驶证
-            for (int i = 0; i < carDriveList.length; i++) {
-              String filePath = carDriveList[i]['file_path'];
+            if(carDriveList.length == 1){
+              String filePath = carDriveList[0]['file_path'];
               driveImageList.add(filePath);
+              driveImageList.add(defaultImageUrl);
+            }
+            if(carDriveList.length > 1){
+              for (int i = 0; i < 2; i++) {
+                String filePath = carDriveList[i]['file_path'];
+                driveImageList.add(filePath);
+              }
             }
           } else {
             for (int i = 0; i < 2; i++) {

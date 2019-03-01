@@ -1727,16 +1727,23 @@ class _UserInfoPageState extends State<UserInfoPage> {
           relationShipList = relationShips;
 
           ///身份证
-          if (idCraUrlList.length > 0) {
-            for (int i = 0; i < idCraUrlList.length; i++) {
-              String filePath = idCraUrlList[i]["file_path"];
-              idCardImageList.add(filePath);
-            }
-          } else {
+          if (idCraUrlList.length == 0) {
             for (int i = 0; i < 2; i++) {
               idCardImageList.add(defaultImageUrl);
             }
           }
+          if (idCraUrlList.length == 1){
+            String filePath = idCraUrlList[0]["file_path"];
+            idCardImageList.add(filePath);
+            idCardImageList.add(defaultImageUrl);
+          }
+          //只取前两张
+          if (idCraUrlList.length > 1){
+              for (int i = 0; i < 2; i++) {
+                String filePath = idCraUrlList[i]["file_path"];
+                idCardImageList.add(filePath);
+              }
+            }
         });
       } catch (e) {
         print(e);
