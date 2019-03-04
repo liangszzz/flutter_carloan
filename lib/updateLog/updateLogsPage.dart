@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/updateLog/updateLog.dart';
 
-import 'package:flutter_carloan/update_log/update_log.dart';
 import 'package:flutter_carloan/common/Global.dart';
 
 // ignore: must_be_immutable

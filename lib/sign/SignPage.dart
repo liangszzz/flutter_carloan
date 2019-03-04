@@ -8,7 +8,7 @@ import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/repayment/repayment_page.dart';
+import 'package:flutter_carloan/repayment/repaymentPage.dart';
 import 'package:flutter_carloan/sign/UserSign.dart';
 
 ///签约代扣

@@ -10,8 +10,8 @@ import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/me/Screen.dart';
 import 'package:flutter_carloan/me/UpdateMePage.dart';
 import 'package:flutter_carloan/message/MessageItem.dart';
-import 'package:flutter_carloan/my_bank_card/my_bank_card_page.dart';
-import 'package:flutter_carloan/update_log/update_logs_page.dart';
+import 'package:flutter_carloan/myBankCard/myBankCardPage.dart';
+import 'package:flutter_carloan/updateLog/updateLogsPage.dart';
 import 'package:flutter_carloan/userInfo/UserInfoPage.dart';
 
 import 'MeCell.dart';

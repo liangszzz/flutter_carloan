@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/my_bank_card/my_bank_card.dart';
+import 'package:flutter_carloan/myBankCard/myBankCard.dart';
 
 class MyBankCardPage extends StatefulWidget {
   // 其他页面传来的身份证号码
