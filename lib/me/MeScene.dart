@@ -48,21 +48,23 @@ class _MeSceneState extends State<_MeSceneStateful> {
   @override
   Widget build(BuildContext context) => WillPopScope(
         child: Scaffold(
-          appBar: PreferredSize(
-            child: Container(color: Colors.white),
-            preferredSize: Size(Screen.width, 0),
-          ),
-          body: Container(
-            color: Colors.white,
-            child: ListView(
-              children: <Widget>[
-                MeHeader(applyAmount: applyAmount.toString()),
-                SizedBox(height: 10),
-                _buildCells(context),
-              ],
+            appBar: PreferredSize(
+              child: Container(color: Colors.white),
+              preferredSize: Size(Screen.width, 0),
             ),
-          ),
-        ),
+            body: new RefreshIndicator(
+              onRefresh: _pullDownRefresh,
+              child: new Container(
+                color: Colors.white,
+                child: ListView(
+                  children: <Widget>[
+                    MeHeader(applyAmount: applyAmount.toString()),
+                    SizedBox(height: 10),
+                    _buildCells(context),
+                  ],
+                ),
+              ),
+            )),
         onWillPop: () {
           ///提示是否退出
           DialogUtils.showConfirmDialog(context, "确认要退出吗?", "", () {
@@ -81,30 +83,30 @@ class _MeSceneState extends State<_MeSceneStateful> {
             title: '我的基本信息',
             iconName: 'assets/images/mine.png',
             onPressed: () {
-                Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                      builder: (context) => new UserInfoPage(
-                          bizOrderNo: bizOrderNo,
-                          channelType: channelType,
-                          wxAppConfirm: wxAppConfirm,
-                          fromPage: 2)),
-                );
+              Navigator.push(
+                context,
+                new MaterialPageRoute(
+                    builder: (context) => new UserInfoPage(
+                        bizOrderNo: bizOrderNo,
+                        channelType: channelType,
+                        wxAppConfirm: wxAppConfirm,
+                        fromPage: 2)),
+              );
             },
           ),
           MeCell(
             title: '我的车辆信息',
             iconName: 'assets/images/car.png',
             onPressed: () {
-                Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                      builder: (context) => new CarInfoPage(
-                          bizOrderNo: bizOrderNo,
-                          channelType: channelType,
-                          wxAppConfirm : wxAppConfirm,
-                          fromPage: 2)),
-                );
+              Navigator.push(
+                context,
+                new MaterialPageRoute(
+                    builder: (context) => new CarInfoPage(
+                        bizOrderNo: bizOrderNo,
+                        channelType: channelType,
+                        wxAppConfirm: wxAppConfirm,
+                        fromPage: 2)),
+              );
             },
           ),
           MeCell(
@@ -121,7 +123,9 @@ class _MeSceneState extends State<_MeSceneStateful> {
             iconName: 'assets/images/bank.png',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return MyBankCardPage(idCard: global.user.idCard,);
+                return MyBankCardPage(
+                  idCard: global.user.idCard,
+                );
               }));
             },
           ),
@@ -202,18 +206,18 @@ class _MeSceneState extends State<_MeSceneStateful> {
   }
 
   void _getRecentOrder() async {
-    if(global.user.idCard == null || global.user.idCard == ''){
+    if (global.user.idCard == null || global.user.idCard == '') {
       return;
     }
     if (!isReload) {
       isReload = true;
       var response =
-          await global.post("user/getRecentOrder/"+ global.user.idCard);
+          await global.post("user/getRecentOrder/" + global.user.idCard);
       DataResponse d = DataResponse.fromJson(response);
       setState(() {
         if (d.success()) {
           Map<String, Object> map = d.entity as Map;
-          if(map != null){
+          if (map != null) {
             bizOrderNo = map['biz_order_no'];
             channelType = map['channel_type'];
             orderStatus = map['order_status'];
@@ -236,24 +240,30 @@ class _MeSceneState extends State<_MeSceneStateful> {
             actions: <Widget>[
               new FlatButton(
                 child: new Text('取消'),
-                onPressed: (){
+                onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               new FlatButton(
                 child: new Text('确定'),
-                onPressed: (){
+                onPressed: () {
                   FileUtil fileUtil = FileUtil("token");
                   fileUtil.delete();
                   Navigator.pushAndRemoveUntil(
                       context,
                       new MaterialPageRoute(builder: (context) => LoginPage()),
-                          (route) => route == null);
+                      (route) => route == null);
                 },
               )
             ],
           );
-        }
-    );
+        });
+  }
+
+///下拉刷新
+  Future<void> _pullDownRefresh() async {
+    setState(() {
+      isReload = false;
+    });
   }
 }
