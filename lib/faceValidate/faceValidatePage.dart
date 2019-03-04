@@ -69,6 +69,7 @@ class _faceValidateState extends State<faceValidatePage> {
           ),
           CommonButton(
             text: "下一步",
+            btnBackGround: faveCheck ? Colors.blue : Colors.white,
             onClick: _toNext,
           ),
         ],
@@ -95,10 +96,10 @@ class _faceValidateState extends State<faceValidatePage> {
   }
 
   void _doLoading() {
-    DialogUtils.showLoadingDialog(context, function: _doCheck);
+    DialogUtils.showLoadingDialog(context, callback: _doCheck);
   }
 
-  void _doCheck(Function f) async {
+  void _doCheck() async {
     if (_image == null) {
       DialogUtils.showAlertDialog(context, "提示", "请先选择图片", null,
           contentStyle: TextStyle(color: Colors.red));
@@ -112,7 +113,6 @@ class _faceValidateState extends State<faceValidatePage> {
       "videoBase64String": base64encode
     });
     DataResponse dataResponse = DataResponse.fromJson(response);
-    f();
     if (dataResponse.success()) {
       setState(() {
         faveCheck = true;
