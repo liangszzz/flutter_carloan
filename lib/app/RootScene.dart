@@ -7,6 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 ///  底部导航栏
 class RootScene extends StatefulWidget {
+  final int tabIndex;
+
+  const RootScene({Key key, this.tabIndex = 0}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _RootSceneState();
 }
@@ -26,8 +30,11 @@ class _RootSceneState extends State<RootScene> {
 
   @override
   void initState() {
-    super.initState();
+    setState(() {
+      _tabIndex = this.widget.tabIndex;
+    });
     setupApp();
+    super.initState();
   }
 
   @override

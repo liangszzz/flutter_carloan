@@ -1,11 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/CodeButton.dart';
 import 'package:flutter_carloan/app/CommonButton.dart';
 import 'package:flutter_carloan/app/DialogUtils.dart';
+import 'package:flutter_carloan/app/RootScene.dart';
 import 'package:flutter_carloan/common/DataResponse.dart';
 import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/me/MeScene.dart';
 
 ///更新密码
 class UpdatePwdPage extends StatelessWidget {
@@ -145,6 +144,7 @@ class _UpdateState extends State<_UpdatePwdStateful> {
         controller: smsCode,
         maxLength: 4,
         maxLengthEnforced: true,
+        autofocus: true,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           hintText: "请输入验证码",
@@ -171,10 +171,6 @@ class _UpdateState extends State<_UpdatePwdStateful> {
         children: <Widget>[
           SizedBox(
             height: 20,
-            child: Text("4位验证码已发送,请注意查收."),
-          ),
-          SizedBox(
-            height: 20,
           ),
           code,
           SizedBox(
@@ -188,17 +184,6 @@ class _UpdateState extends State<_UpdatePwdStateful> {
 
   ///创建按钮
   Widget _buildBtn() {
-//    var btn = FlatButton(
-//        onPressed: _btnClick,
-//        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//        color: Colors.green,
-//        child: Text(
-//          btnText,
-//          style: TextStyle(fontSize: 16, color: Colors.white),
-//        ));
-//    return Row(
-//      children: <Widget>[Expanded(child: btn)],
-//    );
     return CommonButton(text: btnText, onClick: _btnClick);
   }
 
@@ -237,7 +222,9 @@ class _UpdateState extends State<_UpdatePwdStateful> {
       if (d.success()) {
         DialogUtils.showAlertDialog(context, "提示", "修改密码成功", null);
         Navigator.push(context, new MaterialPageRoute(builder: (context) {
-          return MeScene();
+          return RootScene(
+            tabIndex: 1,
+          );
         }));
         return;
       }
