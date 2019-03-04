@@ -527,7 +527,7 @@ class OrderPageState extends State<OrderPage> {
               ));
         }
       } else if (orderStatus == 60 || orderStatus == 62 || orderStatus == 64) {
-        ///60，62，64状态点击无效
+        DialogUtils.showAlertDialog(context, "提示", "系统存在未完成订单", null);
         return;
       } else {
         ///其余状态跳转进单页面
