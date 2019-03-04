@@ -67,11 +67,14 @@ class _faceValidateState extends State<faceValidatePage> {
           SizedBox(
             height: 20,
           ),
-          CommonButton(
-            text: "下一步",
-            btnBackGround: faveCheck ? Colors.blue : Colors.white,
-            onClick: _toNext,
-          ),
+          faveCheck
+              ? CommonButton(
+                  text: "下一步",
+                  onClick: _toNext,
+                )
+              : SizedBox(
+                  height: 20,
+                ),
         ],
       ),
     );
@@ -126,11 +129,9 @@ class _faceValidateState extends State<faceValidatePage> {
 
   void _toNext() {
     if (faveCheck) {
-      DialogUtils.showAutoCloseNoBtnDialog(context, "人脸识别成功!", callback: () {
-        Navigator.push(context, new MaterialPageRoute(builder: (context) {
-          return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
-        }));
-      });
+      Navigator.push(context, new MaterialPageRoute(builder: (context) {
+        return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
+      }));
     } else {
       DialogUtils.showAlertDialog(context, "提示", "请先完成人脸识别!", null,
           contentStyle: TextStyle(color: Colors.red));
