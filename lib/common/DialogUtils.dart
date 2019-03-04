@@ -100,14 +100,13 @@ class DialogUtils {
 
   ///自动关闭的Loading弹窗
   static void showLoadingDialog(BuildContext context,
-      {VoidCallback callback,Duration duration = const Duration(seconds: 2), Function function}) {
+      {VoidCallback callback,Duration duration = const Duration(seconds: 2)}) {
     showDialog(
       context: context,
       builder: (context) => AutoDialogWidget(
             duration: duration,
             callback: callback,
             dialogWidget: CupertinoActivityIndicator(),
-            closeDialogFunc: function,
           ),
     );
   }
@@ -120,14 +119,11 @@ class AutoDialogWidget extends StatefulWidget {
 
   final Widget dialogWidget;
 
-  Function closeDialogFunc;
-
   AutoDialogWidget(
       {Key key,
       this.duration,
       this.callback,
-      this.dialogWidget,
-      this.closeDialogFunc})
+      this.dialogWidget})
       : super(key: key);
 
   @override
@@ -136,17 +132,6 @@ class AutoDialogWidget extends StatefulWidget {
 
 class _AutoDialogWidgetState extends State<AutoDialogWidget> {
   Timer timer;
-
-  @override
-  void initState() {
-    if (widget.closeDialogFunc != null) {
-      widget.closeDialogFunc(() {
-        Navigator.pop(context);
-      });
-    }
-
-    super.initState();
-  }
 
   @override
   void dispose() {
