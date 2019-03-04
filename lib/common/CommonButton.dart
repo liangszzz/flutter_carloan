@@ -5,7 +5,9 @@ class CommonButton extends StatelessWidget {
 
   final VoidCallback onClick;
 
-  const CommonButton({Key key, this.text, this.onClick}) : super(key: key);
+  final Color btnBackGround;
+
+  const CommonButton({Key key, this.text, this.onClick, this.btnBackGround=Colors.blue}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class CommonButton extends StatelessWidget {
             child: FlatButton(
                 onPressed: onClick,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                color: Colors.blue,
+                color: btnBackGround,
                 child: Text(
                   text,
                   style: buttonStyle,
