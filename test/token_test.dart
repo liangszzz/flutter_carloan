@@ -1,5 +1,4 @@
-import 'package:flutter_carloan/common/Token.dart';
-import 'package:flutter_carloan/main.dart';
+import 'package:flutter_carloan/app/Token.dart';
 
 void main() {
   Token token = Token(DateTime(2019, 3, 19), "abccc");

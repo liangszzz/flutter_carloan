@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/app/RootScene.dart';
-import 'package:flutter_carloan/common/DataResponse.dart';
+import 'package:flutter_carloan/app/DataResponse.dart';
+import 'package:flutter_carloan/app/Token.dart';
+import 'package:flutter_carloan/index/RootScene.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
-import 'package:flutter_carloan/common/Token.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/Global.dart';
 
 void main() => runApp(MyApp());
 

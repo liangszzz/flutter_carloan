@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_carloan/app/DialogUtils.dart';
+import 'package:flutter_carloan/app/DataResponse.dart';
+import 'package:flutter_carloan/app/Global.dart';
+import 'package:flutter_carloan/app/SysDict.dart';
 import 'package:flutter_carloan/carInfo/CarInfoPage.dart';
-import 'package:flutter_carloan/common/DataResponse.dart';
-import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/common/SysDict.dart';
+import 'package:flutter_carloan/common/DialogUtils.dart';
+import 'package:flutter_carloan/common/ShowPhoto.dart';
 import 'package:flutter_carloan/userInfo/ClContactInfo.dart';
 import 'package:flutter_carloan/userInfo/ClUserInfo.dart';
-import 'package:flutter_carloan/userInfo/ShowPhoto.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -1535,7 +1535,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         body: SizedBox.expand(
           child: Hero(
             tag: index,
-            child: new ShowPhotoPage(url: f),
+            child: ShowPhotoPage(url: f),
           ),
         ),
       );

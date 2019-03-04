@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/Global.dart';
 
 class MeHeader extends StatefulWidget {
   final String applyAmount;

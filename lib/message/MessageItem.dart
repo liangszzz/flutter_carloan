@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/message/Message.dart';
 
 class MyMessage extends StatefulWidget {

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/app/CommonButton.dart';
-import 'package:flutter_carloan/app/DialogUtils.dart';
-import 'package:flutter_carloan/common/DataResponse.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/DataResponse.dart';
+import 'package:flutter_carloan/app/Global.dart';
+import 'package:flutter_carloan/common/CommonButton.dart';
+import 'package:flutter_carloan/common/DialogUtils.dart';
 import 'package:image_picker/image_picker.dart';
 
 ///更新个人信息

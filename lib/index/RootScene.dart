@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/me/MeScene.dart';
 import 'package:flutter_carloan/order/OrderPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';

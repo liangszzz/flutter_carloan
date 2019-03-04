@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/app/DialogUtils.dart';
 import 'package:flutter_carloan/auditLenders/AuditLendersPage.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/Global.dart';
+import 'package:flutter_carloan/common/DialogUtils.dart';
 import 'package:flutter_carloan/order/order.dart';
 import 'package:flutter_carloan/repayment/repaymentPage.dart';
 import 'package:flutter_carloan/userInfo/UserInfoPage.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///图片预览方法
 class ShowPhotoPage extends StatefulWidget {
   const ShowPhotoPage({Key key, this.url}) : super(key: key);
   final url;

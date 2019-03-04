@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_carloan/app/DialogUtils.dart';
+import 'package:flutter_carloan/app/DataResponse.dart';
+import 'package:flutter_carloan/app/SysDict.dart';
+import 'package:flutter_carloan/common/DialogUtils.dart';
+import 'package:flutter_carloan/common/ShowPhoto.dart';
 import 'package:flutter_carloan/carInfo/ClCarInfo.dart';
-import 'package:flutter_carloan/common/DataResponse.dart';
-import 'package:flutter_carloan/common/Global.dart';
-import 'package:flutter_carloan/common/SysDict.dart';
+import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/faceValidate/faceValidatePage.dart';
 import 'package:flutter_carloan/sign/SignPage.dart';
-import 'package:flutter_carloan/userInfo/ShowPhoto.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CarInfoPage extends StatefulWidget {
@@ -547,9 +547,6 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 child: new GridView.count(
                   scrollDirection: Axis.horizontal,
                   crossAxisCount: 1,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 4.0,
-                  padding: const EdgeInsets.all(4.0),
                   childAspectRatio: 0.67,
                   children: carImageList.map((f) {
                     return new GestureDetector(
@@ -608,9 +605,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 child: new GridView.count(
                   scrollDirection: Axis.horizontal,
                   crossAxisCount: 1,
-                  mainAxisSpacing: 10.0,
                   crossAxisSpacing: 4.0,
-                  padding: const EdgeInsets.all(4.0),
                   childAspectRatio:0.67,
                   children: registerImageList.map((f) {
                     return new GestureDetector(
@@ -986,7 +981,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
         body: SizedBox.expand(
           child: Hero(
             tag: index,
-            child: new ShowPhotoPage(url: f),
+            child: ShowPhotoPage(url: f),
           ),
         ),
       );

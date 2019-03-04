@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_html_textview/flutter_html_textview.dart';
 
 class AgreementInfoPage extends StatefulWidget {

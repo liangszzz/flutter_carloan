@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/updateLog/updateLog.dart';
 
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/app/Global.dart';
 
 // ignore: must_be_immutable
 class UpdateLogsPage extends StatefulWidget {

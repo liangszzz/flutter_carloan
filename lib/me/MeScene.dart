@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_carloan/app/DialogUtils.dart';
+import 'package:flutter_carloan/app/DataResponse.dart';
+import 'package:flutter_carloan/app/FileUtil.dart';
+import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/carInfo/CarInfoPage.dart';
-import 'package:flutter_carloan/common/DataResponse.dart';
-import 'package:flutter_carloan/common/FileUtil.dart';
-import 'package:flutter_carloan/common/Global.dart';
+import 'package:flutter_carloan/common/DialogUtils.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/me/Screen.dart';
 import 'package:flutter_carloan/me/UpdateMePage.dart';

@@ -1,4 +1,5 @@
-import 'package:flutter_carloan/common/FileUtil.dart';
+
+import 'package:flutter_carloan/app/FileUtil.dart';
 
 ///token 文件存放信息
 class Token {
