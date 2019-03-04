@@ -1767,6 +1767,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
     if (idCard.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "身份证不能为空", null);
       return;
+    }else{
+      int year = int.parse(idCard.substring(6, 10));
+      int currentYear = DateTime.now().year;
+      if((currentYear - year > 60) || (currentYear - year < 23)){
+        DialogUtils.showAlertDialog(context, "提示", "借款年龄大于60或小于23", null);
+        return;
+      }
     }
 
     if (idCardAddress.isEmpty) {
