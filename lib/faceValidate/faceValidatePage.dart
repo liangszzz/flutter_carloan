@@ -78,11 +78,11 @@ class _faceValidateState extends State<faceValidatePage> {
   File _image;
 
   void _selectImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       _image = image;
     });
-    _doCheck();
+    _doLoading();
   }
 
   ImageProvider _getImageProvider() {
@@ -93,10 +93,11 @@ class _faceValidateState extends State<faceValidatePage> {
     }
   }
 
-  void _doCheck() async {
+  void _doLoading() {
+    DialogUtils.showLoadingDialog(context, function: _doCheck);
+  }
 
-    DialogUtils.showLoadingDialog(context, null);
-
+  void _doCheck(Function f) async {
     if (_image == null) {
       DialogUtils.showAlertDialog(context, "提示", "请先选择图片", null,
           contentStyle: TextStyle(color: Colors.red));
@@ -110,11 +111,12 @@ class _faceValidateState extends State<faceValidatePage> {
       "videoBase64String": base64encode
     });
     DataResponse dataResponse = DataResponse.fromJson(response);
+    f();
     if (dataResponse.success()) {
       setState(() {
         faveCheck = true;
       });
-      DialogUtils.showAutoCloseNoBtnDialog(context, "检测通过!", null);
+      DialogUtils.showAutoCloseNoBtnDialog(context, "检测通过!");
     } else {
       DialogUtils.showAlertDialog(context, "提示", "人脸验证失败,请点击照片重新上传!", null,
           contentStyle: TextStyle(color: Colors.red));
@@ -123,7 +125,7 @@ class _faceValidateState extends State<faceValidatePage> {
 
   void _toNext() {
     if (faveCheck) {
-      DialogUtils.showAutoCloseNoBtnDialog(context, "人脸识别成功!", () {
+      DialogUtils.showAutoCloseNoBtnDialog(context, "人脸识别成功!", callback: () {
         Navigator.push(context, new MaterialPageRoute(builder: (context) {
           return SignPage(bizOrderNo: this.widget.bizOrderNo, channelType: 1);
         }));

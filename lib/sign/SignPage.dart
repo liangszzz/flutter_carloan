@@ -390,11 +390,24 @@ class _SignPageState extends State<_SignPageStateful> {
       }));
       return;
     }
-    if(checkboxSelected){
-      DialogUtils.showAlertDialog(context, "提示", "  请先阅读同意自动还款协议!", null,
+    if(!checkboxSelected){
+      DialogUtils.showAlertDialog(context, "提示", "请先阅读同意自动还款协议!", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
+
+    if(smsId==null){
+      DialogUtils.showAlertDialog(context, "提示", "请先获取短信验证码!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
+    if(code.text==null){
+      DialogUtils.showAlertDialog(context, "提示", "短信验证码为空!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
     var response = await global.postFormData("sign/doSign", {
       "smsId": smsId,
       "smsCode": code.text,
