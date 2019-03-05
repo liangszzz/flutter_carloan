@@ -1655,6 +1655,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           }
 
           bankNameList = bankStatusList;
+          bankNameValue = bankStatusList.indexOf(bankName);
 
           ///婚姻状况
           List<SysDict> maritalLists = new List();
@@ -1705,6 +1706,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
             bankCards.add(sysDict);
           }
           bankCardList = bankCards;
+
+
 
           ///客户职业信息
           List<SysDict> customerInfos = new List();
