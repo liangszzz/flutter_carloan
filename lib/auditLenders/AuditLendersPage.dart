@@ -84,7 +84,10 @@ class _AuditLendersState extends State<AuditLendersPage> {
         pageName = data['page_name'];
         pageContent = data['page_content'];
         applyAmount = data['apply_amount'];
-        shouldPayPer = data['should_pay_per'];
+        if (data['should_pay_per'] == 0)
+          shouldPayPer = 0;
+        else
+          shouldPayPer = data['should_pay_per'];
         shouldPayLast = data['should_pay_last'];
         repaymentTerms = data['repayment_terms'];
         submitDate = data['submit_date'];
