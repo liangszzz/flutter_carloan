@@ -747,7 +747,7 @@ class RepaymentPageState extends State<RepaymentPage> {
       DropdownMenuItem item1 =
           new DropdownMenuItem(value: 1, child: Text("等额本息"));
       DropdownMenuItem item2 =
-          new DropdownMenuItem(value: 4, child: Text("到期还本付息"));
+          new DropdownMenuItem(value: 4, child: Text("利随本清"));
       terms.add(item1);
       terms.add(item2);
 
@@ -773,7 +773,7 @@ class RepaymentPageState extends State<RepaymentPage> {
       if (method == 1) {
         s = '等额本息';
       } else {
-        s = '到期还本付息';
+        s = '利随本清';
       }
       return Text(
         s,
