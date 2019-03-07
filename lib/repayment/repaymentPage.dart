@@ -308,12 +308,14 @@ class RepaymentPageState extends State<RepaymentPage> {
       DropdownMenuItem item1 = new DropdownMenuItem(value: 1, child: Text("1"));
       DropdownMenuItem item2 = new DropdownMenuItem(value: 3, child: Text("3"));
       DropdownMenuItem item3 = new DropdownMenuItem(value: 6, child: Text("6"));
-      DropdownMenuItem item4 =
+      DropdownMenuItem item4 = new DropdownMenuItem(value: 9, child: Text("9"));
+      DropdownMenuItem item5 =
           new DropdownMenuItem(value: 12, child: Text("12"));
       termsList.add(item1);
       termsList.add(item2);
       termsList.add(item3);
       termsList.add(item4);
+      termsList.add(item5);
 
       return DropdownButton(
           items: termsList,
