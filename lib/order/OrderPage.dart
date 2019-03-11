@@ -20,6 +20,8 @@ class OrderPage extends StatefulWidget {
 }
 
 class OrderPageState extends State<OrderPage> {
+  int wxAppConfirm = 0;
+
   OrderPageState({
     this.idCard,
   });
@@ -261,6 +263,7 @@ class OrderPageState extends State<OrderPage> {
                     bizOrderNo: bizOrderNo,
                     channelType: order.channelType,
                     fromPage: 1,
+                    wxAppConfirm: wxAppConfirm,
                   ),
             ),
           );
@@ -316,7 +319,7 @@ class OrderPageState extends State<OrderPage> {
     if (status == 21 || status == 22 || status == 61) {
       msg = '审核拒绝';
     }
-    if(status == 60) {
+    if (status == 60) {
       msg = '审核通过';
     }
     if (status == 62) {
@@ -396,7 +399,7 @@ class OrderPageState extends State<OrderPage> {
   Widget _getBankCardInfoRow(int index) {
     String bankName = orders[index].bankName;
     String bankNoTail = orders[index].bankNoTail;
-    if(bankName ==null || bankNoTail == null) {
+    if (bankName == null || bankNoTail == null) {
       return Container();
     }
     return Container(
@@ -438,13 +441,14 @@ class OrderPageState extends State<OrderPage> {
       for (int i = 0; i < orderList.length; i++) {
         Order order = new Order();
         order.bizOrderNo = orderList[i]['bizOrderNo'];
-        if(orderList[i]['latestRepayDays'] != null) {
+        if (orderList[i]['latestRepayDays'] != null) {
           order.latestRepayDays = orderList[i]['latestRepayDays'];
         } else {
           order.latestRepayDays = 0;
         }
-        if(orderList[i]['latestShouldRepayAmount'] != null) {
-          order.latestShouldRepayAmount = orderList[i]['latestShouldRepayAmount'];
+        if (orderList[i]['latestShouldRepayAmount'] != null) {
+          order.latestShouldRepayAmount =
+              orderList[i]['latestShouldRepayAmount'];
         } else {
           order.latestRepayDays = 0;
         }
@@ -492,7 +496,7 @@ class OrderPageState extends State<OrderPage> {
   ///我要借款按钮,只获取最近一单的数据
   void _toBorrow() {
     int currentHour = DateTime.now().hour;
-    if(0 < currentHour && currentHour < 6){
+    if (0 < currentHour && currentHour < 6) {
       DialogUtils.showAlertDialog(context, "提示", "当日额度已用完!!!", null);
       return;
     }
@@ -503,6 +507,9 @@ class OrderPageState extends State<OrderPage> {
       String bizOrderNo = order.bizOrderNo;
       int orderStatus = order.orderStatus;
       bool hasConfirm = order.hasConfirm;
+      if (hasConfirm) {
+        wxAppConfirm = 1;
+      }
       int channelType = order.channelType;
       if (orderStatus == 19 || orderStatus == 20) {
         ///只有订单状态是19或20才能点击此按钮
@@ -520,10 +527,10 @@ class OrderPageState extends State<OrderPage> {
               context,
               new MaterialPageRoute(
                 builder: (context) => new UserInfoPage(
-                      bizOrderNo: bizOrderNo,
-                      channelType: channelType,
-                      fromPage: 1,
-                    ),
+                    bizOrderNo: bizOrderNo,
+                    channelType: channelType,
+                    fromPage: 1,
+                    wxAppConfirm: wxAppConfirm),
               ));
         }
       } else if (orderStatus == 60 || orderStatus == 62 || orderStatus == 64) {
@@ -549,6 +556,7 @@ class OrderPageState extends State<OrderPage> {
             builder: (context) => new UserInfoPage(
                   fromPage: fromPage,
                   channelType: 1,
+                  wxAppConfirm: 0,
                 ),
           ));
     }

@@ -551,14 +551,26 @@ class _CarInfoPageState extends State<CarInfoPage> {
                   children: carImageList.map((f) {
                     return new GestureDetector(
                         onTap: () {
-                          var index = carImageList.indexOf(f);
-                          if (defaultImageUrl == f) {
-                            ImagePicker.pickImage(source: ImageSource.gallery)
-                                .then((onValue) {
-                              _uploadImage(onValue, index, 7);
-                            });
-                          } else {
-                            showPhoto(context, f, index);
+                          //以下图片使用车辆实体中某属性来判断，确认是否已经完成车辆信息填写，若填写根据是否确认来判断图片操作
+                          if (widget.bizOrderNo != '' &&
+                              widget.bizOrderNo != null) {
+                            var index = carImageList.indexOf(f);
+                            if (defaultImageUrl == f) {
+                              ImagePicker.pickImage(source: ImageSource.gallery)
+                                  .then((onValue) {
+                                _uploadImage(onValue, index, 7, f);
+                              });
+                            } else {
+                              if (widget.wxAppConfirm == 0) {
+                                ImagePicker.pickImage(
+                                        source: ImageSource.gallery)
+                                    .then((onValue) {
+                                  _uploadImage(onValue, index, 7, f);
+                                });
+                              } else {
+                                showPhoto(context, f, index);
+                              }
+                            }
                           }
                         },
                         child: new Container(
@@ -606,18 +618,29 @@ class _CarInfoPageState extends State<CarInfoPage> {
                   scrollDirection: Axis.horizontal,
                   crossAxisCount: 1,
                   crossAxisSpacing: 4.0,
-                  childAspectRatio:0.67,
+                  childAspectRatio: 0.67,
                   children: registerImageList.map((f) {
                     return new GestureDetector(
                         onTap: () {
-                          var index = registerImageList.indexOf(f);
-                          if (defaultImageUrl == f) {
-                            ImagePicker.pickImage(source: ImageSource.gallery)
-                                .then((onValue) {
-                              _uploadImage(onValue, index, 4);
-                            });
-                          } else {
-                            showPhoto(context, f, index);
+                          if (widget.bizOrderNo != '' &&
+                              widget.bizOrderNo != null) {
+                            var index = registerImageList.indexOf(f);
+                            if (defaultImageUrl == f) {
+                              ImagePicker.pickImage(source: ImageSource.gallery)
+                                  .then((onValue) {
+                                _uploadImage(onValue, index, 4, f);
+                              });
+                            } else {
+                              if (widget.wxAppConfirm == 0) {
+                                ImagePicker.pickImage(
+                                        source: ImageSource.gallery)
+                                    .then((onValue) {
+                                  _uploadImage(onValue, index, 4, f);
+                                });
+                              } else {
+                                showPhoto(context, f, index);
+                              }
+                            }
                           }
                         },
                         child: new Container(
@@ -671,14 +694,25 @@ class _CarInfoPageState extends State<CarInfoPage> {
                   children: driveImageList.map((f) {
                     return new GestureDetector(
                         onTap: () {
-                          var index = driveImageList.indexOf(f);
-                          if (defaultImageUrl == f) {
-                            ImagePicker.pickImage(source: ImageSource.gallery)
-                                .then((onValue) {
-                              _uploadImage(onValue, index, 14);
-                            });
-                          } else {
-                            showPhoto(context, f, index);
+                          if (widget.bizOrderNo != '' &&
+                              widget.bizOrderNo != null) {
+                            var index = driveImageList.indexOf(f);
+                            if (defaultImageUrl == f) {
+                              ImagePicker.pickImage(source: ImageSource.gallery)
+                                  .then((onValue) {
+                                _uploadImage(onValue, index, 14, f);
+                              });
+                            } else {
+                              if (widget.wxAppConfirm == 0) {
+                                ImagePicker.pickImage(
+                                        source: ImageSource.gallery)
+                                    .then((onValue) {
+                                  _uploadImage(onValue, index, 14, f);
+                                });
+                              } else {
+                                showPhoto(context, f, index);
+                              }
+                            }
                           }
                         },
                         child: new Container(
@@ -746,7 +780,6 @@ class _CarInfoPageState extends State<CarInfoPage> {
       ),
     ];
 
-    ///_getUserInfo();
     return new Scaffold(
         appBar: new AppBar(
           title: new Text(
@@ -761,6 +794,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
   }
 
   Global global = Global();
+
   _getCarInfo(String bizOrderNo, int channelType) async {
     if (!isReload) {
       isReload = true;
@@ -774,24 +808,34 @@ class _CarInfoPageState extends State<CarInfoPage> {
         List carDriveList = new List();
         FormData formData = new FormData.from({});
         if (widget.fromPage == 2 || widget.fromPage == 1) {
-          if(widget.bizOrderNo == null){
+          //用户第一次登录从我的页面进入查看车辆信息
+          if (widget.bizOrderNo == null) {
             buttonName = "返回";
+            addDefaultImageUrl();
             return;
           }
+
           ///我的页面进入车辆信息页
           var response = await global.postFormData("car/query",
               {"biz_order_no": bizOrderNo, "channel_type": channelType});
           dataMap = response['dataMap'];
-          clCarInfo = ClCarInfo.fromJson(dataMap['clCarInfo']);
+          //判断是否 未完成车辆信息填写 直接从我的页面进入车辆信息页
+          if (dataMap['clCarInfo'] != null) {
+            clCarInfo = ClCarInfo.fromJson(dataMap['clCarInfo']);
+          }
           carDriveList = dataMap['cardriveListList'];
           accidentStatusList = dataMap['accidentTypes'];
           carList = dataMap["carList"];
           registerList = dataMap['registerList'];
-          if(widget.fromPage == 2){
+          if (widget.fromPage == 2) {
             if (widget.wxAppConfirm == 1) {
               buttonName = "返回";
             } else {
-              buttonName = "修改";
+              if (carNo == '' || carNo == null) {
+                buttonName = "返回";
+              } else {
+                buttonName = "修改";
+              }
             }
           }
         } else {
@@ -800,16 +844,15 @@ class _CarInfoPageState extends State<CarInfoPage> {
           var response = await global.postFormData(url, formData);
           dataMap = response['dataMap'];
           accidentStatusList = dataMap['accidentTypes'];
+          carList = dataMap["carList"];
+          registerList = dataMap['registerList'];
+          carDriveList = dataMap['driveList'];
           if (dataMap["biz_order_no"] != null &&
               dataMap["biz_order_no"] != '') {
             ///区分新增还是修改
             clCarInfo = ClCarInfo.fromJson(dataMap['clCarInfo']);
-            carList = dataMap["carList"];
-            registerList = dataMap['registerList'];
-            carDriveList = dataMap['driveList'];
           }
         }
-
 
         setState(() {
           if (clCarInfo != null) {
@@ -853,12 +896,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
           ///行驶证, 只显示两张，如果库只有一张 就添加
           if (carDriveList != null && carDriveList.length > 0) {
-            if(carDriveList.length == 1){
+            if (carDriveList.length == 1) {
               String filePath = carDriveList[0]['file_path'];
               driveImageList.add(filePath);
               driveImageList.add(defaultImageUrl);
             }
-            if(carDriveList.length > 1){
+            if (carDriveList.length > 1) {
               for (int i = 0; i < 2; i++) {
                 String filePath = carDriveList[i]['file_path'];
                 driveImageList.add(filePath);
@@ -923,15 +966,15 @@ class _CarInfoPageState extends State<CarInfoPage> {
                     title: const Text('无'),
                     value: 0,
                     groupValue: majorAccident,
-                    onChanged: (int e) =>
-                        updateDefaultDialogValue(e, 'major_accident_flag', context),
+                    onChanged: (int e) => updateDefaultDialogValue(
+                        e, 'major_accident_flag', context),
                   ),
                   new RadioListTile<int>(
                     title: const Text('有'),
                     value: 1,
                     groupValue: majorAccident,
-                    onChanged: (int e) =>
-                        updateDefaultDialogValue(e, "major_accident_flag", context),
+                    onChanged: (int e) => updateDefaultDialogValue(
+                        e, "major_accident_flag", context),
                   ),
                 ],
               ),
@@ -941,7 +984,8 @@ class _CarInfoPageState extends State<CarInfoPage> {
   }
 
   ///公共弹窗
-  listViewDefault(List sysDictList, String type, int dataValue, BuildContext context) {
+  listViewDefault(
+      List sysDictList, String type, int dataValue, BuildContext context) {
     List<Widget> data = new List();
     for (int i = 0; i < sysDictList.length; i++) {
       data.add(
@@ -989,14 +1033,16 @@ class _CarInfoPageState extends State<CarInfoPage> {
   }
 
   ///公用图片上传方法
-  Future _uploadImage(File imageFile, int index, int fileType) async {
-    if(widget.fromPage != 0){
+  Future _uploadImage(File imageFile, int index, int fileType, String f) async {
+    if (widget.fromPage != 0) {
       formType = 1;
     }
     FormData formData = new FormData.from({
       "biz_order_no": widget.bizOrderNo,
       "file_type": fileType,
       "formType": formType,
+      "file_path": f,
+      "channel_type": widget.channelType
     });
     String fileName = "";
     if (fileType == 7) {
@@ -1027,7 +1073,12 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   ///车辆信息保存
   Future _saveCarInfo() async {
-    if (widget.wxAppConfirm == 1 || widget.bizOrderNo == null) {
+    /*if (widget.wxAppConfirm == 1 || widget.bizOrderNo == null) {
+      Navigator.of(context).pop();
+      return;
+    }*/
+
+    if (buttonName == "返回") {
       Navigator.of(context).pop();
       return;
     }
@@ -1113,7 +1164,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
           "major_accident": majorAccident,
           "accident_type": accidentTypeValue,
           "channel_type": widget.channelType,
-          "car_cost" : carCost
+          "car_cost": carCost
         },
       });
       bool isVerify = false;
@@ -1146,5 +1197,19 @@ class _CarInfoPageState extends State<CarInfoPage> {
       print(e);
       DialogUtils.showAlertDialog(context, "提示", "保存失败", null);
     }
+  }
+
+  void addDefaultImageUrl() {
+    setState(() {
+      for (int i = 0; i < 2; i++) {
+        carImageList.add(defaultImageUrl);
+      }
+      for (int i = 0; i < 2; i++) {
+        registerImageList.add(defaultImageUrl);
+      }
+      for (int i = 0; i < 2; i++) {
+        driveImageList.add(defaultImageUrl);
+      }
+    });
   }
 }

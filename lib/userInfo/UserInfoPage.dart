@@ -1179,14 +1179,23 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   children: idCardImageList.map((f) {
                     return new GestureDetector(
                         onTap: () {
-                          var index = idCardImageList.indexOf(f);
-                          if (defaultImageUrl == f) {
-                            ImagePicker.pickImage(source: ImageSource.gallery)
-                                .then((onValue) {
-                              _uploadImage(onValue, index);
-                            });
-                          } else {
-                            showPhoto(context, f, index);
+                          if(biz_order_no != '' && biz_order_no != null ){
+                            var index = idCardImageList.indexOf(f);
+                            if (defaultImageUrl == f) {
+                              ImagePicker.pickImage(source: ImageSource.gallery)
+                                  .then((onValue) {
+                                _uploadImage(onValue, index, f);
+                              });
+                            } else {
+                              if(widget.wxAppConfirm == 0){
+                                ImagePicker.pickImage(source: ImageSource.gallery)
+                                    .then((onValue) {
+                                  _uploadImage(onValue, index, f);
+                                });
+                              }else{
+                                showPhoto(context, f, index);
+                              }
+                            }
                           }
                         },
                         child: new Container(
@@ -1569,6 +1578,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
           biz_order_no = bizOrderNo;
           if(biz_order_no == '' || biz_order_no == null){
             buttonName = "返回";
+            setState(() {
+              for (int i = 0; i < 2; i++) {
+                idCardImageList.add(defaultImageUrl);
+              }
+            });
             return;
           }
           var response = await global.postFormData("user/query",
@@ -1930,18 +1944,21 @@ class _UserInfoPageState extends State<UserInfoPage> {
               bizOrderNo: biz_order_no,
               channelType: widget.channelType,
               fromPage: widget.fromPage,
+              wxAppConfirm: widget.wxAppConfirm
             );
           }));
         }
       }
     } catch (e) {
-      print(e);
       DialogUtils.showAlertDialog(context, "提示", "保存失败", null);
     }
   }
 
   ///图片上传公用方法
-  void _uploadImage(File imageFile, int index) async {
+  void _uploadImage(File imageFile, int index, String f) async {
+    if(imageFile == null){
+      return;
+    }
     if(widget.fromPage != 0){
       formType = 1;
     }
@@ -1950,6 +1967,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
       "biz_order_no": biz_order_no,
       "file_type": fileType,
       "formType": formType,
+      "file_path" : f,
+      "channel_type": widget.channelType
     });
     if (imageFile != null) {
       formData.add("file", new UploadFileInfo(imageFile, "身份证正反面.png"));
