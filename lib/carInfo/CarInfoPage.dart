@@ -831,7 +831,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
             if (widget.wxAppConfirm == 1) {
               buttonName = "返回";
             } else {
-              if (carNo == '' || carNo == null) {
+              if (clCarInfo == null) {
                 buttonName = "返回";
               } else {
                 buttonName = "修改";
