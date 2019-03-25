@@ -171,6 +171,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
       for (int i = 0; i < customerInfoList.length; i++) {
         if (customerInfoValue == int.parse(customerInfoList[i].value)) {
           customerInfoLabel = customerInfoList[i].label;
+          if (customerInfoLabel.length > 10){
+            customerInfoLabel = customerInfoLabel.substring(0,10)+"....";
+          }
         }
       }
     }
@@ -1770,7 +1773,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///信息保存
   Future _saveUserInfo() async {
-
     if(widget.wxAppConfirm == 1 || biz_order_no == null){
       Navigator.of(context).pop();
       return;
