@@ -869,7 +869,7 @@ class RepaymentPageState extends State<RepaymentPage> {
     if (isConfirmPage) {
       Map requestData = {
         'bizOrderNo': bizOrderNo,
-        'channelType': 1,
+        'channelType': channelType,
       };
 
       Map response = await global.postFormData(_initBillPath, requestData);
@@ -919,7 +919,7 @@ class RepaymentPageState extends State<RepaymentPage> {
       'applyAmount': applyAmount,
       'terms': terms,
       'method': method,
-      'channelType': 1,
+      'channelType': channelType,
     };
 
     Map response = await global.postFormData(_updateAndComputingPath, request);
