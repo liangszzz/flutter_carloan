@@ -33,6 +33,7 @@ class UserInfoPage extends StatefulWidget {
 
 class _UserInfoPageState extends State<UserInfoPage> {
   bool isReload = false;
+  bool isSaved = false;
 
   String biz_order_no = "";
 
@@ -1773,6 +1774,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///信息保存
   Future _saveUserInfo() async {
+
+    if (isSaved){
+      DialogUtils.showAlertDialog(context, "提示", "请勿重复提交数据", null);
+      return;
+    }
+
+    isSaved = true;
+
     if(widget.wxAppConfirm == 1 || biz_order_no == null){
       Navigator.of(context).pop();
       return;

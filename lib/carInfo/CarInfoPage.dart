@@ -65,6 +65,8 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   String buttonName = "下一步";
 
+  bool isSaved = false;
+
   @override
   Widget build(BuildContext context) {
     _getCarInfo(widget.bizOrderNo, widget.channelType);
@@ -1073,10 +1075,13 @@ class _CarInfoPageState extends State<CarInfoPage> {
 
   ///车辆信息保存
   Future _saveCarInfo() async {
-    /*if (widget.wxAppConfirm == 1 || widget.bizOrderNo == null) {
-      Navigator.of(context).pop();
+
+    if (isSaved){
+      DialogUtils.showAlertDialog(context, "提示", "请勿重复提交数据", null);
       return;
-    }*/
+    }
+
+    isSaved = true;
 
     if (buttonName == "返回") {
       Navigator.of(context).pop();
