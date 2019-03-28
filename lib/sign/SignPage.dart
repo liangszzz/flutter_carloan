@@ -325,6 +325,17 @@ class _SignPageState extends State<_SignPageStateful> {
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
+    if (idCard.text.length != 18) {
+      DialogUtils.showAlertDialog(context, "提示", "请输入有效的身份证号!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+    if (bankCard.text.length < 16) {
+      DialogUtils.showAlertDialog(context, "提示", "请输入有效的银行卡号!", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
     var response = await global.postFormData("sign/signSms", {
       "payerName": userName.text,
       "payerCardNo": idCard.text,
