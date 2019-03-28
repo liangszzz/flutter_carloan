@@ -83,6 +83,9 @@ class RepaymentPageState extends State<RepaymentPage> {
   // 显示用的账单列表
   List<Bill> _bills = new List();
 
+  // 是否发送确认请求
+  bool hasConfirmPost = false;
+
   // 字体、颜色
   static String _arial = 'Arial';
   static Color _lightGreyColor = Color.fromRGBO(234, 234, 234, 1);
@@ -117,14 +120,13 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   static final FocusNode _amountFocusNode = new FocusNode();
 
-
   TextEditingController _controller = TextEditingController();
 
   /// 金额输入框失去焦点事件
   void _bindTextFieldLostFocus() {
     _amountFocusNode.addListener(() {
-      if(!_amountFocusNode.hasFocus) {
-        if(_controller.text != '') {
+      if (!_amountFocusNode.hasFocus) {
+        if (_controller.text != '') {
           String text = _controller.text;
           double apply = double.parse(text);
           if (apply > _maxApplyAmount) {
@@ -148,8 +150,6 @@ class RepaymentPageState extends State<RepaymentPage> {
       }
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -790,7 +790,6 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 获取申请金额组件，有两种返回情况（1.确认借款时返回输入框 2.查看账单时返回文本）
   Widget _getApplyAmountWidget() {
-
     if (isConfirmPage) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -858,8 +857,6 @@ class RepaymentPageState extends State<RepaymentPage> {
       );
     }
   }
-
-
 
   /// 从后台获取订单详细信息
   void _getRepaymentMsg() async {
@@ -940,6 +937,9 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   /// 确认借款方法
   void _confirmLoan() async {
+    if (hasConfirmPost) {
+      return;
+    }
     Map request = {
       'bizOrderNo': bizOrderNo,
       'applyAmount': applyAmount,
@@ -950,11 +950,13 @@ class RepaymentPageState extends State<RepaymentPage> {
     try {
       Map response = await global.postFormData(_confirmPath, request);
       if (response['code'] == 0) {
+        // channelType传固定值2，因为进单成功导致订单信息到正式表去了
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => AuditLendersPage(
-                 bizOrderNo: widget.bizOrderNo, channelType: 2,
+                  bizOrderNo: widget.bizOrderNo,
+                  channelType: 2,
                 ),
           ),
         );
