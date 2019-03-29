@@ -940,6 +940,7 @@ class RepaymentPageState extends State<RepaymentPage> {
     if (hasConfirmPost) {
       return;
     }
+    hasConfirmPost = true;
     Map request = {
       'bizOrderNo': bizOrderNo,
       'applyAmount': applyAmount,
