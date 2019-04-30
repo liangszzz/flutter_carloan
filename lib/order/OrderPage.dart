@@ -157,24 +157,19 @@ class OrderPageState extends State<OrderPage> {
             fontFamily: _arial,
           ),
         ),
-        Material(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-          child: RaisedButton(
-            color: _whiteColor,
-            child: Text(
-              "我要借款",
-              style: TextStyle(
-                color: _blueColor,
-                fontSize: 14,
-                fontFamily: _arial,
-              ),
+        RaisedButton(
+          color: _whiteColor,
+          child: Text(
+            "我要借款",
+            style: TextStyle(
+              color: _blueColor,
+              fontSize: 14,
+              fontFamily: _arial,
             ),
-            onPressed: () {
-              _toBorrow();
-            },
           ),
+          onPressed: () {
+            _toBorrow();
+          },
         ),
       ],
     );

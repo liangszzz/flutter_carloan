@@ -71,6 +71,8 @@ class RepaymentPageState extends State<RepaymentPage> {
   // 确认借款
   String _confirmPath = 'bill/confirmOrderMsg';
 
+  String _repayPath = 'bill/repay';
+
   // 最大申请金额
   int _maxApplyAmount = 100000;
 
@@ -86,6 +88,9 @@ class RepaymentPageState extends State<RepaymentPage> {
   // 是否发送确认请求
   bool hasConfirmPost = false;
 
+  // 是否点击了还款按钮
+  bool _hasClickRepay = false;
+
   // 字体、颜色
   static String _arial = 'Arial';
   static Color _lightGreyColor = Color.fromRGBO(234, 234, 234, 1);
@@ -95,6 +100,9 @@ class RepaymentPageState extends State<RepaymentPage> {
   static Color _redColor = Color.fromRGBO(229, 28, 35, 1);
   static Color _whiteColor = Color.fromRGBO(255, 255, 255, 1);
   static Color _greenColor = Color.fromRGBO(70, 142, 82, 1);
+
+  // 当前期数还款按钮的颜色，如果是逾期还款为红色，正常还款为蓝色
+  Color _currentTermRepayButtonColor = _blueColor;
 
   // 常用文本格式
   TextStyle _blue18 = TextStyle(
@@ -535,19 +543,30 @@ class RepaymentPageState extends State<RepaymentPage> {
       int day = _bills[index].shouldPayDate[2];
 
       DateTime shouldPayDate = DateTime(year, month, day);
-      String btnString = '还款';
-      // 当前期数还款按钮的颜色，如果是逾期还款为红色，正常还款为蓝色
-      Color currentTermRepayButtonColor = _blueColor;
+      String btnString = '';
 
-      // 没到还款日
-      if (today.isBefore(shouldPayDate)) {
+      int no = 0;
+      for (int i=0; i<_bills.length; i++) {
+        if (_bills[i].status != 3) {
+          no++;
+        }
+        if (i == index) {
+          break;
+        }
+      }
+      // 第一个没有还的账单
+      if (no == 1) {
+        // 没到还款日
+        if (today.isBefore(shouldPayDate)) {
+          btnString = '还款';
+        } else {
+          btnString = '逾期还款';
+          _currentTermRepayButtonColor = _redColor;
+        }
+      } else {
         return null;
       }
 
-      if (today.isAfter(shouldPayDate)) {
-        btnString = '逾期还款';
-        currentTermRepayButtonColor = _redColor;
-      }
 
       return RaisedButton(
         child: Text(
@@ -558,9 +577,13 @@ class RepaymentPageState extends State<RepaymentPage> {
             color: _whiteColor,
           ),
         ),
-        color: currentTermRepayButtonColor,
+        color: _currentTermRepayButtonColor,
         onPressed: () {
-          print("还款按钮被点击了......");
+          _currentTermRepayButtonColor = _greyColor;
+          setState(() {
+
+          });
+          _repay(index);
         },
       );
     }
@@ -933,6 +956,57 @@ class RepaymentPageState extends State<RepaymentPage> {
     setState(() {
       _applyDataChanged = false;
     });
+  }
+
+  /// 还款
+  void _repay(int index) async {
+    // 点过还款按钮，等待其他账单返回信息
+    if (_hasClickRepay) {
+      return _showDialog('其他账单正在还款，请稍等');
+    }
+
+    // 判断是否有早期的账单未还
+    for (int i = 0; i < _bills.length; i++) {
+      if (i < index && _bills[i].status != 3) {
+        return _showDialog('请先还完早期的账单');
+      }
+    }
+
+    _hasClickRepay = true;
+
+    // 当前期数 = index + 1
+    Map request = {
+      'bizOrderNo' : bizOrderNo,
+      'currentRepaymentTerm' : index + 1
+    };
+    Map response = await global.postFormData(_repayPath, request);
+    int code = response['code'];
+    String msg = response['msg'];
+    if (code == 0) {
+      // 还款成功
+      _bills[index].status = 3;
+    } else {
+      _showDialog('还款失败，' + msg);
+    }
+    setState(() {
+      _hasClickRepay = false;
+      _currentTermRepayButtonColor = _blueColor;
+    });
+  }
+
+  /// 还款等待返回信息弹框
+  void _showDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(
+            msg,
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
   }
 
   /// 确认借款方法
