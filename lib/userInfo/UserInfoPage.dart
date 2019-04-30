@@ -22,7 +22,11 @@ class UserInfoPage extends StatefulWidget {
   final int fromPage;
 
   const UserInfoPage(
-      {Key key, this.bizOrderNo, this.channelType, this.fromPage, this.wxAppConfirm})
+      {Key key,
+      this.bizOrderNo,
+      this.channelType,
+      this.fromPage,
+      this.wxAppConfirm})
       : super(key: key);
 
   @override
@@ -127,8 +131,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-      _getUserInfo(widget.bizOrderNo, widget.channelType, widget.fromPage);
-
+    _getUserInfo(widget.bizOrderNo, widget.channelType, widget.fromPage);
 
     ///婚姻状况
     if (maritalList.length > 0) {
@@ -171,8 +174,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
       for (int i = 0; i < customerInfoList.length; i++) {
         if (customerInfoValue == int.parse(customerInfoList[i].value)) {
           customerInfoLabel = customerInfoList[i].label;
-          if (customerInfoLabel.length > 10){
-            customerInfoLabel = customerInfoLabel.substring(0,10)+"....";
+          if (customerInfoLabel.length > 10) {
+            customerInfoLabel = customerInfoLabel.substring(0, 10) + "....";
           }
         }
       }
@@ -287,7 +290,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 keyboardType: TextInputType.text,
                 inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(18),
                 ],
                 maxLines: 1,
@@ -1056,7 +1058,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   keyboardType: TextInputType.text,
                   maxLines: 1,
                   onChanged: (text) {
-                      contactName = text;
+                    contactName = text;
                   },
                 ),
               ),
@@ -1182,7 +1184,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   children: idCardImageList.map((f) {
                     return new GestureDetector(
                         onTap: () {
-                          if(biz_order_no != '' && biz_order_no != null ){
+                          if (biz_order_no != '' && biz_order_no != null) {
                             var index = idCardImageList.indexOf(f);
                             if (defaultImageUrl == f) {
                               ImagePicker.pickImage(source: ImageSource.gallery)
@@ -1190,12 +1192,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                 _uploadImage(onValue, index, f);
                               });
                             } else {
-                              if(widget.wxAppConfirm == 0){
-                                ImagePicker.pickImage(source: ImageSource.gallery)
+                              if (widget.wxAppConfirm == 0) {
+                                ImagePicker.pickImage(
+                                        source: ImageSource.gallery)
                                     .then((onValue) {
                                   _uploadImage(onValue, index, f);
                                 });
-                              }else{
+                              } else {
                                 showPhoto(context, f, index);
                               }
                             }
@@ -1292,8 +1295,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               height: 230.0,
               color: Colors.white,
               child: new ListView(
-                  children: listViewDefault(
-                      maritalList, "marital_status_flag", maritalValue,context)),
+                  children: listViewDefault(maritalList, "marital_status_flag",
+                      maritalValue, context)),
             ),
             /* children: listViewDefault(),*/
           );
@@ -1313,7 +1316,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(
-                      healthList, "health_status_flag", healthValue,context)),
+                      healthList, "health_status_flag", healthValue, context)),
             ),
           );
         });
@@ -1332,7 +1335,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(identityTypeList,
-                      "identity_type_flag", identityTypeValue,context)),
+                      "identity_type_flag", identityTypeValue, context)),
             ),
           );
         });
@@ -1349,8 +1352,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               height: 230.0,
               color: Colors.white,
               child: new ListView(
-                  children:
-                      listViewDefault(degreeList, "degree_flag", degreeValue,context)),
+                  children: listViewDefault(
+                      degreeList, "degree_flag", degreeValue, context)),
             ),
           );
         });
@@ -1367,8 +1370,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
               height: 230.0,
               color: Colors.white,
               child: new ListView(
-                  children: listViewDefault(customerInfoList,
-                      "customer_professional_info_flag", customerInfoValue,context)),
+                  children: listViewDefault(
+                      customerInfoList,
+                      "customer_professional_info_flag",
+                      customerInfoValue,
+                      context)),
             ),
           );
         });
@@ -1385,8 +1391,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               height: 230.0,
               color: Colors.white,
               child: new ListView(
-                  children: listViewDefault(
-                      bankCardList, "bank_card_type_flag", bankCardValue,context)),
+                  children: listViewDefault(bankCardList, "bank_card_type_flag",
+                      bankCardValue, context)),
             ),
           );
         });
@@ -1404,7 +1410,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(
-                      bankNameList, "bank_name_flag", bankNameValue,context)),
+                      bankNameList, "bank_name_flag", bankNameValue, context)),
             ),
           );
         });
@@ -1421,8 +1427,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               height: 230.0,
               color: Colors.white,
               child: new ListView(
-                  children:
-                      listViewDefault(borrowUse, "borrow_use", borrowUseValue,context)),
+                  children: listViewDefault(
+                      borrowUse, "borrow_use", borrowUseValue, context)),
             ),
           );
         });
@@ -1455,14 +1461,15 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: Colors.white,
               child: new ListView(
                   children: listViewDefault(relationShipList,
-                      "contact_relationship_flag", relationShipValue,context)),
+                      "contact_relationship_flag", relationShipValue, context)),
             ),
           );
         });
   }
 
   ///公共弹窗
-  listViewDefault(List sysDictList, String type, int dataValue,BuildContext context) {
+  listViewDefault(
+      List sysDictList, String type, int dataValue, BuildContext context) {
     List<Widget> data = new List();
     if (type == "bank_name_flag") {
       for (int i = 0; i < sysDictList.length; i++) {
@@ -1471,7 +1478,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             title: new Text(sysDictList[i]),
             value: i,
             groupValue: dataValue,
-            onChanged: (int e) => updateDefaultDialogValue(e, type,context),
+            onChanged: (int e) => updateDefaultDialogValue(e, type, context),
           ),
         );
       }
@@ -1482,7 +1489,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             title: new Text(sysDictList[i]),
             value: i,
             groupValue: dataValue,
-            onChanged: (int e) => updateDefaultDialogValue(e, type,context),
+            onChanged: (int e) => updateDefaultDialogValue(e, type, context),
           ),
         );
       }
@@ -1493,7 +1500,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             title: new Text(sysDictList[i].label),
             value: int.parse(sysDictList[i].value),
             groupValue: dataValue,
-            onChanged: (int e) => updateDefaultDialogValue(e, type,context),
+            onChanged: (int e) => updateDefaultDialogValue(e, type, context),
           ),
         );
       }
@@ -1503,7 +1510,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   ///公共弹窗返回值
-  updateDefaultDialogValue(int e, String type,BuildContext context) {
+  updateDefaultDialogValue(int e, String type, BuildContext context) {
     setState(() {
       switch (type) {
         case 'health_status_flag':
@@ -1579,7 +1586,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         if (fromPage == 2 || fromPage == 1) {
           ///我的页面进入查看个人资料
           biz_order_no = bizOrderNo;
-          if(biz_order_no == '' || biz_order_no == null){
+          if (biz_order_no == '' || biz_order_no == null) {
             buttonName = "返回";
             setState(() {
               for (int i = 0; i < 2; i++) {
@@ -1597,17 +1604,19 @@ class _UserInfoPageState extends State<UserInfoPage> {
           clContactInfo = ClContactInfo.fromJson(contactInfoList[0]);
           Map clBaseInfo = dataMap['clBaseInfo'] as Map;
           borrow_usage = clBaseInfo['borrow_usage'];
+
           ///此处联系人只取一个展示
           idCraUrlList = dataMap["clAttachmentInfoList"];
           if (fromPage == 2) {
-            if(widget.wxAppConfirm == 1){
+            if (widget.wxAppConfirm == 1) {
               buttonName = "返回";
-            }else{
+            } else {
               buttonName = "修改";
             }
           }
         } else {
           canWrite = true;
+
           ///此处openId使用 token
           openId = global.token.token;
           var response = await global.postFormData(
@@ -1724,8 +1733,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
           }
           bankCardList = bankCards;
 
-
-
           ///客户职业信息
           List<SysDict> customerInfos = new List();
           for (int i = 0; i < customerInfoStatusList.length; i++) {
@@ -1752,18 +1759,18 @@ class _UserInfoPageState extends State<UserInfoPage> {
               idCardImageList.add(defaultImageUrl);
             }
           }
-          if (idCraUrlList.length == 1){
+          if (idCraUrlList.length == 1) {
             String filePath = idCraUrlList[0]["file_path"];
             idCardImageList.add(filePath);
             idCardImageList.add(defaultImageUrl);
           }
           //只取前两张
-          if (idCraUrlList.length > 1){
-              for (int i = 0; i < 2; i++) {
-                String filePath = idCraUrlList[i]["file_path"];
-                idCardImageList.add(filePath);
-              }
+          if (idCraUrlList.length > 1) {
+            for (int i = 0; i < 2; i++) {
+              String filePath = idCraUrlList[i]["file_path"];
+              idCardImageList.add(filePath);
             }
+          }
         });
       } catch (e) {
         print(e);
@@ -1773,8 +1780,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///信息保存
   Future _saveUserInfo() async {
-
-    if(widget.wxAppConfirm == 1 || biz_order_no == null){
+    if (widget.wxAppConfirm == 1 || biz_order_no == null) {
       Navigator.of(context).pop();
       return;
     }
@@ -1787,10 +1793,17 @@ class _UserInfoPageState extends State<UserInfoPage> {
     if (idCard.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "身份证不能为空", null);
       return;
-    }else{
+    } else {
+      RegExp postalCode = new RegExp(
+          r'^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|[Xx])$');
+      if (!postalCode.hasMatch(idCard)) {
+        DialogUtils.showAlertDialog(context, "提示", "身份证格式错误", null);
+        return;
+      }
+
       int year = int.parse(idCard.substring(6, 10));
       int currentYear = DateTime.now().year;
-      if((currentYear - year > 60) || (currentYear - year < 23)){
+      if ((currentYear - year > 60) || (currentYear - year < 23)) {
         DialogUtils.showAlertDialog(context, "提示", "借款年龄大于60或小于23", null);
         return;
       }
@@ -1929,7 +1942,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           "contact_name": contactName,
           "contact_phone": contactPhone,
           "contact_relationship": relationShipValue,
-          "borrow_usage" : borrowUseValue
+          "borrow_usage": borrowUseValue
         },
       });
 
@@ -1937,6 +1950,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         setState(() {
           global.user.idCard = idCard;
         });
+
         ///如果是从我的页面进入就弹出修改成功的提示框
         if (widget.fromPage == 2) {
           DialogUtils.showAlertDialog(context, "提示", "修改成功", null);
@@ -1944,11 +1958,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
           ///跳转到车辆信息页面
           Navigator.push(context, new MaterialPageRoute(builder: (context) {
             return CarInfoPage(
-              bizOrderNo: biz_order_no,
-              channelType: widget.channelType,
-              fromPage: widget.fromPage,
-              wxAppConfirm: widget.wxAppConfirm
-            );
+                bizOrderNo: biz_order_no,
+                channelType: widget.channelType,
+                fromPage: widget.fromPage,
+                wxAppConfirm: widget.wxAppConfirm);
           }));
         }
       }
@@ -1959,10 +1972,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///图片上传公用方法
   void _uploadImage(File imageFile, int index, String f) async {
-    if(imageFile == null){
+    if (imageFile == null) {
       return;
     }
-    if(widget.fromPage != 0){
+    if (widget.fromPage != 0) {
       formType = 1;
     }
     String fileType = "1";
@@ -1970,7 +1983,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       "biz_order_no": biz_order_no,
       "file_type": fileType,
       "formType": formType,
-      "file_path" : f,
+      "file_path": f,
       "channel_type": widget.channelType
     });
     if (imageFile != null) {

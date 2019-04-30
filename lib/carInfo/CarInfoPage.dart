@@ -47,7 +47,9 @@ class _CarInfoPageState extends State<CarInfoPage> {
   String carServiceLife = "";
   String carDrivingMileage = "";
   String carCost = "";
-  int majorAccident = 0;
+
+  int majorAccident;
+  String majorAccidentLabel = "";
 
   int accidentTypeValue;
   String accidentTypeLabel = "";
@@ -477,7 +479,8 @@ class _CarInfoPageState extends State<CarInfoPage> {
               new Padding(
                 padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
                 child: new Text(
-                  majorAccident == 1 ? '有' : '无',
+                  //majorAccident == 1 ? '有' : '无',
+                  '$majorAccidentLabel',
                   style:
                       TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 ),
@@ -866,6 +869,11 @@ class _CarInfoPageState extends State<CarInfoPage> {
             carServiceLife = clCarInfo.car_service_life;
             accidentTypeValue = int.parse(clCarInfo.accident_type);
             majorAccident = int.parse(clCarInfo.major_accident);
+            if(majorAccident == 0){
+              majorAccidentLabel = "无";
+            }else{
+              majorAccidentLabel = "有";
+            }
             Map riskData = dataMap['clRiskInfo'] as Map;
             carCost = riskData['car_cost'].toString();
           }
@@ -1011,6 +1019,11 @@ class _CarInfoPageState extends State<CarInfoPage> {
           break;
         case 'major_accident_flag':
           this.majorAccident = e;
+          if ( e == 0){
+            this.majorAccidentLabel = "无";
+          }else{
+            this.majorAccidentLabel = "有";
+          }
           break;
       }
     });
