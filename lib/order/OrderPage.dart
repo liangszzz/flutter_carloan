@@ -302,6 +302,9 @@ class OrderPageState extends State<OrderPage> {
     if (status == 68 || status == 72) {
       msg = '已结清';
     }
+    if (status == 18 && status == 17) {
+      msg = '订单已取消';
+    }
     if (status == 19 && order.hasConfirm) {
       msg = '已确认';
     }
