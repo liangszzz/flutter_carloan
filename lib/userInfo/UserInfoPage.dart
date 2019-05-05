@@ -2012,7 +2012,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 },
               ),
               new Container(
-                height: 5.0,
+                height: 1.0,
                 color: Colors.grey,
               ),
               new ListTile(

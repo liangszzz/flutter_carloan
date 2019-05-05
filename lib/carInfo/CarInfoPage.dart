@@ -559,17 +559,10 @@ class _CarInfoPageState extends State<CarInfoPage> {
                               widget.bizOrderNo != null) {
                             var index = carImageList.indexOf(f);
                             if (defaultImageUrl == f) {
-                              ImagePicker.pickImage(source: ImageSource.gallery)
-                                  .then((onValue) {
-                                _uploadImage(onValue, index, 7, f);
-                              });
+                              showModalBottomSheetDialog(context, index, f, 7);
                             } else {
                               if (widget.wxAppConfirm == 0) {
-                                ImagePicker.pickImage(
-                                        source: ImageSource.gallery)
-                                    .then((onValue) {
-                                  _uploadImage(onValue, index, 7, f);
-                                });
+                                showModalBottomSheetDialog(context, index, f, 7);
                               } else {
                                 showPhoto(context, f, index);
                               }
@@ -629,17 +622,10 @@ class _CarInfoPageState extends State<CarInfoPage> {
                               widget.bizOrderNo != null) {
                             var index = registerImageList.indexOf(f);
                             if (defaultImageUrl == f) {
-                              ImagePicker.pickImage(source: ImageSource.gallery)
-                                  .then((onValue) {
-                                _uploadImage(onValue, index, 4, f);
-                              });
+                              showModalBottomSheetDialog(context, index, f, 4);
                             } else {
                               if (widget.wxAppConfirm == 0) {
-                                ImagePicker.pickImage(
-                                        source: ImageSource.gallery)
-                                    .then((onValue) {
-                                  _uploadImage(onValue, index, 4, f);
-                                });
+                                showModalBottomSheetDialog(context, index, f, 4);
                               } else {
                                 showPhoto(context, f, index);
                               }
@@ -701,17 +687,10 @@ class _CarInfoPageState extends State<CarInfoPage> {
                               widget.bizOrderNo != null) {
                             var index = driveImageList.indexOf(f);
                             if (defaultImageUrl == f) {
-                              ImagePicker.pickImage(source: ImageSource.gallery)
-                                  .then((onValue) {
-                                _uploadImage(onValue, index, 14, f);
-                              });
+                              showModalBottomSheetDialog(context, index, f, 14);
                             } else {
                               if (widget.wxAppConfirm == 0) {
-                                ImagePicker.pickImage(
-                                        source: ImageSource.gallery)
-                                    .then((onValue) {
-                                  _uploadImage(onValue, index, 14, f);
-                                });
+                                showModalBottomSheetDialog(context, index, f, 14);
                               } else {
                                 showPhoto(context, f, index);
                               }
@@ -1221,4 +1200,46 @@ class _CarInfoPageState extends State<CarInfoPage> {
       }
     });
   }
+
+  showModalBottomSheetDialog(BuildContext context, int index, String f, int type){
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context){
+          return new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new ListTile(
+                leading: new Icon(Icons.camera),
+                title: new Text("相机", textAlign: TextAlign.left),
+                onTap: () {
+                  ImagePicker.pickImage(
+                      source: ImageSource.camera)
+                      .then((onValue) {
+                    _uploadImage(onValue, index, type, f);
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              new Container(
+                height: 1.0,
+                color: Colors.grey,
+              ),
+              new ListTile(
+                leading: new Icon(Icons.photo_library),
+                title: new Text("相册", textAlign: TextAlign.left),
+                onTap: () {
+                  ImagePicker.pickImage(
+                      source: ImageSource.gallery)
+                      .then((onValue) {
+                    _uploadImage(onValue, index, type, f);
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        }
+    );
+  }
+
 }
