@@ -1187,17 +1187,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           if (biz_order_no != '' && biz_order_no != null) {
                             var index = idCardImageList.indexOf(f);
                             if (defaultImageUrl == f) {
-                              ImagePicker.pickImage(source: ImageSource.gallery)
-                                  .then((onValue) {
-                                _uploadImage(onValue, index, f);
-                              });
+                              showModalBottomSheetDialog(context, index, f);
                             } else {
                               if (widget.wxAppConfirm == 0) {
-                                ImagePicker.pickImage(
-                                        source: ImageSource.gallery)
-                                    .then((onValue) {
-                                  _uploadImage(onValue, index, f);
-                                });
+                                showModalBottomSheetDialog(context, index, f);
                               } else {
                                 showPhoto(context, f, index);
                               }
@@ -1997,5 +1990,46 @@ class _UserInfoPageState extends State<UserInfoPage> {
     setState(() {
       idCardImageList[index] = filePath;
     });
+  }
+
+  showModalBottomSheetDialog(BuildContext context, int index, String f){
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context){
+          return new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new ListTile(
+                leading: new Icon(Icons.camera),
+                title: new Text("相机", textAlign: TextAlign.left),
+                onTap: () {
+                  ImagePicker.pickImage(
+                      source: ImageSource.camera)
+                      .then((onValue) {
+                    _uploadImage(onValue, index, f);
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              new Container(
+                height: 5.0,
+                color: Colors.grey,
+              ),
+              new ListTile(
+                leading: new Icon(Icons.photo_library),
+                title: new Text("相册", textAlign: TextAlign.left),
+                onTap: () {
+                  ImagePicker.pickImage(
+                      source: ImageSource.gallery)
+                      .then((onValue) {
+                    _uploadImage(onValue, index, f);
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        }
+    );
   }
 }
