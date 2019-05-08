@@ -644,7 +644,7 @@ class RepaymentPageState extends State<RepaymentPage> {
             ),
           ),
           onTap: () {
-            print('点击了借款合同');
+            _toAgreement();
           },
         ),
         Text(
