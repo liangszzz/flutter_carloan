@@ -299,8 +299,11 @@ class OrderPageState extends State<OrderPage> {
     } else {
       showDate = order.loanDate + '申请借款';
     }
-    if (status == 68 || status == 72) {
-      msg = '已结清';
+    if (status == 16) {
+      msg = '待渠道确认';
+    }
+    if (status == 18 || status == 17) {
+      msg = '订单已取消';
     }
     if (status == 19 && order.hasConfirm) {
       msg = '已确认';
@@ -319,6 +322,9 @@ class OrderPageState extends State<OrderPage> {
     }
     if (status == 62) {
       msg = '放款失败';
+    }
+    if (status == 68 || status == 72) {
+      msg = '已结清';
     }
 //    switch(status) {
 //      case 20:
