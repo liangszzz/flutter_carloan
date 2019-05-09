@@ -9,17 +9,12 @@ import 'package:flutter_carloan/common/DialogUtils.dart';
 import 'package:image_picker/image_picker.dart';
 
 ///更新个人信息
-class UpdateUserInfoPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => _UpdateUserInfoPageStateful();
-}
-
-class _UpdateUserInfoPageStateful extends StatefulWidget {
+class UpdateUserInfoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _UpdateUserInfoPageState();
 }
 
-class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
+class _UpdateUserInfoPageState extends State<UpdateUserInfoPage> {
   Global global = new Global();
 
   TextEditingController _nickNameController = TextEditingController();
@@ -55,7 +50,9 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
   Widget _buildBody() {
     var headImg = Container(
       child: GestureDetector(
-        onTap: _selectImage,
+        onTap:() {
+          showModalBottomSheetDialog(context);
+        },
         child: CircleAvatar(
           radius: 50,
           backgroundImage: _getImageProvider(),
@@ -130,21 +127,60 @@ class _UpdateUserInfoPageState extends State<_UpdateUserInfoPageStateful> {
 
   File _image;
 
-  void _selectImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-    setState(() {
-      _image = image;
-    });
+  showModalBottomSheetDialog(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new ListTile(
+                leading: new Icon(Icons.camera),
+                title: new Text("相机", textAlign: TextAlign.left),
+                onTap: () {
+                  _selectPhoneImage();
+                  Navigator.pop(context);
+                },
+              ),
+              new Container(
+                height: 1.0,
+                color: Colors.grey,
+              ),
+              new ListTile(
+                leading: new Icon(Icons.photo_library),
+                title: new Text("相册", textAlign: TextAlign.left),
+                onTap: () {
+                  _selectGalleryImage();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   ImageProvider _getImageProvider() {
     if (_image != null) {
       return FileImage(_image);
     } else {
-      if(global.user.avatarUrl == null || global.user.avatarUrl == ''){
+      if (global.user.avatarUrl == null || global.user.avatarUrl == '') {
         return AssetImage("assets/images/header.png");
       }
       return NetworkImage(global.user.avatarUrl);
     }
+  }
+
+  Future _selectPhoneImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future _selectGalleryImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
   }
 }
