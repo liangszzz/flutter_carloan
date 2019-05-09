@@ -1649,7 +1649,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
             phoneNo = clUserInfo.phone_no;
             companyName = clUserInfo.company_name;
             companyPhone = clUserInfo.company_phone_no;
-            wxNumber = clUserInfo.wechat;
+            if(clUserInfo.wechat != null){
+              wxNumber = clUserInfo.wechat;
+            }
             personalIncome = clUserInfo.personal_income.toString();
             bankAccount = clUserInfo.bank_account;
             reservePhoneNo = clUserInfo.reserve_phone_no;
@@ -1864,11 +1866,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
     if (personalIncome.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "个人收入不能为空", null);
-      return;
-    }
-
-    if (wxNumber.isEmpty) {
-      DialogUtils.showAlertDialog(context, "提示", "微信号码不能为空", null);
       return;
     }
 
