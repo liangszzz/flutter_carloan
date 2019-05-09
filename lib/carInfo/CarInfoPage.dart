@@ -37,7 +37,7 @@ class CarInfoPage extends StatefulWidget {
 
 class _CarInfoPageState extends State<CarInfoPage> {
   bool isReload = false;
-
+  bool isSubmit = false;
   String carNo = "";
   String carBrand = "";
   String carModel = "";
@@ -841,6 +841,9 @@ class _CarInfoPageState extends State<CarInfoPage> {
             carNo = clCarInfo.car_no;
             carBrand = clCarInfo.car_brand;
             carModel = clCarInfo.car_model;
+            if (carModel.length > 8) {
+              carModel = carModel.substring(0, 8) + "....";
+            }
             carColor = clCarInfo.car_color;
             carFrameNo = clCarInfo.car_frame_no;
             carEngineNo = clCarInfo.car_engine_no;
@@ -1066,6 +1069,14 @@ class _CarInfoPageState extends State<CarInfoPage> {
   ///车辆信息保存
   Future _saveCarInfo() async {
 
+    //防止重复点击按钮
+    if (isSubmit) {
+      return;
+    }
+    setState(() {
+      isSubmit = true;
+    });
+
     if (buttonName == "返回") {
       Navigator.of(context).pop();
       return;
@@ -1173,11 +1184,17 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 channelType: widget.channelType,
               );
             }));
+            setState(() {
+              isSubmit = false;
+            });
           } else {
             ///跳转到人脸识别页面
             Navigator.push(context, new MaterialPageRoute(builder: (context) {
               return faceValidatePage(bizOrderNo: widget.bizOrderNo);
             }));
+            setState(() {
+              isSubmit = false;
+            });
           }
         }
       }

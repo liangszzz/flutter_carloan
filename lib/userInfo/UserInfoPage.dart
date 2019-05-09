@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -37,6 +38,8 @@ class UserInfoPage extends StatefulWidget {
 
 class _UserInfoPageState extends State<UserInfoPage> {
   bool isReload = false;
+
+  bool isSubmit = false;
 
   String biz_order_no = "";
 
@@ -1649,7 +1652,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             phoneNo = clUserInfo.phone_no;
             companyName = clUserInfo.company_name;
             companyPhone = clUserInfo.company_phone_no;
-            if(clUserInfo.wechat != null){
+            if (clUserInfo.wechat != null) {
               wxNumber = clUserInfo.wechat;
             }
             personalIncome = clUserInfo.personal_income.toString();
@@ -1775,6 +1778,15 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///信息保存
   Future _saveUserInfo() async {
+
+  //防止重复点击按钮
+    if (isSubmit) {
+      return;
+    }
+    setState(() {
+      isSubmit = true;
+    });
+
     if (widget.wxAppConfirm == 1 || biz_order_no == null) {
       Navigator.of(context).pop();
       return;
@@ -1953,6 +1965,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 fromPage: widget.fromPage,
                 wxAppConfirm: widget.wxAppConfirm);
           }));
+          setState(() {
+            isSubmit = false;
+          });
         }
       }
     } catch (e) {
@@ -1989,10 +2004,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
     });
   }
 
-  showModalBottomSheetDialog(BuildContext context, int index, String f){
+  showModalBottomSheetDialog(BuildContext context, int index, String f) {
     showModalBottomSheet(
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return new Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -2000,8 +2015,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 leading: new Icon(Icons.camera),
                 title: new Text("相机", textAlign: TextAlign.left),
                 onTap: () {
-                  ImagePicker.pickImage(
-                      source: ImageSource.camera)
+                  ImagePicker.pickImage(source: ImageSource.camera)
                       .then((onValue) {
                     _uploadImage(onValue, index, f);
                   });
@@ -2016,8 +2030,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 leading: new Icon(Icons.photo_library),
                 title: new Text("相册", textAlign: TextAlign.left),
                 onTap: () {
-                  ImagePicker.pickImage(
-                      source: ImageSource.gallery)
+                  ImagePicker.pickImage(source: ImageSource.gallery)
                       .then((onValue) {
                     _uploadImage(onValue, index, f);
                   });
@@ -2026,7 +2039,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
             ],
           );
-        }
-    );
+        });
   }
 }
