@@ -1036,23 +1036,11 @@ class RepaymentPageState extends State<RepaymentPage> {
           ),
         );
       } else {
-        _showSaveFailDialog();
+        _showDialog(response['msg']);
       }
     } catch (e) {
-      _showSaveFailDialog();
+      _showDialog('保存失败，服务器内部异常');
     }
-  }
-
-  /// 保存失败弹框
-  void _showSaveFailDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text('保存失败，服务器内部异常'),
-        );
-      },
-    );
   }
 
   ///跳转协议页面
