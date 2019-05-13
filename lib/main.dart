@@ -50,12 +50,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _toIndexPage() {
-    if (loginFlag && latestVersion) {
+    if (loginFlag) {
       return RootScene();
     }
-    if(!latestVersion){
+    /*if(!latestVersion){
       return updateVersionPage();
-    }
+    }*/
     return LoginPage();
   }
 
