@@ -39,8 +39,6 @@ class UserInfoPage extends StatefulWidget {
 class _UserInfoPageState extends State<UserInfoPage> {
   bool isReload = false;
 
-  bool isSubmit = false;
-
   String biz_order_no = "";
 
   String userName = "";
@@ -408,6 +406,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ),
             new Expanded(
               child: TextField(
+                enabled: canWrite,
                 style:
                     TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
@@ -1779,14 +1778,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
   ///信息保存
   Future _saveUserInfo() async {
 
-  //防止重复点击按钮
-    if (isSubmit) {
-      return;
-    }
-    setState(() {
-      isSubmit = true;
-    });
-
     if (widget.wxAppConfirm == 1 || biz_order_no == null) {
       Navigator.of(context).pop();
       return;
@@ -1965,9 +1956,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 fromPage: widget.fromPage,
                 wxAppConfirm: widget.wxAppConfirm);
           }));
-          setState(() {
-            isSubmit = false;
-          });
         }
       }
     } catch (e) {

@@ -1069,14 +1069,6 @@ class _CarInfoPageState extends State<CarInfoPage> {
   ///车辆信息保存
   Future _saveCarInfo() async {
 
-    //防止重复点击按钮
-    if (isSubmit) {
-      return;
-    }
-    setState(() {
-      isSubmit = true;
-    });
-
     if (buttonName == "返回") {
       Navigator.of(context).pop();
       return;
@@ -1184,17 +1176,11 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 channelType: widget.channelType,
               );
             }));
-            setState(() {
-              isSubmit = false;
-            });
           } else {
             ///跳转到人脸识别页面
             Navigator.push(context, new MaterialPageRoute(builder: (context) {
               return faceValidatePage(bizOrderNo: widget.bizOrderNo);
             }));
-            setState(() {
-              isSubmit = false;
-            });
           }
         }
       }
