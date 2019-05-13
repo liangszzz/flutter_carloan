@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/DataResponse.dart';
 import 'package:flutter_carloan/app/Token.dart';
+import 'package:flutter_carloan/common/DialogUtils.dart';
+import 'package:flutter_carloan/common/updateVersion.dart';
 import 'package:flutter_carloan/index/RootScene.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
 import 'package:flutter_carloan/app/Global.dart';
@@ -19,8 +21,11 @@ class _MyAppState extends State<MyApp> {
 
   bool loginFlag = false;
 
+  bool latestVersion = false;
+
   @override
   void initState() {
+    _checkVersion();
     _checkLogin();
     sleep(Duration(milliseconds: 300));
     super.initState();
@@ -45,8 +50,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _toIndexPage() {
-    if (loginFlag) {
+    if (loginFlag && latestVersion) {
       return RootScene();
+    }
+    if(!latestVersion){
+      return updateVersionPage();
     }
     return LoginPage();
   }
@@ -70,4 +78,18 @@ class _MyAppState extends State<MyApp> {
       });
     }
   }
+  ///检查版本更新
+  void _checkVersion() async {
+    var response = await global.post("updateLog/queryLatest");
+    if (response["code"] == 0){
+      var updateVersion = response["entity"];
+      if (global.currentVersion == updateVersion){
+        setState(() {
+          latestVersion = true;
+          global.latestVersion = true;
+        });
+      }
+    }
+  }
+
 }
