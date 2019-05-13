@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
   }
   ///检查版本更新
   void _checkVersion() async {
-    var response = await global.post("updateLog/queryLatest");
+    var response = await global.post("app/queryLatest");
     if (response["code"] == 0){
       var updateVersion = response["entity"];
       if (global.currentVersion == updateVersion){
