@@ -1025,13 +1025,12 @@ class RepaymentPageState extends State<RepaymentPage> {
     try {
       Map response = await global.postFormData(_confirmPath, request);
       if (response['code'] == 0) {
-        // channelType传固定值2，因为进单成功导致订单信息到正式表去了
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => AuditLendersPage(
                   bizOrderNo: widget.bizOrderNo,
-                  channelType: 2,
+                  channelType: channelType,
                 ),
           ),
         );
