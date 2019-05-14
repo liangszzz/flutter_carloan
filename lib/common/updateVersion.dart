@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/common/DialogUtils.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class updateVersionPage extends StatefulWidget {
-  updateVersionPage({Key key, this.title}) : super(key: key);
-
+  updateVersionPage({Key key, this.title, this.platform}) : super(key: key);
+  final TargetPlatform platform;
   final String title;
 
   @override
@@ -20,6 +22,8 @@ class _updateVersionPageState extends State<updateVersionPage>
   Animation animation;
   bool showing = false;
   bool first = true;
+
+  String _localPath;
 
   Global global = Global();
 
@@ -148,7 +152,9 @@ class _updateVersionPageState extends State<updateVersionPage>
           //可点击
           color: Theme.of(context).primaryColor,
           onPressed: () {
-            _download();
+            //_download();
+            const url = "http://106.15.126.226:8081/app/update";
+            launch(url);
           },
         ),
         FlatButton(
@@ -168,8 +174,21 @@ class _updateVersionPageState extends State<updateVersionPage>
     );
   }
 
-  Future _download() async {
-    var url = "/app/update";
-    var response = await global.post(url);
+  void _download() async {
+    /*final downloadUrl = "http://barbra-coco.dyndns.org/student/learning_android_studio.pdf";
+    final localPath = (await _findLocalPath()) + "/Download";
+    final taskId = await FlutterDownloader.enqueue(
+        url: downloadUrl,
+        savedDir: localPath,
+        showNotification: true,
+        openFileFromNotification: true);*/
+  }
+
+
+  Future<String> _findLocalPath() async {
+    final directory = widget.platform == TargetPlatform.android
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    return directory.path;
   }
 }
