@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   bool loginFlag = false;
 
-  bool latestVersion = false;
+  bool latestVersion = true;
 
   @override
   void initState() {
@@ -50,12 +50,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _toIndexPage() {
-    if (loginFlag) {
+    if (loginFlag && latestVersion) {
       return RootScene();
     }
-    /*if(!latestVersion){
+
+    if (!latestVersion) {
       return updateVersionPage();
-    }*/
+    }
     return LoginPage();
   }
 
@@ -78,18 +79,17 @@ class _MyAppState extends State<MyApp> {
       });
     }
   }
+
   ///检查版本更新
   void _checkVersion() async {
     var response = await global.post("app/queryLatest");
-    if (response["code"] == 0){
+    if (response["code"] == 0) {
       var updateVersion = response["entity"];
-      if (global.currentVersion == updateVersion){
+      if (global.currentVersion != updateVersion) {
         setState(() {
-          latestVersion = true;
-          global.latestVersion = true;
+          latestVersion = false;
         });
       }
     }
   }
-
 }

@@ -16,13 +16,12 @@ class Global {
   User user;
 
   String currentVersion = "1.0.0";
-  bool latestVersion = false;
 
   ThemeData globalTheme = ThemeData(
     primaryColor: Colors.white,
   );
 //http://106.15.126.226:8081/
-  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.13:8081/"));
+  Dio dio = new Dio(BaseOptions(baseUrl: "http://106.15.126.226:8081/"));
 
   /// 0 安卓 1,IOS 2.windows 3.
   int DEVICE = 0;
