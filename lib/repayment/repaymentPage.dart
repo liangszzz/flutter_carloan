@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_carloan/agreement/AgreementPageInfo.dart';
+import 'package:flutter_carloan/agreeMent/AgreeMentPageInfo.dart';
 import 'package:flutter_carloan/auditLenders/AuditLendersPage.dart';
 import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/repayment/bill.dart';
