@@ -39,9 +39,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
               "乐颂融资租赁（深圳）有限公司",
               style: new TextStyle(fontSize: 20.0),
             ),
-            new Text(
-              "",
-              style: new TextStyle(fontSize: 20.0),
+            new SizedBox(
+              height: 30.0,
             ),
             new Text(
               "联系电话 ： 020-80929150",
