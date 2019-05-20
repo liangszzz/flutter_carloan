@@ -200,6 +200,7 @@ class _SignPageState extends State<_SignPageStateful> {
   Widget _buildUserName() {
     return TextFormField(
         controller: userName,
+        enabled: false,
         keyboardType: TextInputType.text,
         maxLength: 20,
         decoration: InputDecoration(
@@ -216,6 +217,7 @@ class _SignPageState extends State<_SignPageStateful> {
   Widget _buildIdCard() {
     return TextFormField(
         controller: idCard,
+        enabled: false,
         keyboardType: TextInputType.text,
         maxLength: 18,
         decoration: InputDecoration(
@@ -285,6 +287,7 @@ class _SignPageState extends State<_SignPageStateful> {
   Widget _buildPhone() {
     var text = TextFormField(
         controller: phone,
+        enabled: false,
         keyboardType: TextInputType.number,
         maxLength: 11,
         decoration: InputDecoration(
@@ -400,19 +403,18 @@ class _SignPageState extends State<_SignPageStateful> {
       }));
       return;
     }
-    if(!checkboxSelected){
+    if (!checkboxSelected) {
       DialogUtils.showAlertDialog(context, "提示", "请先阅读同意自动还款协议!", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
-
-    if(smsId==null){
+    if (smsId == null) {
       DialogUtils.showAlertDialog(context, "提示", "请先获取短信验证码!", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
     }
 
-    if(code.text==null){
+    if (code.text == null) {
       DialogUtils.showAlertDialog(context, "提示", "短信验证码为空!", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
@@ -425,7 +427,8 @@ class _SignPageState extends State<_SignPageStateful> {
       "payerCardNo": idCard.text,
       "payerBankCardNo": bankCard.text,
       "bankMobile": phone.text,
-      "openId": global.token.token
+      "openId": global.token.token,
+      "bizOrderNo": widget.bizOrderNo
     });
     var d = DataResponse.fromJson(response);
     if (d.success()) {
