@@ -7,6 +7,7 @@ import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/carInfo/CarInfoPage.dart';
 import 'package:flutter_carloan/common/DialogUtils.dart';
 import 'package:flutter_carloan/login/LoginPage.dart';
+import 'package:flutter_carloan/me/AboutUs.dart';
 import 'package:flutter_carloan/me/Screen.dart';
 import 'package:flutter_carloan/me/UpdateMePage.dart';
 import 'package:flutter_carloan/message/MessageItem.dart';
@@ -144,6 +145,15 @@ class _MeSceneState extends State<_MeSceneStateful> {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return UpdateMePage();
+              }));
+            },
+          ),
+          MeCell(
+            title: '关于我们',
+            iconName: 'assets/images/about.png',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return AboutUsPage();
               }));
             },
           ),
