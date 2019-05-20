@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
       var updateVersion = response["entity"];
       if (global.currentVersion != updateVersion) {
         setState(() {
-          latestVersion = false;
+          this.latestVersion = false;
         });
       }
     }
