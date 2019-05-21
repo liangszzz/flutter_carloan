@@ -41,6 +41,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
   String carNo = "";
   String carBrand = "";
   String carModel = "";
+  String carModelSub = "";
   String carColor = "";
   String carFrameNo = "";
   String carEngineNo = "";
@@ -192,7 +193,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                     TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
-                  hintText: "$carModel",
+                  hintText: "$carModelSub",
                   disabledBorder: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
@@ -842,7 +843,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
             carBrand = clCarInfo.car_brand;
             carModel = clCarInfo.car_model;
             if (carModel.length > 8) {
-              carModel = carModel.substring(0, 8) + "....";
+              carModelSub = carModel.substring(0, 8) + "....";
             }
             carColor = clCarInfo.car_color;
             carFrameNo = clCarInfo.car_frame_no;
