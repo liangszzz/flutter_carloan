@@ -844,6 +844,8 @@ class _CarInfoPageState extends State<CarInfoPage> {
             carModel = clCarInfo.car_model;
             if (carModel.length > 8) {
               carModelSub = carModel.substring(0, 8) + "....";
+            }else{
+              carModelSub = carModel;
             }
             carColor = clCarInfo.car_color;
             carFrameNo = clCarInfo.car_frame_no;
