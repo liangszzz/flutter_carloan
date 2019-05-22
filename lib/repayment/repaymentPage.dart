@@ -312,37 +312,68 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   Widget _getTermWidget() {
     if (isConfirmPage) {
-      List<DropdownMenuItem> termsList = new List();
-      DropdownMenuItem item1 = new DropdownMenuItem(value: 1, child: Text("1"));
-      DropdownMenuItem item2 = new DropdownMenuItem(value: 3, child: Text("3"));
-      DropdownMenuItem item3 = new DropdownMenuItem(value: 6, child: Text("6"));
-      DropdownMenuItem item4 = new DropdownMenuItem(value: 9, child: Text("9"));
-      DropdownMenuItem item5 =
-          new DropdownMenuItem(value: 12, child: Text("12"));
-      termsList.add(item1);
-      termsList.add(item2);
-      termsList.add(item3);
-      termsList.add(item4);
-      termsList.add(item5);
+      // 等额本息
+      if (method == 1) {
+        if (terms != 6 && terms != 9 && terms != 12) {
+          return Text(
+            terms.toString(),
+            style: _blue18,
+          );
+        }
+        List<DropdownMenuItem> termsList = new List();
+        DropdownMenuItem item3 = new DropdownMenuItem(value: 6, child: Text("6"));
+        DropdownMenuItem item4 = new DropdownMenuItem(value: 9, child: Text("9"));
+        DropdownMenuItem item5 = new DropdownMenuItem(value: 12, child: Text("12"));
+        termsList.add(item3);
+        termsList.add(item4);
+        termsList.add(item5);
+        return _buildTermDropdownButton(termsList);
+      }
 
-      return DropdownButton(
-          items: termsList,
-          value: terms,
-          style: _blue18,
-          onChanged: (value) {
-            if (terms != value) {
-              setState(() {
-                terms = value;
-                _applyDataChanged = true;
-              });
-            }
-          });
+      // 先息后本
+      if (method == 4) {
+        if (terms != 1 && terms != 3) {
+          return Text(
+            terms.toString(),
+            style: _blue18,
+          );
+        }
+        List<DropdownMenuItem> termsList = new List();
+        DropdownMenuItem item1 = new DropdownMenuItem(value: 1, child: Text("1"));
+        DropdownMenuItem item2 = new DropdownMenuItem(value: 3, child: Text("3"));
+        termsList.add(item1);
+        termsList.add(item2);
+        return _buildTermDropdownButton(termsList);
+      }
+
+
+      return Text(
+        '0',
+        style: _blue18,
+      );
+
     } else {
       return Text(
         terms.toString(),
         style: _blue18,
       );
     }
+  }
+
+  /// 构建总期数下拉框
+  Widget _buildTermDropdownButton(List<DropdownMenuItem> termsList) {
+    return DropdownButton(
+      items: termsList,
+      value: terms,
+      style: _blue18,
+      onChanged: (value) {
+        if (terms != value) {
+          setState(() {
+            terms = value;
+            _applyDataChanged = true;
+          });
+        }
+      },);
   }
 
   /// 账单明细标题栏
@@ -767,17 +798,17 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   Widget _getRepaymentMethodWidget() {
     if (isConfirmPage) {
-      List<DropdownMenuItem> terms = new List();
+      List<DropdownMenuItem> methods = new List();
 
       DropdownMenuItem item1 =
           new DropdownMenuItem(value: 1, child: Text("等额本息"));
       DropdownMenuItem item2 =
           new DropdownMenuItem(value: 4, child: Text("利随本清"));
-      terms.add(item1);
-      terms.add(item2);
+      methods.add(item1);
+      methods.add(item2);
 
       return DropdownButton(
-        items: terms,
+        items: methods,
         value: method,
         style: TextStyle(
           fontFamily: _arial,
@@ -788,6 +819,12 @@ class RepaymentPageState extends State<RepaymentPage> {
           if (method != value) {
             setState(() {
               method = value;
+              if (method == 1) {
+                terms = 6;
+              }
+              if (method == 4) {
+                terms = 1;
+              }
               _applyDataChanged = true;
             });
           }
@@ -841,28 +878,6 @@ class RepaymentPageState extends State<RepaymentPage> {
                   LengthLimitingTextInputFormatter(6)
                 ],
                 focusNode: _amountFocusNode,
-//                onSubmitted: (text) {
-//                  if (text.isEmpty) {
-//                    return;
-//                  }
-//                  double apply = double.parse(text);
-//                  if (apply > _maxApplyAmount) {
-//                    showDialog(
-//                        context: context,
-//                        builder: (context) {
-//                          return AlertDialog(
-//                            content: Text("抱歉，您申请的金额超过上限"),
-//                          );
-//                        });
-//                  } else {
-//                    if (applyAmount != apply) {
-//                      setState(() {
-//                        _applyDataChanged = true;
-//                        applyAmount = apply;
-//                      });
-//                    }
-//                  }
-//                },
               ),
             ),
           ),
