@@ -39,6 +39,14 @@ class UserInfoPage extends StatefulWidget {
 class _UserInfoPageState extends State<UserInfoPage> {
   bool isReload = false;
 
+  ///判断借款人身份是否为学生
+  bool isStudent = false;
+
+  ///专业
+  String major = "";
+  ///院校
+  String college = "";
+
   String biz_order_no = "";
 
   String userName = "";
@@ -258,11 +266,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+      _buildCommonLine(),
 
       ///身份证号
       new Container(
@@ -303,11 +307,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///身份证地址
       new Container(
@@ -344,11 +344,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+      _buildCommonLine(),
 
       ///现居地址
       new Container(
@@ -385,11 +381,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///手机号码
       new Container(
@@ -431,11 +423,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///健康状况
       new GestureDetector(
@@ -465,11 +453,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///身份类型
       new GestureDetector(
@@ -499,11 +483,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+      _buildColleges(),
+
+      _buildCommonLine(),
+
+      _buildMajor(),
+
+      _buildCommonLine(),
 
       ///最高学历
       new GestureDetector(
@@ -533,11 +519,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+          _buildCommonLine(),
 
       ///公司名称
       new Container(
@@ -574,11 +556,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///客户职业信息
       new GestureDetector(
@@ -608,12 +586,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///公司电话
       new GestureDetector(
@@ -656,12 +629,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///证件到期日期
       new GestureDetector(
@@ -691,12 +659,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///开户行
       new GestureDetector(
@@ -726,12 +689,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///银行卡类型
       new GestureDetector(
@@ -761,12 +719,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///银行卡号
       new GestureDetector(
@@ -809,12 +762,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///预留手机号
       new GestureDetector(
@@ -857,12 +805,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///个人总收入（元/月）
       new GestureDetector(
@@ -905,12 +848,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///微信
       new GestureDetector(
@@ -949,12 +887,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///婚姻状况
       new GestureDetector(
@@ -984,6 +917,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
+    _buildCommonLine(),
+
       ///借款用途
       new GestureDetector(
         onTap: _showBorrowUseDialog,
@@ -1012,11 +947,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///联系人
       new Container(
@@ -1069,12 +1000,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///联系人电话
       new GestureDetector(
@@ -1117,12 +1043,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///分割阴影
-      new Container(
-        margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-        height: 1.0,
-        color: const Color(0xffebebeb),
-      ),
+    _buildCommonLine(),
 
       ///联系人关系
       new GestureDetector(
@@ -1536,6 +1457,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
           this.borrowUseValue = e;
           break;
       }
+
+      if(this.identityTypeValue == 2){
+        this.isStudent = true;
+      }else{
+        this.isStudent = false;
+        this.major = "";
+        this.college = "";
+      }
     });
     Navigator.pop(context);
   }
@@ -1593,7 +1522,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
           var response = await global.postFormData("user/query",
               {"biz_order_no": bizOrderNo, "channel_type": channelType});
           dataMap = response['dataMap'];
-          degreeStatusList = dataMap["degree"];
           clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
           contactInfoList = dataMap["clContactInfoList"];
           clContactInfo = ClContactInfo.fromJson(contactInfoList[0]);
@@ -1630,10 +1558,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
             Map riskData = dataMap['clBaseInfo'] as Map;
             borrow_usage = riskData['borrow_usage'].toString();
           }
-          degreeStatusList = dataMap["degreeS"];
         }
 
         ///此处为公用的选择框数据
+        degreeStatusList = dataMap["degree"];
         maritalStatusList = dataMap["marital_status"];
         healthStatusList = dataMap["health"];
         identityTypeStatusList = dataMap["identity_type"];
@@ -1663,6 +1591,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
             maritalValue = int.parse(clUserInfo.marital_status);
             healthValue = int.parse(clUserInfo.health_status);
             identityTypeValue = int.parse(clUserInfo.identity_type);
+            if(identityTypeValue == 2){
+              isStudent = true;
+              major = clUserInfo.major;
+              college = clUserInfo.colleges;
+            }
             degreeValue = int.parse(clUserInfo.degree);
             customerInfoValue =
                 int.parse(clUserInfo.customer_professional_info);
@@ -1832,6 +1765,17 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
+    if(identityTypeValue == 2){
+      if(college.isEmpty){
+        DialogUtils.showAlertDialog(context, "提示", "院校信息不能为空", null);
+        return;
+      }
+      if(major.isEmpty){
+        DialogUtils.showAlertDialog(context, "提示", "专业信息不能为空", null);
+        return;
+      }
+    }
+
     if (degreeLabel.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "最高学历不能为空", null);
       return;
@@ -1921,6 +1865,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
           "health_status": healthValue,
           "identity_type": identityTypeValue,
           "degree": degreeValue,
+          "major": major,
+          "colleges" : college,
           "company_name": companyName,
           "customer_professional_info": customerInfoValue,
           "company_phone_no": companyPhone,
@@ -2028,5 +1974,97 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ],
           );
         });
+  }
+
+  _buildColleges() {
+    if(this.isStudent){
+      return new Container(
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+        height: 48.0,
+        child: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                '院校',
+                style:
+                TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+              ),
+            ),
+            new Expanded(
+              child: TextField(
+                style:
+                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: "$college",
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                keyboardType: TextInputType.text,
+                maxLines: 1,
+                onChanged: (text) {
+                  college = text;
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return new Container(
+      height: 1.0,
+      color: Colors.white,
+    );
+  }
+
+  _buildMajor() {
+    if(this.isStudent){
+      return new Container(
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+        height: 48.0,
+        child: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                '专业',
+                style:
+                TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+              ),
+            ),
+            new Expanded(
+              child: TextField(
+                style:
+                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: "$major",
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                keyboardType: TextInputType.text,
+                maxLines: 1,
+                onChanged: (text) {
+                  major = text;
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return new Container(
+      height: 1.0,
+      color: Colors.white,
+    );
+  }
+
+  _buildCommonLine() {
+    return new Container(
+      margin: new EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
+      height: 1.0,
+      color: const Color(0xffebebeb),
+    );
   }
 }
