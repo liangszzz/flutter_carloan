@@ -161,6 +161,8 @@ class RepaymentPageState extends State<RepaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('isConfirm: ' + isConfirmPage.toString());
+
     _bindTextFieldLostFocus();
     if (!_hasInit) {
       _getRepaymentMsg();
@@ -563,6 +565,23 @@ class RepaymentPageState extends State<RepaymentPage> {
             fontSize: 12,
             color: _blueColor,
           ),
+        );
+      }
+
+      if (_bills[index].status == 2) {
+        return RaisedButton(
+          child: Text(
+            "还款中",
+            style: TextStyle(
+              fontFamily: _arial,
+              fontSize: 14,
+              color: _whiteColor,
+            ),
+          ),
+          color: _greyColor,
+          onPressed: () {
+            _showDialog("正在还款中，请勿重复还款");
+          },
         );
       }
 
@@ -998,14 +1017,14 @@ class RepaymentPageState extends State<RepaymentPage> {
     int code = response['code'];
     String msg = response['msg'];
     if (code == 0) {
-      // 还款成功
-      _bills[index].status = 3;
+      // 通知代扣成功
+      _bills[index].status = 2;
+      _showDialog("请求代扣成功，正在还款中");
     } else {
       _showDialog('还款失败，' + msg);
     }
     setState(() {
       _hasClickRepay = false;
-      _currentTermRepayButtonColor = _blueColor;
     });
   }
 
