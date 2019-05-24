@@ -1021,6 +1021,7 @@ class RepaymentPageState extends State<RepaymentPage> {
       _bills[index].status = 2;
       _showDialog("请求代扣成功，正在还款中");
     } else {
+      _currentTermRepayButtonColor = _blueColor;
       _showDialog('还款失败，' + msg);
     }
     setState(() {
