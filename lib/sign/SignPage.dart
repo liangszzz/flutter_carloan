@@ -433,7 +433,8 @@ class _SignPageState extends State<_SignPageStateful> {
     var d = DataResponse.fromJson(response);
     if (d.success()) {
       ///签约成功
-      DialogUtils.showAlertDialog(context, "提示", "签约成功!!", null);
+      DialogUtils.showAlertDialog(context, "提示", "签约成功!", null);
+      sleep(Duration(seconds: 1));
       global.user.bankName = UserSign.bankList[currentSelectBankIndex];
       global.user.barkCard = bankCard.text.substring(bankCard.text.length - 4);
 
