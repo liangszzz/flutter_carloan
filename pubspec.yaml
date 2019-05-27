@@ -20,6 +20,7 @@ dependencies:
   transparent_image: ^0.1.0
   shared_preferences: ^0.4.3
   image_picker: ^0.4.12
+  flutter_datetime_picker: ^1.2.1
   flutter:
     sdk: flutter
   flutter_localizations:
