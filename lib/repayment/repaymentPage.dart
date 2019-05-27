@@ -1061,25 +1061,26 @@ class RepaymentPageState extends State<RepaymentPage> {
       Map response = await global.postFormData(_confirmPath, request);
       if (response['code'] == 0) {
         // 订单进单成功后channelType改为2（正式表）
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AuditLendersPage(
-                  bizOrderNo: widget.bizOrderNo,
-                  channelType: 2,
-                ),
-          ),
-        );
-      } else if(response['code'] == 2) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AuditLendersPage(
-              bizOrderNo: widget.bizOrderNo,
-              channelType: channelType,
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  AuditLendersPage(
+                    bizOrderNo: widget.bizOrderNo,
+                    channelType: 2,
+                  ),),
+                (route) => route == null);
+      } else if (response['code'] == 2) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  AuditLendersPage(
+                    bizOrderNo: widget.bizOrderNo,
+                    channelType: channelType,
+                  ),
             ),
-          ),
-        );
+                (route) => route == null);
       } else {
         _showDialog(response['msg']);
       }
