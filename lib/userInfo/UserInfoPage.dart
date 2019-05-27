@@ -13,6 +13,7 @@ import 'package:flutter_carloan/common/ShowPhoto.dart';
 import 'package:flutter_carloan/userInfo/ClContactInfo.dart';
 import 'package:flutter_carloan/userInfo/ClUserInfo.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class UserInfoPage extends StatefulWidget {
   final String bizOrderNo;
@@ -44,6 +45,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///专业
   String major = "";
+
   ///院校
   String college = "";
 
@@ -93,6 +95,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
   ///联系人关系
   String contactPhone = "";
   String contactName = "";
+  List<ClContactInfo> contractLists = new List();
+
   int relationShipValue;
   var relationShipLabel = "";
   List relationShipList = new List();
@@ -307,7 +311,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///身份证地址
       new Container(
@@ -381,7 +385,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///手机号码
       new Container(
@@ -423,7 +427,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///健康状况
       new GestureDetector(
@@ -453,7 +457,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///身份类型
       new GestureDetector(
@@ -519,7 +523,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-          _buildCommonLine(),
+      _buildCommonLine(),
 
       ///公司名称
       new Container(
@@ -556,7 +560,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///客户职业信息
       new GestureDetector(
@@ -586,7 +590,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///公司电话
       new GestureDetector(
@@ -629,7 +633,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///证件到期日期
       new GestureDetector(
@@ -659,7 +663,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///开户行
       new GestureDetector(
@@ -689,7 +693,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///银行卡类型
       new GestureDetector(
@@ -719,7 +723,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///银行卡号
       new GestureDetector(
@@ -762,7 +766,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///预留手机号
       new GestureDetector(
@@ -805,7 +809,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///个人总收入（元/月）
       new GestureDetector(
@@ -848,7 +852,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///微信
       new GestureDetector(
@@ -887,7 +891,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///婚姻状况
       new GestureDetector(
@@ -917,7 +921,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///借款用途
       new GestureDetector(
@@ -947,7 +951,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///联系人
       new Container(
@@ -963,115 +967,20 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
-      ///联系人姓名
-      new GestureDetector(
-        child: new Container(
-          margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-          height: 48.0,
-          child: new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new Text(
-                  '联系人姓名',
-                  style:
-                      TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
-                ),
-              ),
-              new Expanded(
-                child: TextField(
-                  style:
-                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
-                  textAlign: TextAlign.right,
-                  decoration: InputDecoration(
-                    hintText: "$contactName",
-                    disabledBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                  ),
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  onChanged: (text) {
-                    contactName = text;
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      _buildContractInfo(),
 
-    _buildCommonLine(),
+      ///联系人姓名
+      //_buildContractName(),
+
+      _buildCommonLine(),
 
       ///联系人电话
-      new GestureDetector(
-        child: new Container(
-          margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-          height: 48.0,
-          child: new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new Text(
-                  '联系人电话',
-                  style:
-                      TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
-                ),
-              ),
-              new Expanded(
-                child: TextField(
-                  style:
-                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
-                  textAlign: TextAlign.right,
-                  decoration: InputDecoration(
-                    hintText: "$contactPhone",
-                    disabledBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                  ),
-                  inputFormatters: [
-                    WhitelistingTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(11),
-                  ],
-                  keyboardType: TextInputType.phone,
-                  maxLines: 1,
-                  onChanged: (text) {
-                    contactPhone = text;
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      //_buildContractPhone(),
 
-    _buildCommonLine(),
+      _buildCommonLine(),
 
       ///联系人关系
-      new GestureDetector(
-        onTap: _showRelationDialog,
-        child: new Container(
-          margin: new EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-          height: 48.0,
-          child: new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new Text(
-                  '联系人关系',
-                  style:
-                      TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
-                ),
-              ),
-              new Padding(
-                padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
-                child: new Text(
-                  '$relationShipLabel',
-                  style:
-                      TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      // _buildContractRelationShip(),
 
       ///分隔阴影
       new Container(
@@ -1352,35 +1261,15 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///时间选择
   _showDataPicker() async {
-    Locale myLocale = Localizations.localeOf(context);
-    var picker = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2018),
-        lastDate: DateTime(2099),
-        locale: myLocale);
-    setState(() {
-      _time = picker.toString().substring(0, 10);
-    });
-  }
-
-  ///联系人关系
-  void _showRelationDialog() {
-    showDialog<Null>(
-        context: context, //BuildContext对象
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return new Dialog(
-            child: new Container(
-              width: 300.0,
-              height: 230.0,
-              color: Colors.white,
-              child: new ListView(
-                  children: listViewDefault(relationShipList,
-                      "contact_relationship_flag", relationShipValue, context)),
-            ),
-          );
-        });
+    DatePicker.showDatePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(2019, 1, 1),
+        maxTime: DateTime(2099, 6, 7),
+        onChanged: (date) {}, onConfirm: (date) {
+      setState(() {
+        _time = date.toString().substring(0, 10);
+      });
+    }, currentTime: DateTime.now(), locale: LocaleType.zh);
   }
 
   ///公共弹窗
@@ -1458,9 +1347,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
           break;
       }
 
-      if(this.identityTypeValue == 2){
+      if (this.identityTypeValue == 2) {
         this.isStudent = true;
-      }else{
+      } else {
         this.isStudent = false;
         this.major = "";
         this.college = "";
@@ -1504,7 +1393,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
         List contactInfoList = new List();
         List idCraUrlList = new List();
         ClUserInfo clUserInfo;
-        ClContactInfo clContactInfo;
         var borrow_usage;
 
         if (fromPage == 2 || fromPage == 1) {
@@ -1524,7 +1412,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           dataMap = response['dataMap'];
           clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
           contactInfoList = dataMap["clContactInfoList"];
-          clContactInfo = ClContactInfo.fromJson(contactInfoList[0]);
+
           Map clBaseInfo = dataMap['clBaseInfo'] as Map;
           borrow_usage = clBaseInfo['borrow_usage'];
 
@@ -1553,7 +1441,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ///非第一次进单
             clUserInfo = ClUserInfo.fromJson(dataMap["clUserInfo"]);
             biz_order_no = clUserInfo.biz_order_no;
-            clContactInfo = ClContactInfo.fromJson(dataMap["clContactInfo"]);
+            contactInfoList = dataMap["clContactInfo"];
             idCraUrlList = dataMap["attachmentInfoList"];
             Map riskData = dataMap['clBaseInfo'] as Map;
             borrow_usage = riskData['borrow_usage'].toString();
@@ -1591,7 +1479,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             maritalValue = int.parse(clUserInfo.marital_status);
             healthValue = int.parse(clUserInfo.health_status);
             identityTypeValue = int.parse(clUserInfo.identity_type);
-            if(identityTypeValue == 2){
+            if (identityTypeValue == 2) {
               isStudent = true;
               major = clUserInfo.major;
               college = clUserInfo.colleges;
@@ -1604,10 +1492,22 @@ class _UserInfoPageState extends State<UserInfoPage> {
             borrowUseLabel = borrowUse[borrowUseValue];
           }
 
-          if (clContactInfo != null) {
-            contactName = clContactInfo.contactName;
-            contactPhone = clContactInfo.contactPhone;
-            relationShipValue = int.parse(clContactInfo.contactRelationship);
+          ///联系人
+          if (contactInfoList.length > 0) {
+            for (int i = 0; i < contactInfoList.length; i++) {
+              ClContactInfo contactInfo = new ClContactInfo();
+              contactInfo.contactName = contactInfoList[i]["contact_name"];
+              contactInfo.contactPhone = contactInfoList[i]["contact_phone"];
+              contactInfo.contactRelationship =
+                  contactInfoList[i]["contact_relationship"];
+              contractLists.add(contactInfo);
+            }
+          } else {
+            ClContactInfo contactInfo = new ClContactInfo();
+            contactInfo.contactName = "";
+            contactInfo.contactPhone = "";
+            contactInfo.contactRelationship = "";
+            contractLists.add(contactInfo);
           }
 
           bankNameList = bankStatusList;
@@ -1710,7 +1610,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   ///信息保存
   Future _saveUserInfo() async {
-
     if (widget.wxAppConfirm == 1 || biz_order_no == null) {
       Navigator.of(context).pop();
       return;
@@ -1765,12 +1664,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
-    if(identityTypeValue == 2){
-      if(college.isEmpty){
+    if (identityTypeValue == 2) {
+      if (college.isEmpty) {
         DialogUtils.showAlertDialog(context, "提示", "院校信息不能为空", null);
         return;
       }
-      if(major.isEmpty){
+      if (major.isEmpty) {
         DialogUtils.showAlertDialog(context, "提示", "专业信息不能为空", null);
         return;
       }
@@ -1821,21 +1720,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
-    if (contactName.isEmpty) {
-      DialogUtils.showAlertDialog(context, "提示", "联系人姓名不能为空", null);
-      return;
-    }
-
-    if (contactPhone.isEmpty) {
-      DialogUtils.showAlertDialog(context, "提示", "联系人手机号码不能为空", null);
-      return;
-    }
-
-    if (relationShipLabel.isEmpty) {
-      DialogUtils.showAlertDialog(context, "提示", "联系人关系不能为空", null);
-      return;
-    }
-
     if (idCardImageList.contains(defaultImageUrl)) {
       DialogUtils.showAlertDialog(context, "提示", "请上传身份证正反面", null);
       return;
@@ -1850,11 +1734,22 @@ class _UserInfoPageState extends State<UserInfoPage> {
     if (widget.fromPage == 0) {
       url = "borrow/saveUserInfo";
     }
+    var contractList = new List();
+
+    int length = contractLists.length;
+    for (int i = 0; i < length; i++) {
+      var contractMap = new Map();
+      contractMap['biz_order_no'] = biz_order_no;
+      contractMap['contact_name'] = contractLists[i].contactName;
+      contractMap['contact_phone'] = contractLists[i].contactPhone;
+      contractMap['contact_relationship'] =
+          contractLists[i].contactRelationship;
+      contractList.add(contractMap);
+    }
 
     try {
       var response = await global.postFormData(url, {
-        "data": {
-          "openid": global.token.token,
+        "clUserInfo": {
           "channel_type": widget.channelType,
           "biz_order_no": biz_order_no,
           "user_name": userName,
@@ -1865,8 +1760,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
           "health_status": healthValue,
           "identity_type": identityTypeValue,
           "degree": degreeValue,
-          "major": major,
-          "colleges" : college,
           "company_name": companyName,
           "customer_professional_info": customerInfoValue,
           "company_phone_no": companyPhone,
@@ -1878,11 +1771,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
           "personal_income": personalIncome,
           "wechat": wxNumber,
           "marital_status": maritalValue,
-          "contact_name": contactName,
-          "contact_phone": contactPhone,
-          "contact_relationship": relationShipValue,
+        },
+        "clBaseInfo": {
+          "openid": global.token.token,
+          "biz_order_no": biz_order_no,
           "borrow_usage": borrowUseValue
         },
+        "contactInfo": contractList
       });
 
       if (response["code"] == 0) {
@@ -1903,6 +1798,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 wxAppConfirm: widget.wxAppConfirm);
           }));
         }
+      } else {
+        DialogUtils.showAlertDialog(context, "提示", response['msg'], null);
       }
     } catch (e) {
       DialogUtils.showAlertDialog(context, "提示", "保存失败", null);
@@ -1977,7 +1874,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   _buildColleges() {
-    if(this.isStudent){
+    if (this.isStudent) {
       return new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: 48.0,
@@ -1987,13 +1884,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
               child: new Text(
                 '院校',
                 style:
-                TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+                    TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
               ),
             ),
             new Expanded(
               child: TextField(
                 style:
-                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$college",
@@ -2019,7 +1916,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   _buildMajor() {
-    if(this.isStudent){
+    if (this.isStudent) {
       return new Container(
         margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
         height: 48.0,
@@ -2029,13 +1926,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
               child: new Text(
                 '专业',
                 style:
-                TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+                    TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
               ),
             ),
             new Expanded(
               child: TextField(
                 style:
-                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: "$major",
@@ -2066,5 +1963,218 @@ class _UserInfoPageState extends State<UserInfoPage> {
       height: 1.0,
       color: const Color(0xffebebeb),
     );
+  }
+
+  _buildContractName(int index, String contractName) {
+    return new GestureDetector(
+      child: new Container(
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+        height: 45.0,
+        child: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                '联系人' + (index + 1).toString() + '姓名',
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+              ),
+            ),
+            new Expanded(
+              child: TextField(
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: contractName,
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                keyboardType: TextInputType.text,
+                maxLines: 1,
+                onChanged: (text) {
+                  _updateContractList(index, text, "contact_name");
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildContractPhone(int index, String contactPhone) {
+    return new GestureDetector(
+      child: new Container(
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+        height: 45.0,
+        child: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                '联系人' + (index + 1).toString() + '电话',
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+              ),
+            ),
+            new Expanded(
+              child: TextField(
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: contactPhone,
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                inputFormatters: [
+                  WhitelistingTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(11),
+                ],
+                keyboardType: TextInputType.phone,
+                maxLines: 1,
+                onChanged: (text) {
+                  _updateContractList(index, text, "contact_phone");
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildContractRelationShip(int index, String contactRelationship) {
+    if (contactRelationship != "" && contactRelationship != null) {
+      var relationShipValue = int.parse(contactRelationship);
+      if (relationShipList.length > 0) {
+        for (int i = 0; i < relationShipList.length; i++) {
+          if (relationShipValue == int.parse(relationShipList[i].value)) {
+            relationShipLabel = relationShipList[i].label;
+          }
+        }
+      }
+    }
+    return new GestureDetector(
+      onTap: () {
+        showDialog<Null>(
+            context: context, //BuildContext对象
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return new Dialog(
+                child: new Container(
+                  width: 300.0,
+                  height: 230.0,
+                  color: Colors.white,
+                  child: new ListView(
+                      children: showSelectRelationShipDialog(
+                          relationShipList,
+                          "contact_relationship_flag",
+                          relationShipValue,
+                          context,
+                          index)),
+                ),
+              );
+            });
+      },
+      child: new Container(
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+        height: 45.0,
+        child: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                '联系人' + (index + 1).toString() + '关系',
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+              ),
+            ),
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+              child: new Text(
+                relationShipLabel,
+                style:
+                    TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildContractInfo() {
+    var height = 200.0;
+    if (contractLists.length <= 1) {
+      height = 150.0;
+    }
+    List<Widget> _list = new List();
+    int length = contractLists.length;
+    for (int i = 0; i < length; i++) {
+      _list.add(_buildContent(i));
+    }
+    return new SizedBox(
+      height: height,
+      child: new ListView(
+        children: _list,
+      ),
+    );
+  }
+
+  _buildContent(int i) {
+    return new SizedBox(
+      height: 150.0, //设置高度
+      child: new Card(
+        child: new Column(
+          // card只能有一个widget，但这个widget内容可以包含其他的widget
+          children: [
+            _buildContractName(i, contractLists[i].contactName),
+            _buildCommonLine(),
+            _buildContractPhone(i, contractLists[i].contactPhone),
+            _buildCommonLine(),
+            _buildContractRelationShip(i, contractLists[i].contactRelationship),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _updateContractList(int index, String text, String type) {
+    if (type == "contact_name") {
+      setState(() {
+        contractLists[index].contactName = text;
+      });
+    }
+    if (type == "contact_phone") {
+      setState(() {
+        contractLists[index].contactPhone = text;
+      });
+    }
+  }
+
+  showSelectRelationShipDialog(List sysDictList, String type, int dataValue,
+      BuildContext context, int index) {
+    List<Widget> data = new List();
+
+    for (int i = 0; i < sysDictList.length; i++) {
+      data.add(
+        new RadioListTile<int>(
+          title: new Text(sysDictList[i].label),
+          value: int.parse(sysDictList[i].value),
+          groupValue: dataValue,
+          onChanged: (int e) =>
+              updateRelationShipValue(e, type, context, index),
+        ),
+      );
+    }
+    return data;
+  }
+
+  updateRelationShipValue(int e, String type, BuildContext context, int index) {
+    setState(() {
+      contractLists[index].contactRelationship = e.toString();
+    });
+    Navigator.pop(context);
   }
 }

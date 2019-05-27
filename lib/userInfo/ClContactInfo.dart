@@ -17,10 +17,10 @@ class ClContactInfo {
   /// 联系人关系
   String contactRelationship;
 
-  ClContactInfo.fromJson(Map<String, dynamic> map) {
+ /* ClContactInfo.fromJson(Map<String, dynamic> map) {
     bizOrderNo = map['biz_order_no'];
     contactName = map['contact_name'];
     contactPhone = map['contact_phone'];
     contactRelationship = map['contact_relationship'];
-  }
+  }*/
 }
