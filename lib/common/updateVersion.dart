@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/common/DialogUtils.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class updateVersionPage extends StatefulWidget {
@@ -172,23 +171,5 @@ class _updateVersionPageState extends State<updateVersionPage>
         )
       ],
     );
-  }
-
-  void _download() async {
-    /*final downloadUrl = "http://barbra-coco.dyndns.org/student/learning_android_studio.pdf";
-    final localPath = (await _findLocalPath()) + "/Download";
-    final taskId = await FlutterDownloader.enqueue(
-        url: downloadUrl,
-        savedDir: localPath,
-        showNotification: true,
-        openFileFromNotification: true);*/
-  }
-
-
-  Future<String> _findLocalPath() async {
-    final directory = widget.platform == TargetPlatform.android
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
-    return directory.path;
   }
 }

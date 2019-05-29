@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_carloan/agreement/RegisterAgreementPageInfo.dart';
 import 'package:flutter_carloan/app/DataResponse.dart';
 import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/common/CodeButton.dart';
@@ -30,8 +31,14 @@ class _LoginPageState extends State<LoginPage> {
 
   int second = 0;
 
+  String htmlInfo = "";
+
+  // 是否已经接受产品说明和合同
+  bool _accept = false;
+
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: () {
         ///提示是否退出
@@ -92,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
           children: <Widget>[
             _buildPhone(),
             _buildSmsCode(),
+            _buildAgreement(),
             SizedBox(
               height: 20,
             ),
@@ -117,6 +125,7 @@ class _LoginPageState extends State<LoginPage> {
           children: <Widget>[
             _buildPhone(),
             _buildPwd(),
+            _buildAgreement(),
             SizedBox(
               height: 20,
             ),
@@ -332,6 +341,64 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  /// 协议行
+  Widget _buildAgreement() {
+    return Row(
+      children: <Widget>[
+        new Checkbox(
+          value: _accept,
+          activeColor: Colors.blue,
+          onChanged: (bool val) {
+            // val 是布尔值
+            this.setState(() {
+              this._accept = !this._accept;
+            });
+          },
+        ),
+        Container(
+          child: Text(
+            '我已阅读和理解',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            '《用户注册协议》',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.blue,
+            ),
+          ),
+          onTap: () {
+            _toRegisterAgreement();
+          },
+        ),
+        Text(
+          '和',
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            '《隐私政策》',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.blue,
+            ),
+          ),
+          onTap: () {
+            _toPrivacyAgreement();
+          },
+        ),
+      ],
+    );
+  }
+
   ///发送验证码
   void _getSmsCode() async {
     if (_phone.text.length != 11) {
@@ -366,6 +433,13 @@ class _LoginPageState extends State<LoginPage> {
 
   ///登录
   void _login() async {
+
+    if(!_accept){
+      DialogUtils.showAlertDialog(context, "提示", "请阅读并同意《用户注册协议》和《隐私政策》", null,
+          contentStyle: TextStyle(color: Colors.red));
+      return;
+    }
+
     if (_phone.text.length != 11) {
       DialogUtils.showAlertDialog(context, "提示", "请填写正确的手机号", null,
           contentStyle: TextStyle(color: Colors.red));
@@ -457,5 +531,18 @@ class _LoginPageState extends State<LoginPage> {
         context,
         new MaterialPageRoute(builder: (context) => RootScene()),
         (route) => route == null);
+  }
+
+
+  void _toRegisterAgreement() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return RegisterAgreementInfoPage(title: "用户注册协议", requestUrl: "agreement/register",);
+    }));
+  }
+
+  void _toPrivacyAgreement() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return RegisterAgreementInfoPage(title: "隐私政策", requestUrl: "agreement/privacy",);
+    }));
   }
 }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_carloan/agreement/PersonalAgreementPageInfo.dart';
 import 'package:flutter_carloan/app/DataResponse.dart';
 import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/app/SysDict.dart';
@@ -141,6 +142,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
   ];
   String borrowUseLabel = "请选择";
   int borrowUseValue = 0;
+
+  ///是否接受协议
+  bool _accept = false;
 
   @override
   Widget build(BuildContext context) {
@@ -1061,6 +1065,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ),
 
+      _buildAgreement(),
+
+
       ///按钮
       new Padding(
         padding: new EdgeInsets.fromLTRB(10.0, 8.0, 10.0, 8.0),
@@ -1612,6 +1619,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
   Future _saveUserInfo() async {
     if (widget.wxAppConfirm == 1 || biz_order_no == null) {
       Navigator.of(context).pop();
+      return;
+    }
+
+    if(!_accept){
+      DialogUtils.showAlertDialog(context, "提示", "请阅读并同意《个人信息授权协议》", null);
       return;
     }
 
@@ -2176,5 +2188,50 @@ class _UserInfoPageState extends State<UserInfoPage> {
       contractLists[index].contactRelationship = e.toString();
     });
     Navigator.pop(context);
+  }
+
+  /// 协议行
+  Widget _buildAgreement() {
+    return Row(
+      children: <Widget>[
+        new Checkbox(
+          value: _accept,
+          activeColor: Colors.blue,
+          onChanged: (bool val) {
+            // val 是布尔值
+            this.setState(() {
+              this._accept = !this._accept;
+            });
+          },
+        ),
+        Container(
+          child: Text(
+            '我已阅读和理解',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            '《个人信息授权协议》',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.blue,
+            ),
+          ),
+          onTap: () {
+            _toPersonalAgreement();
+          },
+        ),
+      ],
+    );
+  }
+
+  void _toPersonalAgreement() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return PersonalAgreementInfoPage(idCard: idCard,);
+    }));
   }
 }
