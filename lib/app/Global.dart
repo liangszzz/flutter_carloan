@@ -15,6 +15,8 @@ class Global {
 
   User user;
 
+
+
   String currentVersion = "1.0.0";
 
   ThemeData globalTheme = ThemeData(
