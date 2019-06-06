@@ -432,7 +432,8 @@ class _SignPageState extends State<_SignPageStateful> {
       "bankMobile": phone.text,
       "openId": global.token.token,
       "bizOrderNo": widget.bizOrderNo,
-      "bankCode": userSign.bankCode
+      "bankCode": userSign.bankCode,
+      "bankIndex": currentSelectBankIndex
     });
     var d = DataResponse.fromJson(response);
     if (d.success()) {
