@@ -169,7 +169,7 @@ class _SignPageState extends State<_SignPageStateful> {
       setState(() {
         signed = false;
         userSign = UserSign.fromJson(d.dataMap);
-        currentSelectBankIndex = 0;
+        currentSelectBankIndex = userSign.index;
       });
     }
     userName.text = userSign.userName;
@@ -255,13 +255,11 @@ class _SignPageState extends State<_SignPageStateful> {
   ///加载银行列表
   List<DropdownMenuItem> _getBankList() {
     List<DropdownMenuItem> list = new List();
-    for (var i = 0; i < UserSign.bankList.length; i++) {
-      var bankName = UserSign.bankList[i];
-      list.add(DropdownMenuItem(
-        child: Text("$bankName"),
-        value: i,
-      ));
-    }
+    var bankName = UserSign.bankList[currentSelectBankIndex];
+    list.add(DropdownMenuItem(
+      child: Text("$bankName"),
+      value: currentSelectBankIndex,
+    ));
     return list;
   }
 
@@ -269,6 +267,7 @@ class _SignPageState extends State<_SignPageStateful> {
   Widget _buildBankCard() {
     var text = TextFormField(
         controller: bankCard,
+        enabled: false,
         keyboardType: TextInputType.number,
         maxLength: 19,
         decoration: InputDecoration(
@@ -307,10 +306,14 @@ class _SignPageState extends State<_SignPageStateful> {
     var text = TextFormField(
       controller: code,
       keyboardType: TextInputType.number,
+      autofocus: true,
       maxLength: 6,
       decoration: InputDecoration(
           hintText: "请输入验证码",
           prefixText: "验证码:",
+          disabledBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
           prefixStyle: TextStyle(color: Colors.black),
           border: OutlineInputBorder(borderSide: BorderSide.none),
           suffix: CodeButton(
@@ -428,7 +431,9 @@ class _SignPageState extends State<_SignPageStateful> {
       "payerBankCardNo": bankCard.text,
       "bankMobile": phone.text,
       "openId": global.token.token,
-      "bizOrderNo": widget.bizOrderNo
+      "bizOrderNo": widget.bizOrderNo,
+      "bankCode": userSign.bankCode,
+      "bankIndex": currentSelectBankIndex
     });
     var d = DataResponse.fromJson(response);
     if (d.success()) {

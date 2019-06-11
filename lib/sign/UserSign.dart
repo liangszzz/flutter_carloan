@@ -4,6 +4,7 @@ class UserSign {
   String idCard;
   String reservePhone;
   String bankCard;
+  String bankCode;
   int index;
 
   static List bankList=_getBankList();
@@ -39,6 +40,7 @@ class UserSign {
     reservePhone = map['reserve_phone_no'];
     bankCard = map['bank_card'];
     index = map['index'];
+    bankCode = map['bank_code'];
 //    bankNameList = map['bank_name_list'];
   }
 }

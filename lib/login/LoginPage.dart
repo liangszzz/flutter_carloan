@@ -402,6 +402,8 @@ class _LoginPageState extends State<LoginPage> {
   ///发送验证码
   void _getSmsCode() async {
     if (_phone.text.length != 11) {
+      DialogUtils.showAlertDialog(context, "提示", "请输入正确的手机号!", null,
+          contentStyle: TextStyle(color: Colors.red));
       return;
     }
     var url = "";
