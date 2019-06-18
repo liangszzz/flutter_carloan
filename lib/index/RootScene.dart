@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/Global.dart';
 import 'package:flutter_carloan/me/MeScene.dart';
 import 'package:flutter_carloan/order/OrderPage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 ///  底部导航栏
 class RootScene extends StatefulWidget {
@@ -43,7 +42,6 @@ class _RootSceneState extends State<RootScene> {
   }
 
   setupApp() async {
-    preferences = await SharedPreferences.getInstance();
     setState(() {
       isFinishSetup = true;
     });

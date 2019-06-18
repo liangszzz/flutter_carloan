@@ -18,6 +18,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   Global global = Global();
 
+  String loginPhone;
+
   ///登陆方式 0 免密登陆,1 密码登陆 2 密码找回
   var _loginType = 0;
 
@@ -36,9 +38,22 @@ class _LoginPageState extends State<LoginPage> {
   // 是否已经接受产品说明和合同
   bool _accept = false;
 
+  void _loadLoginPhone() {
+    global.getValueByKey("phone").then((value) {
+      setState(() {
+        _phone.text=value;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    _loadLoginPhone();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () {
         ///提示是否退出
@@ -435,8 +450,7 @@ class _LoginPageState extends State<LoginPage> {
 
   ///登录
   void _login() async {
-
-    if(!_accept){
+    if (!_accept) {
       DialogUtils.showAlertDialog(context, "提示", "请阅读并同意《用户注册协议》和《隐私政策》", null,
           contentStyle: TextStyle(color: Colors.red));
       return;
@@ -535,16 +549,21 @@ class _LoginPageState extends State<LoginPage> {
         (route) => route == null);
   }
 
-
   void _toRegisterAgreement() {
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return RegisterAgreementInfoPage(title: "用户注册协议", requestUrl: "agreement/register",);
+      return RegisterAgreementInfoPage(
+        title: "用户注册协议",
+        requestUrl: "agreement/register",
+      );
     }));
   }
 
   void _toPrivacyAgreement() {
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return RegisterAgreementInfoPage(title: "隐私政策", requestUrl: "agreement/privacy",);
+      return RegisterAgreementInfoPage(
+        title: "隐私政策",
+        requestUrl: "agreement/privacy",
+      );
     }));
   }
 }
