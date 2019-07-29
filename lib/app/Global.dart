@@ -23,11 +23,12 @@ class Global {
   );
 
 //http://106.15.126.226:8081/
-  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.2.16:8081/mobile/"));
+//  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.2.16:8081/mobile/"));
+//  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.7:8081/mobile/"));
 
 //  Dio dio = new Dio(BaseOptions(baseUrl: "http://106.15.126.226:8081/mobile/"));
-//  Dio dio = new Dio(
-//      BaseOptions(baseUrl: "http://carloan-manage.qsmartec.com/mobile/"));
+  Dio dio = new Dio(
+      BaseOptions(baseUrl: "http://carloan-manage.qsmartec.com/mobile/"));
 
   /// 0 安卓 1,IOS 2.windows 3.
   int DEVICE = 0;
@@ -57,7 +58,7 @@ class Global {
       dio.options.headers.remove("token");
     }
     Response responseBody =
-    await dio.post(url, queryParameters: queryParameters);
+        await dio.post(url, queryParameters: queryParameters);
     return responseBody.data;
   }
 
@@ -82,7 +83,6 @@ class Global {
       this.token = token;
     }
     setKeyValue("phone", user.phone);
-
   }
 
   void setKeyValue(String key, String value) async {
