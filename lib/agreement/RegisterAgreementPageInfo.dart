@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carloan/app/Global.dart';
-import 'package:flutter_html_textview/flutter_html_textview.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class RegisterAgreementInfoPage extends StatefulWidget {
   final String title;
@@ -35,7 +35,7 @@ class _RegisterAgreementInfoState extends State<RegisterAgreementInfoPage> {
       ),
       body: new SingleChildScrollView(
         child: new Center(
-          child: new HtmlTextView(
+          child: new Html(
             data: htmlInfo,
           ),
         ),
