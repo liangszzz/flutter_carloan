@@ -23,10 +23,11 @@ class _MyAppState extends State<MyApp> {
 
   bool latestVersion = true;
 
+  String signedPhone;
+
   @override
   void initState() {
     _checkVersion();
-    _checkLogin();
     sleep(Duration(milliseconds: 300));
     super.initState();
   }
@@ -50,36 +51,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _toIndexPage() {
-    if (loginFlag && latestVersion) {
-      return RootScene();
-    }
-
     if (!latestVersion) {
       return updateVersionPage();
     }
     return LoginPage();
   }
-
-  ///判断用户是否已经登录
-  void _checkLogin() async {
-    Token token = await Token.loadToken();
-    if (token != null && token.checkExpire()) {
-      _loadTokenAndUserInfo(token);
-    }
-  }
-
-  void _loadTokenAndUserInfo(Token token) async {
-    var response = await global.post("login/appLogin/" + token.token);
-    DataResponse d = DataResponse.fromJson(response);
-    if (d.success()) {
-      global.loadTokenAndUserInfo(d);
-      global.token = token;
-      setState(() {
-        loginFlag = true;
-      });
-    }
-  }
-
   ///检查版本更新
   void _checkVersion() async {
     var response = await global.post("app/queryLatest");

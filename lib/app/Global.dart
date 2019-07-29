@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -7,23 +8,26 @@ import 'package:flutter_carloan/app/Token.dart';
 import 'package:flutter_carloan/app/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-SharedPreferences preferences;
-
 ///全局共享信息
 class Global {
+  SharedPreferences preferences;
+
   Token token;
 
   User user;
-
-
 
   String currentVersion = "1.0.0";
 
   ThemeData globalTheme = ThemeData(
     primaryColor: Colors.white,
   );
+
 //http://106.15.126.226:8081/
-  Dio dio = new Dio(BaseOptions(baseUrl: "http://106.15.126.226:8081/"));
+  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.2.16:8081/mobile/"));
+
+//  Dio dio = new Dio(BaseOptions(baseUrl: "http://106.15.126.226:8081/mobile/"));
+//  Dio dio = new Dio(
+//      BaseOptions(baseUrl: "http://carloan-manage.qsmartec.com/mobile/"));
 
   /// 0 安卓 1,IOS 2.windows 3.
   int DEVICE = 0;
@@ -53,7 +57,7 @@ class Global {
       dio.options.headers.remove("token");
     }
     Response responseBody =
-        await dio.post(url, queryParameters: queryParameters);
+    await dio.post(url, queryParameters: queryParameters);
     return responseBody.data;
   }
 
@@ -74,9 +78,28 @@ class Global {
     this.user = user;
     //将token信息写入global
     if (map['expire'] != null && map['token'] != null) {
-      Token token = Token.parseToken(map['expire'] + map['token']);
-      token.writeToken();
+      Token token = Token(DateTime.parse(map['expire']), map['token']);
       this.token = token;
     }
+    setKeyValue("phone", user.phone);
+
+  }
+
+  void setKeyValue(String key, String value) async {
+    if (preferences == null) {
+      preferences = await SharedPreferences.getInstance();
+    }
+    await preferences.setString(key, value);
+  }
+
+  Future<String> getValueByKey(String key) async {
+    if (preferences == null) {
+      preferences = await SharedPreferences.getInstance();
+    }
+    var keys = preferences.getKeys();
+    if (keys.contains(key)) {
+      return preferences.getString(key);
+    }
+    return null;
   }
 }

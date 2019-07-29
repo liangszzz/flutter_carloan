@@ -1645,8 +1645,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
       int year = int.parse(idCard.substring(6, 10));
       int currentYear = DateTime.now().year;
-      if ((currentYear - year > 60) || (currentYear - year < 23)) {
-        DialogUtils.showAlertDialog(context, "提示", "借款年龄大于60或小于23", null);
+      if ((currentYear - year > 55) || (currentYear - year < 23)) {
+        DialogUtils.showAlertDialog(context, "提示", "借款年龄大于55或小于23", null);
         return;
       }
     }
@@ -1783,6 +1783,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
           "personal_income": personalIncome,
           "wechat": wxNumber,
           "marital_status": maritalValue,
+          "major": major,
+          "colleges": college
         },
         "clBaseInfo": {
           "openid": global.token.token,
