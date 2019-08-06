@@ -211,7 +211,7 @@ class RepaymentPageState extends State<RepaymentPage> {
   Widget buildLoanRowWidget() {
     String interestRateShowMsg = '';
     if (interestRate != null) {
-      interestRateShowMsg = (interestRate * 100).toString() + '%';
+      interestRateShowMsg = (interestRate * 100).toStringAsFixed(1) + '%';
     }
     return Container(
       color: _whiteColor,
