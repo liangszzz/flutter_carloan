@@ -103,6 +103,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   List relationShipList = new List();
 
   String companyName = "";
+  String companyAddress = "";
   String companyPhone = "";
   String wxNumber = "";
   String personalIncome = "";
@@ -557,6 +558,40 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 maxLines: 1,
                 onChanged: (text) {
                   companyName = text;
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      new Container(
+        margin: new EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+        height: 48.0,
+        child: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new Text(
+                '公司地址',
+                style:
+                TextStyle(fontSize: 16.0, color: const Color(0xffAAAAAA)),
+              ),
+            ),
+            new Expanded(
+              child: TextField(
+                style:
+                TextStyle(fontSize: 16.0, color: const Color(0xff353535)),
+                textAlign: TextAlign.right,
+                decoration: InputDecoration(
+                  hintText: "$companyAddress",
+                  disabledBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                keyboardType: TextInputType.text,
+                maxLines: 1,
+                onChanged: (text) {
+                  companyAddress = text;
                 },
               ),
             ),
@@ -1473,6 +1508,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             residentialAddress = clUserInfo.residential_address;
             phoneNo = clUserInfo.phone_no;
             companyName = clUserInfo.company_name;
+            companyAddress = clUserInfo.company_address;
             companyPhone = clUserInfo.company_phone_no;
             if (clUserInfo.wechat != null) {
               wxNumber = clUserInfo.wechat;
@@ -1697,6 +1733,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
       return;
     }
 
+    if(companyAddress.isEmpty){
+      DialogUtils.showAlertDialog(context, "提示", "公司地址不能为空", null);
+      return;
+    }
+
     if (customerInfoLabel.isEmpty) {
       DialogUtils.showAlertDialog(context, "提示", "客户职业信息不能为空", null);
       return;
@@ -1773,6 +1814,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           "identity_type": identityTypeValue,
           "degree": degreeValue,
           "company_name": companyName,
+          "company_address": companyAddress,
           "customer_professional_info": customerInfoValue,
           "company_phone_no": companyPhone,
           "certificate_expiry_date": _time,
