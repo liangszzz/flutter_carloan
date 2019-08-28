@@ -190,7 +190,7 @@ class _MeSceneState extends State<_MeSceneStateful> {
                       padding: new EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
                       child: new Text(
                         "安全退出",
-                        style: TextStyle(color: Colors.red, fontSize: 18.0),
+                        style: TextStyle(color: Colors.red, fontSize: 14.0),
                       ),
                     ),
                   ),
