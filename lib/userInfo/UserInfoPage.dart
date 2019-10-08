@@ -1902,7 +1902,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 leading: new Icon(Icons.camera),
                 title: new Text("相机", textAlign: TextAlign.left),
                 onTap: () {
-                  ImagePicker.pickImage(source: ImageSource.camera)
+                  ImagePicker.pickImage(source: ImageSource.camera, imageQuality: global.imageQuality)
                       .then((onValue) {
                     _uploadImage(onValue, index, f);
                   });
@@ -1917,7 +1917,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 leading: new Icon(Icons.photo_library),
                 title: new Text("相册", textAlign: TextAlign.left),
                 onTap: () {
-                  ImagePicker.pickImage(source: ImageSource.gallery)
+                  ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: global.imageQuality)
                       .then((onValue) {
                     _uploadImage(onValue, index, f);
                   });

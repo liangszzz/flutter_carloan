@@ -50,7 +50,7 @@ class _UpdateUserInfoPageState extends State<UpdateUserInfoPage> {
   Widget _buildBody() {
     var headImg = Container(
       child: GestureDetector(
-        onTap:() {
+        onTap: () {
           showModalBottomSheetDialog(context);
         },
         child: CircleAvatar(
@@ -171,14 +171,16 @@ class _UpdateUserInfoPageState extends State<UpdateUserInfoPage> {
   }
 
   Future _selectPhoneImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: global.imageQuality);
     setState(() {
       _image = image;
     });
   }
 
   Future _selectGalleryImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: global.imageQuality);
     setState(() {
       _image = image;
     });

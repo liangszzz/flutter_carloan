@@ -1219,7 +1219,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 title: new Text("相机", textAlign: TextAlign.left),
                 onTap: () {
                   ImagePicker.pickImage(
-                      source: ImageSource.camera)
+                      source: ImageSource.camera, imageQuality: global.imageQuality)
                       .then((onValue) {
                     _uploadImage(onValue, index, type, f);
                   });
@@ -1235,7 +1235,7 @@ class _CarInfoPageState extends State<CarInfoPage> {
                 title: new Text("相册", textAlign: TextAlign.left),
                 onTap: () {
                   ImagePicker.pickImage(
-                      source: ImageSource.gallery)
+                      source: ImageSource.gallery, imageQuality: global.imageQuality)
                       .then((onValue) {
                     _uploadImage(onValue, index, type, f);
                   });

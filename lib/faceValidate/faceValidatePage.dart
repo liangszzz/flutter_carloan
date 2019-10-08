@@ -83,7 +83,7 @@ class _faceValidateState extends State<faceValidatePage> {
   File _image;
 
   void _selectImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker.pickImage(source: ImageSource.camera, imageQuality: global.imageQuality);
     setState(() {
       _image = image;
     });
