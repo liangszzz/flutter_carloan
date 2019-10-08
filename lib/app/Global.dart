@@ -22,13 +22,19 @@ class Global {
     primaryColor: Colors.white,
   );
 
-//http://106.15.126.226:8081/
+  //本地开发环境
 //  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.2.16:8081/mobile/"));
-//  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.7:8081/mobile/"));
 
-//  Dio dio = new Dio(BaseOptions(baseUrl: "http://106.15.126.226:8081/mobile/"));
-  Dio dio = new Dio(
-      BaseOptions(baseUrl: "http://carloan-manage.qsmartec.com/mobile/"));
+  //局域网开发环境
+//  Dio dio = new Dio(BaseOptions(baseUrl: "http://192.168.1.7:8081/mobile/"));
+  //外网测试环境
+//  Dio dio = new Dio(BaseOptions(baseUrl: "http://106.15.126.226:8081//mobile/"));
+  //易通保理测试
+//  Dio dio = new Dio(BaseOptions(baseUrl: "http://47.100.105.79/mobile/"));
+  //易通保理生产
+  Dio dio = new Dio(BaseOptions(baseUrl: "http://120.55.163.25/mobile/"));
+  //生产环境
+//  Dio dio = new Dio(BaseOptions(baseUrl: "http://carloan-manage.qsmartec.com/mobile/"));
 
   /// 0 安卓 1,IOS 2.windows 3.
   int DEVICE = 0;
@@ -37,6 +43,8 @@ class Global {
 
   ///验证码倒计时时间
   final int SECOND = 60;
+
+  final int imageQuality = 50;
 
   factory Global() => _getInstance();
 
