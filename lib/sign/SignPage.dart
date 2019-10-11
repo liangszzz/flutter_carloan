@@ -291,7 +291,7 @@ class _SignPageState extends State<_SignPageStateful> {
         maxLength: 11,
         decoration: InputDecoration(
           hintText: "请输入银行预留手机号",
-          prefixText: "手机号:",
+          prefixText: "银行预留手机号:",
           prefixStyle: TextStyle(color: Colors.black),
           disabledBorder: InputBorder.none,
           enabledBorder: InputBorder.none,
